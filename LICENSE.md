@@ -1,7 +1,7 @@
 # Curly Engine
 ## Curly Engine - License Agreement
 
-Curly Engine - Copyright (c) 2019-2021
+Curly Engine - Copyright (c) 2021
 Adrian Bedregal, Leonardo Valdivia, Yober Mendoza
 
 This software is provided 'as-is', without any express or implied
