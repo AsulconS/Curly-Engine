@@ -1,0 +1,12 @@
+# Folders
+.vscode
+.VSCodeCounter
+build
+
+# Files
+*.bat
+desktop.ini
+
+# Excecutables and dlls
+*.dll
+*.exe
