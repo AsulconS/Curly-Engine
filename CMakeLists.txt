@@ -22,15 +22,57 @@ option(CURLY_LOCAL_RC "Enable RC File Support for local builds (export icon)" OF
 # Set C++20 as the standard
 set(CMAKE_CXX_STANDARD 20)
 
+# Set Target Platform
+if(WIN32)
+    set(CURLY_PLATFORM win32)
+else()
+    set(CURLY_PLATFORM linux)
+endif()
+
 # Icon
 if(CURLY_LOCAL_RC)
-    set(OPT_RES_OBJ "other/res/curly.o")
+    set(OPT_RES_OBJ "other/res/curly-rc.o")
 else()
     set(OPT_RES_OBJ "")
 endif()
 
-macro(build_cpp_source outFilename inFilename)
-    add_executable(${outFilename} src/${inFilename}.cpp ${OPT_RES_OBJ})
-endmacro(build_cpp_source)
+# Get Source Files
+set(CURLY_SOURCES
+    external/src/glad/glad.c
+    src/system/timer.cpp
+    src/system/${CURLY_PLATFORM}/timerPlatform.cpp
+    src/graphics/gUtils.cpp
+    src/graphics/mesh.cpp
+    src/graphics/model.cpp
+    src/graphics/shader.cpp
+    src/math/mUtils.cpp
+    src/math/vecArithmetic.cpp
+    src/window/inputHandler.cpp
+    src/window/renderingWindow.cpp
+    src/window/${CURLY_PLATFORM}/windowManagerPlatform.cpp
+    src/window/wmLazyPtr.cpp
+    src/window/wUtils.cpp
+)
 
-build_cpp_source(curly main)
+# Build library modules
+add_library(curly_lib STATIC ${CURLY_SOURCES})
+set_target_properties(curly_lib
+PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${SO_VERSION}
+)
+target_include_directories(curly_lib PRIVATE include)
+if(WIN32)
+    target_link_libraries(curly_lib opengl32)
+else()
+    target_link_libraries(curly_lib GL X11)
+endif()
+
+# Build main runtime module
+add_executable(curly src/main.cpp ${OPT_RES_OBJ})
+target_include_directories(curly PRIVATE include)
+if(WIN32)
+    target_link_libraries(curly LINK_PUBLIC curly_lib opengl32)
+else()
+    target_link_libraries(curly LINK_PUBLIC curly_lib)
+endif()

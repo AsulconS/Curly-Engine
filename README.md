@@ -18,4 +18,3 @@
 ## What is Curly Engine?
 
 Curly Engine is a game engine written in C++ designed for allowing a simple and block-customizable core dependencies to allow shipping be an easy and lightweight experience. It uses as core the graphics library HSGIL and implements its own UI flow. Its on an early stage and was used to launch some simple prototype examples/projects like the ECS-based RPG _The Rise of Hullstorm_
-
