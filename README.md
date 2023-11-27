@@ -8,7 +8,6 @@
     <a href="#"><img src="https://img.shields.io/github/commit-activity/y/AsulconS/Curly-Engine"></a>
     <a href="https://github.com/AsulconS/Curly-Engine/issues"><img src="https://img.shields.io/github/issues/AsulconS/HSGIL"></a>
     <a href="https://github.com/AsulconS/Curly-Engine/pulls"><img src="https://img.shields.io/github/issues-pr/AsulconS/Curly-Engine"></a>
-    <a href="#"><img src="https://img.shields.io/tokei/lines/github/AsulconS/Curly-Engine"></a>
     <a href="#"><img src="https://img.shields.io/github/stars/AsulconS/Curly-Engine"></a>
 </p>
 
