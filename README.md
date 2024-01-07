@@ -1,3 +1,5 @@
+# Note: This is a Placeholder Repo, its being recovered and will be available soon
+
 <p align="center">
     <a href="#"><img src="other/res/curly-text.png?raw=true" width="50%"></a>
 </p>
