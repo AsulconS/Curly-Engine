@@ -223,7 +223,7 @@ inline void Vector<T>::push_back(T&& val)
         m_capacity <<= 0x1;
         reallocate();
     }
-    m_data[m_size++] = CURLY_move(val);
+    m_data[m_size++] = curly_move(val);
 }
 
 template <typename T>
@@ -247,7 +247,7 @@ inline void Vector<T>::reallocate()
     T* n_data {new T[m_capacity]};
     for(cfg::uint64 i = 0; i < m_size; ++i)
     {
-        n_data[i] = CURLY_move(m_data[i]);
+        n_data[i] = curly_move(m_data[i]);
     }
     delete[] m_data;
     m_data = n_data;

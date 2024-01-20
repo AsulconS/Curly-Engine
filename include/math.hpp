@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <config/config.hpp>
+#include <core/config.hpp>
 
 #include <math/constants.hpp>
 #include <math/vec2.hpp>

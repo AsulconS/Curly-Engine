@@ -1,3 +1,5 @@
+#include <math.hpp>
+#include <system.hpp>
 #include <window.hpp>
 #include <graphics.hpp>
 

@@ -24,7 +24,7 @@
 namespace sys
 {
 template <typename T>
-inline Queue<T>::Queue(uint64 t_capacity)
+inline Queue<T>::Queue(cfg::uint64 t_capacity)
     : m_front    {0},
       m_back     {t_capacity - 1},
       m_size     {0},
@@ -155,7 +155,7 @@ inline void Queue<T>::push(T&& val)
         return;
     }
     m_back = (m_back + 1) % m_capacity;
-    m_data[m_back] = CURLY_move(val);
+    m_data[m_back] = curly_move(val);
     ++m_size;
 }
 

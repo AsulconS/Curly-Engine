@@ -23,7 +23,7 @@
 
 #include <math/mUtils.hpp>
 
-namespace math
+namespace gil
 {
 int absolute(int val)
 {
@@ -128,4 +128,4 @@ bool isBetween(float val, float lBound, float rBound)
     return ((val - lBound) * (rBound - val)) >= 0.0f;
 }
 
-} // namespace math
+} // namespace gil

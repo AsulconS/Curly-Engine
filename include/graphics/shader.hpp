@@ -23,13 +23,13 @@
 
 #pragma once
 
-#include <external/glad/glad.h>
 #include <external/glm/glm.hpp>
 #include <external/glm/gtc/type_ptr.hpp>
 #include <external/glm/gtc/matrix_transform.hpp>
 
-#include <config/config.hpp>
-#include <config/common.hpp>
+#include <core/glad/gl.h>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
 #include <math/vec2.hpp>
 #include <math/vec3.hpp>

@@ -60,6 +60,7 @@ int WindowManager::s_mouseTrackCount {0};
 int WindowManager::s_keyPhysicStates[NUM_KEYS_SIZE] {};
 
 MSG WindowManager::s_msg {};
+HMODULE WindowManager::s_ogl32Module {nullptr};
 HINSTANCE WindowManager::s_procInstanceHandle {nullptr};
 
 bool WindowManager::s_vSyncCompat {true};
@@ -392,6 +393,29 @@ void WindowManager::fatalError(const char* msg)
     exit(EXIT_FAILURE);
 }
 
+bool WindowManager::isInvalidFuncAddress(void* funcAddress)
+{
+    return  (funcAddress == 0) ||
+            (funcAddress == (void*)0x1) ||
+            (funcAddress == (void*)0x2) ||
+            (funcAddress == (void*)0x3) ||
+            (funcAddress == (void*)-1);
+}
+
+void* WindowManager::CurlyGetProcAddress(const char* name)
+{
+    void* gpa = (void*)wglGetProcAddress(name);
+    if (isInvalidFuncAddress(gpa))
+    {
+        if (!s_ogl32Module)
+        {
+            s_ogl32Module = LoadLibraryA("opengl32.dll");
+        }
+        gpa = (void*)GetProcAddress(s_ogl32Module, name);
+    }
+    return gpa;
+}
+
 LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch(uMsg)
@@ -437,7 +461,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                 }
                 wglMakeCurrent(hdc, glContext);
 
-                gladLoadGL();
+                gladLoadGL((GLADloadfunc)CurlyGetProcAddress);
 
                 memset(s_keyPhysicStates, 0, sizeof(s_keyPhysicStates));
 

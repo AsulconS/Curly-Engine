@@ -38,7 +38,7 @@ endif()
 
 # Get Source Files
 set(CURLY_SOURCES
-    external/src/glad/glad.c
+    src/core/glad/gl.c
     src/system/timer.cpp
     src/system/${CURLY_PLATFORM}/timerPlatform.cpp
     src/graphics/gUtils.cpp
@@ -50,6 +50,7 @@ set(CURLY_SOURCES
     src/window/inputHandler.cpp
     src/window/renderingWindow.cpp
     src/window/${CURLY_PLATFORM}/windowManagerPlatform.cpp
+    src/window/${CURLY_PLATFORM}/compatUtilsPlatform.cpp
     src/window/wmLazyPtr.cpp
     src/window/wUtils.cpp
 )

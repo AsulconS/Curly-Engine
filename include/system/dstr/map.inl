@@ -88,7 +88,7 @@ inline bool Map<Key, T, Comp>::empty() const noexcept
 }
 
 template <typename Key, typename T, typename Comp>
-inline uint64 Map<Key, T, Comp>::size() const noexcept
+inline cfg::uint64 Map<Key, T, Comp>::size() const noexcept
 {
     return m_size;
 }
@@ -228,15 +228,15 @@ inline typename Map<Key, T, Comp>::Node* Map<Key, T, Comp>::h_stdInsert(Key&& ke
 {
     if(root == nullptr)
     {
-        return root = new Node {{CURLY_move(key), T {}}, CURLY_CONST_RED, nullptr, nullptr};
+        return root = new Node {{curly_move(key), T {}}, CURLY_CONST_RED, nullptr, nullptr};
     }
     if(mf_comp(key, root->data.first))
     {
-        return h_insert(CURLY_move(key), root->left);
+        return h_insert(curly_move(key), root->left);
     }
     if(mf_comp(root->data.first, key))
     {
-        return h_insert(CURLY_move(key), root->right);
+        return h_insert(curly_move(key), root->right);
     }
     return nullptr;
 }

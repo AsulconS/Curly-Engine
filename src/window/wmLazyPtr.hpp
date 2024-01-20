@@ -21,11 +21,10 @@
  *                                                                              *
  ********************************************************************************/
 
-#ifndef CURLY_WM_LAZY_PTR
-#define CURLY_WM_LAZY_PTR
+#pragma once
 
-#include <config/config.hpp>
-#include <config/common.hpp>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
 namespace wnd
 {
@@ -52,5 +51,3 @@ private:
 };
 
 } // namespace wnd
-
-#endif // CURLY_WM_LAZY_PTR

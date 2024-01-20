@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <config/config.hpp>
-#include <config/common.hpp>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
 #include <system/utility.hpp>
 #include <system/dstr/stack.hpp>
@@ -103,7 +103,7 @@ public:
      * 
      * @return uint64 
      */
-    uint64 size() const noexcept;
+    cfg::uint64 size() const noexcept;
 
     /**
      * @brief Clears the content
@@ -178,9 +178,9 @@ private:
 private:
     Comp mf_comp;
     Node* m_root;
-    uint64 m_size;
+    cfg::uint64 m_size;
 
-    int32 m_height;
+    cfg::int32 m_height;
 };
 
 } // namespace sys

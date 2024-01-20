@@ -21,11 +21,10 @@
  *                                                                              *
  ********************************************************************************/
 
-#ifndef CURLY_TIMER_PLATFORM_HPP
-#define CURLY_TIMER_PLATFORM_HPP
+#pragma once
 
-#include <config/config.hpp>
-#include <config/common.hpp>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
 #include <system/time.hpp>
 
@@ -43,5 +42,3 @@ CURLY_API Time getTime();
 } // namespace plat
 
 } // namespace sys
-
-#endif // CURLY_TIMER_PLATFORM_HPP

@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <config/config.hpp>
+#include <core/config.hpp>
 
 #include <system/time.hpp>
 #include <system/timer.hpp>

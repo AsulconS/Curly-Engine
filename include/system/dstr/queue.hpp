@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <config/config.hpp>
-#include <config/common.hpp>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
 #include <system/utility.hpp>
 
@@ -41,7 +41,7 @@ public:
      * 
      * @param t_capacity 
      */
-    Queue(uint64 t_capacity = CURLY_QUEUE_DEFAULT_CAPACITY);
+    Queue(cfg::uint64 t_capacity = CURLY_QUEUE_DEFAULT_CAPACITY);
 
     /**
      * @brief Construct a new Queue object
@@ -82,7 +82,7 @@ public:
      * 
      * @return uint64 
      */
-    uint64 size() const noexcept;
+    cfg::uint64 size() const noexcept;
     /**
      * @brief Returns a boolean indicating if queue is empty or not
      * 
@@ -136,10 +136,10 @@ public:
 
 private:
     T* m_data;
-    uint64 m_front;
-    uint64 m_back;
-    uint64 m_size;
-    uint64 m_capacity;
+    cfg::uint64 m_front;
+    cfg::uint64 m_back;
+    cfg::uint64 m_size;
+    cfg::uint64 m_capacity;
 };
 
 } // namespace sys

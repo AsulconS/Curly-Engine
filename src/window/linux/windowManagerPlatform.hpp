@@ -21,13 +21,12 @@
  *                                                                              *
  ********************************************************************************/
 
-#ifndef CURLY_LINUX_WINDOW_MANAGER_HPP
-#define CURLY_LINUX_WINDOW_MANAGER_HPP
+#pragma once
 
-#include <external/glad/glad.h>
+#include <core/glad/gl.h>
 
-#include <config/config.hpp>
-#include <config/common.hpp>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
 //#include <system/dstr/map.hpp>
 #include <map>
@@ -36,6 +35,7 @@
 #include <window/inputEvents.hpp>
 #include <window/inputBindings.hpp>
 #include <window/customization.hpp>
+#include <window/compatUtils.hpp>
 
 #include "../safePtr.hpp"
 #include "../wmLazyPtr.hpp"
@@ -68,6 +68,7 @@ typedef int  (*PFNGLXSWAPINTERVALPROC2)(int);
 class CURLY_API WindowManager final
 {
     friend CURLY_API WMLazyPtr;
+    friend CURLY_API void compat::forceGlxContextToVersion(const int major, const int minor);
 public:
     static WindowManager* createInstance();
     static WindowManager* getInstance(const cfg::uint32 index);
@@ -136,12 +137,16 @@ private:
 
     static bool s_vSyncCompat;
     static bool s_attribCtxCompat;
+    static int s_glxCtxVersionMajorCompat;
+    static int s_glxCtxVersionMinorCompat;
 
     static PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB;
 
     static bool glXSwapIntervalEXTMode;
     static PFNGLXSWAPINTERVALPROC1 glXSwapInterval1;
     static PFNGLXSWAPINTERVALPROC2 glXSwapInterval2;
+
+    static void internalSetGlxContextVersion(const int major, const int minor);
 
     static void loadInputMap();
     static int rawToStandard(int rawCode);

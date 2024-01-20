@@ -23,63 +23,17 @@
 
 #pragma once
 
-#include <external/glm/glm.hpp>
-
 #include <core/config.hpp>
 #include <core/common.hpp>
 
-#include <system/dstr/vector.hpp>
-
-#include <graphics/shader.hpp>
-
-namespace gfx
+namespace wnd
 {
-/**
- * @brief Mesh Class that stores a 3D Mesh and lets us draw it dynamically
- * 
- */
-class CURLY_API Mesh
+namespace compat
 {
-public:
-    /**
-     * @brief Construct a new Mesh object
-     * 
-     */
-    Mesh();
-    /**
-     * @brief Construct a new Mesh object from a path to the OBJ file
-     * 
-     * @param path 
-     * @param hasNormals 
-     * @param hasUVs 
-     */
-    Mesh(const char* path, bool hasNormals = true, bool hasUVs = true);
-    /**
-     * @brief Destroy the Mesh object
-     * 
-     */
-    virtual ~Mesh();
+#if defined(CF__CURLY_OS_LINUX)
+CURLY_API void forceGlxContextToVersion(const int major, const int minor);
+#endif
 
-    /**
-     * @brief Draw the Mesh object with the shader passed by
-     * 
-     * @param shader 
-     */
-    virtual void draw(const Shader& shader);
+} // namespace compat
 
-protected:
-    /**
-     * @brief Generate the VAO, VBO and EBO and setups them
-     * 
-     */
-    virtual void generate();
-
-    cfg::uint32 m_VAO;
-    cfg::uint32 m_VBO;
-    cfg::uint32 m_EBO;
-
-    sys::Vector<cfg::uint32>* m_indices;
-    sys::Vector<float>* m_vertexData;
-};
-
-} // namespace gfx
+} // namespace wnd

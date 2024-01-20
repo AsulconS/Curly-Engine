@@ -21,17 +21,16 @@
  *                                                                              *
  ********************************************************************************/
 
-#ifndef CURLY_WIN32_WINDOW_MANAGER_HPP
-#define CURLY_WIN32_WINDOW_MANAGER_HPP
+#pragma once
 
 #include <Windows.h>
 #include <Windowsx.h>
 
-#include <external/glad/glad.h>
+#include <core/glad/gl.h>
 #include <external/GL/wglext.h>
 
-#include <config/config.hpp>
-#include <config/common.hpp>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
 //#include <system/dstr/map.hpp>
 #include <map>
@@ -111,6 +110,7 @@ private:
     static int s_keyPhysicStates[NUM_KEYS_SIZE];
 
     static MSG s_msg;
+    static HMODULE s_ogl32Module;
     static HINSTANCE s_procInstanceHandle;
 
     static bool s_vSyncCompat;
@@ -121,6 +121,7 @@ private:
     static void loadGLExtensions();
     static void warning(const char* msg);
     static void fatalError(const char* msg);
+    static bool isInvalidFuncAddress(void* funcAddress);
 
     static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
     static PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
@@ -129,6 +130,7 @@ private:
     static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
     static PFNWGLGETSWAPINTERVALEXTPROC wglGetSwapIntervalEXT;
 
+    static void* CurlyGetProcAddress(const char* name);
     static LRESULT CALLBACK CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     /* Deleted Constructors and assignment */
@@ -140,5 +142,3 @@ private:
 };
 
 } // namespace wnd
-
-#endif // CURLY_WIN32_WINDOW_MANAGER_HPP

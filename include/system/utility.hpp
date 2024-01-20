@@ -25,17 +25,17 @@
 
 namespace sys
 {
-template <typename T> struct CURLY_remove_reference      { typedef T type; };
-template <typename T> struct CURLY_remove_reference<T&>  { typedef T type; };
-template <typename T> struct CURLY_remove_reference<T&&> { typedef T type; };
+template <typename T> struct curly_remove_reference      { typedef T type; };
+template <typename T> struct curly_remove_reference<T&>  { typedef T type; };
+template <typename T> struct curly_remove_reference<T&&> { typedef T type; };
 
 template <typename T>
-inline typename CURLY_remove_reference<T>::type&& CURLY_move(T&& t) noexcept { return static_cast<typename CURLY_remove_reference<T>::type&&>(t); }
+inline typename curly_remove_reference<T>::type&& curly_move(T&& t) noexcept { return static_cast<typename curly_remove_reference<T>::type&&>(t); }
 
 template <typename T>
-inline T&& CURLY_forward(typename CURLY_remove_reference<T>::type& t) noexcept { return static_cast<T&&>(t); }
+inline T&& curly_forward(typename curly_remove_reference<T>::type& t) noexcept { return static_cast<T&&>(t); }
 
 template <typename T>
-inline T&& CURLY_forward(typename CURLY_remove_reference<T>::type&& t) noexcept { return static_cast<T&&>(t); }
+inline T&& curly_forward(typename curly_remove_reference<T>::type&& t) noexcept { return static_cast<T&&>(t); }
 
 } // namespace sys

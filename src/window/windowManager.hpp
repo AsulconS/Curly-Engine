@@ -21,11 +21,10 @@
  *                                                                              *
  ********************************************************************************/
 
-#ifndef CURLY_WINDOW_MANAGER_HPP
-#define CURLY_WINDOW_MANAGER_HPP
+#pragma once
 
-#include <config/config.hpp>
-#include <config/common.hpp>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
 #if defined(CF__CURLY_OS_WINDOWS)
     #include "win32/windowManagerPlatform.hpp"
@@ -34,5 +33,3 @@
 #else
     #error Curly Engine has no support for this OS
 #endif
-
-#endif // CURLY_WINDOW_MANAGER_HPP

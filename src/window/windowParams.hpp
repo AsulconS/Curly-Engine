@@ -21,8 +21,7 @@
  *                                                                              *
  ********************************************************************************/
 
-#ifndef WINDOW_PARAMS_HPP
-#define WINDOW_PARAMS_HPP
+#pragma once
 
 #include <math/vec2.hpp>
 
@@ -55,5 +54,3 @@ struct WindowRectParams : public WindowParams
 };
 
 } // namespace wnd
-
-#endif // CURLY_WINDOW_PARAMS_HPP

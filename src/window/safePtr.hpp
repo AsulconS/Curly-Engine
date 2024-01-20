@@ -21,11 +21,10 @@
  *                                                                              *
  ********************************************************************************/
 
-#ifndef CURLY_SAFE_PTR_HPP
-#define CURLY_SAFE_PTR_HPP
+#pragma once
 
-#include <config/config.hpp>
-#include <config/common.hpp>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
 namespace wnd
 {
@@ -55,5 +54,3 @@ private:
 } // namespace wnd
 
 #include "safePtr.inl"
-
-#endif // CURLY_SAFE_PTR_HPP

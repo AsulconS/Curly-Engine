@@ -21,11 +21,10 @@
  *                                                                              *
  ********************************************************************************/
 
-#ifndef CURLY_W_UTILS_HPP
-#define CURLY_W_UTILS_HPP
+#pragma once
 
-#include <config/config.hpp>
-#include <config/common.hpp>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
 namespace wnd
 {
@@ -40,5 +39,3 @@ namespace wnd
 CURLY_API bool isExtensionSupported(const char* extList, const char* extension);
 
 } // namespace wnd
-
-#endif // CURLY_W_UTILS_HPP

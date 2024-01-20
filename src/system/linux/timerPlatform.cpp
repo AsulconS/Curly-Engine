@@ -25,7 +25,7 @@
 
 #include "../timerPlatform.hpp"
 
-namespace sys
+namespace gil
 {
 namespace plat
 {
@@ -38,7 +38,7 @@ Time getTime()
 {
     timespec ts {};
     clock_gettime(CLOCK_MONOTONIC, &ts);
-    cfg::uint64 tick {};
+    uint64 tick {};
     tick  = ts.tv_nsec / 1000;
     tick += ts.tv_sec * 1000000;
     return rawTimeBuilder(tick);
@@ -46,4 +46,4 @@ Time getTime()
 
 } // namespace plat
 
-} // namespace sys
+} // namespace gil

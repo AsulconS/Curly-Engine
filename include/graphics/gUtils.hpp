@@ -25,8 +25,8 @@
 
 #include <external/glm/glm.hpp>
 
-#include <config/config.hpp>
-#include <config/common.hpp>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
 #include <system/dstr/vector.hpp>
 

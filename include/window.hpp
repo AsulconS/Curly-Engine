@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <config/config.hpp>
+#include <core/config.hpp>
 
 #include <window/inputEvents.hpp>
 #include <window/inputBindings.hpp>

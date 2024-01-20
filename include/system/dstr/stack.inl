@@ -24,7 +24,7 @@
 namespace sys
 {
 template <typename T>
-inline Stack<T>::Stack(uint64 t_capacity)
+inline Stack<T>::Stack(cfg::uint64 t_capacity)
     : m_size     {0},
       m_capacity {t_capacity}
 {
@@ -130,7 +130,7 @@ inline void Stack<T>::push(T&& val)
     {
         return;
     }
-    m_data[m_size++] = CURLY_move(val);
+    m_data[m_size++] = curly_move(val);
 }
 
 template <typename T>
