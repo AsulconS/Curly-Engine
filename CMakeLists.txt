@@ -99,7 +99,7 @@ else()
 endif()
 
 # Build main runtime module
-add_executable(curly src/main.cpp ${OPT_RES_OBJ})
+add_executable(curly src/editor/app.cpp ${OPT_RES_OBJ})
 add_dependencies(curly ${CURLY_LIB_NAME})
 target_compile_definitions(curly
 PUBLIC
