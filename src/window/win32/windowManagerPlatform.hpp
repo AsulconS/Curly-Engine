@@ -44,7 +44,6 @@
 #include "../windowParams.hpp"
 
 #define NUM_KEYS_SIZE 256u
-#define GLDCC_NAME_SIZE 6u
 #define ATTRIB_LIST_SIZE 17u
 #define MAX_WINDOW_INSTANCES 4u
 
@@ -100,8 +99,8 @@ private:
 
     /* Satatic Win32 API Internal Data */
 
-    static WNDCLASSEXA s_gldcc;
-    static const char  s_gldccName[GLDCC_NAME_SIZE];
+    static WNDCLASSEXA s_appWndClass;
+    static const char* s_appWndClassName;
 
     static PIXELFORMATDESCRIPTOR s_pfd;
     static const int s_attribs[ATTRIB_LIST_SIZE];
@@ -117,7 +116,7 @@ private:
     static bool s_attribCtxCompat;
     static bool s_pixelFormatCompat;
 
-    static void registerGLDCC();
+    static void registerAppGlobalClass();
     static void loadGLExtensions();
     static void warning(const char* msg);
     static void fatalError(const char* msg);

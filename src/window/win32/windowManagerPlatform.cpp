@@ -39,8 +39,8 @@ WMLazyPtr WindowManager::s_wmInstances[MAX_WINDOW_INSTANCES] {};
 
 SafePtr<Map<HWND, cfg::uint32>> WindowManager::s_hwndMap {};
 
-WNDCLASSEXA WindowManager::s_gldcc {};
-const char WindowManager::s_gldccName[GLDCC_NAME_SIZE] {"GLDCC"};
+WNDCLASSEXA WindowManager::s_appWndClass {};
+const char* WindowManager::s_appWndClassName {"GLDCC"};
 
 PIXELFORMATDESCRIPTOR WindowManager::s_pfd {};
 const int WindowManager::s_attribs[ATTRIB_LIST_SIZE]
@@ -78,8 +78,11 @@ WindowManager* WindowManager::createInstance()
 {
     if(!s_wmInstanceCount)
     {
+#if defined(C__CURLY_FREE_CONSOLE)
+        FreeConsole();
+#endif
         s_procInstanceHandle = GetModuleHandleW(nullptr);
-        registerGLDCC();
+        registerAppWndClass();
         loadGLExtensions();
 
         s_wmInstances[0u].init(0u);
@@ -148,12 +151,13 @@ WindowRectParams WindowManager::createRenderingWindow(const char* title, int x, 
                 break;
         };
 
+        LPCSTR className = s_appWndClass.lpszClassName;
         m_windowHandle = CreateWindowExA
         (
-            0L,                     // Extended Window Style
-            s_gldcc.lpszClassName,  // Window Class Name
-            title,                  // Window Title
-            windowStyle,            // Window Style
+            0L,           // Extended Window Style
+            className,    // Window Class Name
+            title,        // Window Title
+            windowStyle,  // Window Style
 
             x, y, width, height,
 
@@ -228,22 +232,22 @@ WindowManager::~WindowManager()
 {
 }
 
-void WindowManager::registerGLDCC()
+void WindowManager::registerAppWndClass()
 {
-    s_gldcc.cbSize        = sizeof(WNDCLASSEXA);
-    s_gldcc.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-    s_gldcc.lpfnWndProc   = CurlyProc;
-    s_gldcc.cbClsExtra    = 0;
-    s_gldcc.cbWndExtra    = 0;
-    s_gldcc.hInstance     = s_procInstanceHandle;
-    s_gldcc.hIcon         = nullptr;
-    s_gldcc.hCursor       = LoadCursorA(nullptr, IDC_ARROW);
-    s_gldcc.hbrBackground = (HBRUSH)(COLOR_BACKGROUND);
-    s_gldcc.lpszMenuName  = nullptr;
-    s_gldcc.lpszClassName = s_gldccName;
-    s_gldcc.hIconSm       = nullptr;
+    s_appWndClass.cbSize        = sizeof(WNDCLASSEXA);
+    s_appWndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+    s_appWndClass.lpfnWndProc   = CurlyProc;
+    s_appWndClass.cbClsExtra    = 0;
+    s_appWndClass.cbWndExtra    = 0;
+    s_appWndClass.hInstance     = s_procInstanceHandle;
+    s_appWndClass.hIcon         = nullptr;
+    s_appWndClass.hCursor       = LoadCursorA(nullptr, IDC_ARROW);
+    s_appWndClass.hbrBackground = (HBRUSH)(COLOR_BACKGROUND);
+    s_appWndClass.lpszMenuName  = nullptr;
+    s_appWndClass.lpszClassName = s_appWndClassName;
+    s_appWndClass.hIconSm       = nullptr;
 
-    if(!RegisterClassExA(&s_gldcc))
+    if(!RegisterClassExA(&s_appWndClass))
     {
         fatalError("Failed to register Rendering Window.");
     }
