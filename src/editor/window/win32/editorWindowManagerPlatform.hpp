@@ -26,8 +26,8 @@
 #include <Windows.h>
 #include <Windowsx.h>
 
-#include "../../core/GL/gl.h"
-#include "../../core/GL/wglext.h"
+#include "../../../engine/core/GL/gl.h"
+#include "../../../engine/core/GL/wglext.h"
 
 #include <core/config.hpp>
 #include <core/common.hpp>
@@ -53,13 +53,13 @@ class IWindow;
 
 using EventCallbackFunction = void (*)(IWindow*, InputEvent, WindowParams*);
 
-class CURLY_API WindowManager final
+class EditorWindowManager final
 {
-    friend class sys::LazyPtr<class WindowManager>;
+    friend class sys::LazyPtr<class EditorWindowManager>;
 
 public:
-    static WindowManager* createInstance();
-    static WindowManager* getInstance(const cfg::uint32 index);
+    static EditorWindowManager* createInstance();
+    static EditorWindowManager* getInstance(const cfg::uint32 index);
 
     bool isActive();
     WindowRectParams createRenderingWindow(const char* title, int x, int y, int width, int height, WindowStyle style);
@@ -84,14 +84,14 @@ private:
 
     /* Privated constructor and destructor */
 
-    WindowManager(const cfg::uint32 t_index);
-    ~WindowManager();
+    EditorWindowManager(const cfg::uint32 t_index);
+    ~EditorWindowManager();
 
     /* Static Instances */
 
     static cfg::uint32 s_activeSessions;
     static cfg::uint32 s_wmInstanceCount;
-    static sys::LazyPtr<WindowManager> s_wmInstances[MAX_WINDOW_INSTANCES];
+    static sys::LazyPtr<EditorWindowManager> s_wmInstances[MAX_WINDOW_INSTANCES];
 
     /**
      * @brief   Window Hash Table <Window Handler, Instance ID>
@@ -136,10 +136,10 @@ private:
 
     /* Deleted Constructors and assignment */
 
-    WindowManager(const WindowManager&) = delete;
-    WindowManager(WindowManager&&) = delete;
+    EditorWindowManager(const EditorWindowManager&) = delete;
+    EditorWindowManager(EditorWindowManager&&) = delete;
 
-    WindowManager& operator=(const WindowManager&) = delete;
+    EditorWindowManager& operator=(const EditorWindowManager&) = delete;
 };
 
 } // namespace wnd

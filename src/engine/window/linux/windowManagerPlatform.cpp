@@ -26,17 +26,13 @@
 #include <cstring>
 #include <iostream>
 
-#include "../wUtils.hpp"
-#include "../wmLazyPtr.hpp"
-#include "../windowParams.hpp"
-
 namespace wnd
 {
 cfg::uint32 WindowManager::s_activeSessions  {0u};
 cfg::uint32 WindowManager::s_wmInstanceCount {0u};
-WMLazyPtr WindowManager::s_wmInstances[MAX_WINDOW_INSTANCES] {};
+sys::LazyPtr<WindowManager> WindowManager::s_wmInstances[MAX_WINDOW_INSTANCES] {};
 
-SafePtr<Map<XWND, cfg::uint32>> WindowManager::s_hwndMap {};
+sys::SafePtr<Map<XWND, cfg::uint32>> WindowManager::s_hwndMap {};
 
 const int WindowManager::s_glxAttribs[ATTRIB_LIST_SIZE]
 {
@@ -580,6 +576,44 @@ void WindowManager::fatalError(const char* msg)
     std::cerr << "Fatal Error: " << msg << std::endl;
     XCloseDisplay(s_display);
     exit(EXIT_FAILURE);
+}
+
+bool WindowManager::isExtensionSupported(const char* extList, const char* extension)
+{
+	const char* start;
+	const char* where;
+    const char* terminator;
+
+	where = strchr(extension, ' ');
+	if(where || *extension == '\0')
+    {
+	    return false;
+    }
+
+    start = extList;
+	while(true)
+    {
+	    where = strstr(start, extension);
+
+	    if(!where)
+        {
+	 	    break;
+        }
+
+        terminator = where + strlen(extension);
+
+        if(where == start || *(where - 1) == ' ')
+        {
+            if(*terminator == ' ' || *terminator == '\0' )
+            {
+                return true;
+            }
+	    }
+
+	    start = terminator;
+	}
+
+	return false;
 }
 
 void WindowManager::CurlyProc()

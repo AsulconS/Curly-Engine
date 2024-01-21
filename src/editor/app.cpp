@@ -3,6 +3,8 @@
 #include <engine/window.hpp>
 #include <engine/graphics.hpp>
 
+#include "window/win32/editorWindowManagerPlatform.hpp"
+
 #include "../engine/core/GL/gl.h"
 
 #include <iostream>

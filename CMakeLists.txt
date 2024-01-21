@@ -26,6 +26,7 @@ set(CURLY_GLX_CTX_VERSION_MINOR 6 CACHE STRING "Specifies Forced GLX Version Min
 set(CMAKE_CXX_STANDARD 20)
 
 set(CURLY_RUNTIME_LIB_NAME curly-runtime)
+set(CURLY_EDITOR_EXEC_NAME curly)
 
 # Set Target Platform
 if(WIN32)
@@ -56,8 +57,10 @@ set(CURLY_RUNTIME_SOURCES
     src/engine/window/renderingWindow.cpp
     src/engine/window/${CURLY_PLATFORM}/windowManagerPlatform.cpp
     src/engine/window/${CURLY_PLATFORM}/compatUtilsPlatform.cpp
-    src/engine/window/wmLazyPtr.cpp
-    src/engine/window/wUtils.cpp
+)
+set(CURLY_EDITOR_SOURCES
+    src/editor/window/${CURLY_PLATFORM}/editorWindowManagerPlatform.cpp
+    src/editor/app.cpp
 )
 
 # Set Dynamic Compile Definitions
@@ -99,20 +102,20 @@ else()
 endif()
 
 # Build main runtime module
-add_executable(curly src/editor/app.cpp ${OPT_RES_OBJ})
-add_dependencies(curly ${CURLY_RUNTIME_LIB_NAME})
-target_compile_definitions(curly
+add_executable(${CURLY_EDITOR_EXEC_NAME} ${CURLY_EDITOR_SOURCES} ${OPT_RES_OBJ})
+add_dependencies(${CURLY_EDITOR_EXEC_NAME} ${CURLY_RUNTIME_LIB_NAME})
+target_compile_definitions(${CURLY_EDITOR_EXEC_NAME}
 PUBLIC
     GLAD_API_CALL_EXPORT
     C__CURLY_API_CALL_EXPORT
 PRIVATE
     __STDC_LIB_EXT1__
 )
-target_include_directories(curly PRIVATE include)
-target_include_directories(curly PRIVATE include/engine)
-target_include_directories(curly PRIVATE include/editor)
+target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE include)
+target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE include/engine)
+target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE include/editor)
 if(WIN32)
-    target_link_libraries(curly LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME} opengl32)
+    target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME} opengl32)
 else()
-    target_link_libraries(curly LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME})
+    target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME})
 endif()

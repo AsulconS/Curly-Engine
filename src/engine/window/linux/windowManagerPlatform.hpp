@@ -28,18 +28,18 @@
 #include <core/config.hpp>
 #include <core/common.hpp>
 
+#include <system/utils/lazyPtr.hpp>
+#include <system/utils/safePtr.hpp>
+
 //#include <system/dstr/map.hpp>
 #include <map>
 #define Map std::map
 
+#include <window/compatUtils.hpp>
 #include <window/inputEvents.hpp>
+#include "window/windowParams.hpp"
 #include <window/inputBindings.hpp>
 #include <window/customization.hpp>
-#include <window/compatUtils.hpp>
-
-#include "../safePtr.hpp"
-#include "../wmLazyPtr.hpp"
-#include "../windowParams.hpp"
 
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
@@ -67,8 +67,9 @@ typedef int  (*PFNGLXSWAPINTERVALPROC2)(int);
 
 class CURLY_API WindowManager final
 {
-    friend CURLY_API WMLazyPtr;
-    friend CURLY_API void compat::forceGlxContextToVersion(const int major, const int minor);
+    friend class sys::LazyPtr<class WindowManager>;
+    friend void compat::forceGlxContextToVersion(const int major, const int minor);
+
 public:
     static WindowManager* createInstance();
     static WindowManager* getInstance(const cfg::uint32 index);
@@ -111,12 +112,12 @@ private:
 
     static cfg::uint32 s_activeSessions;
     static cfg::uint32 s_wmInstanceCount;
-    static WMLazyPtr s_wmInstances[MAX_WINDOW_INSTANCES];
+    static sys::LazyPtr<WindowManager> s_wmInstances[MAX_WINDOW_INSTANCES];
 
     /**
      * @brief   Window Hash Table <Window Handler, Instance ID>
      */
-    static SafePtr<Map<XWND, cfg::uint32>> s_hwndMap;
+    static sys::SafePtr<Map<XWND, cfg::uint32>> s_hwndMap;
 
     /* Static Internal Data */
 
@@ -155,6 +156,8 @@ private:
     static GLXFBConfig chooseBestFBC();
 
     static void fatalError(const char* msg);
+
+    static bool isExtensionSupported(const char* extList, const char* extension);
 
     static void CurlyProc();
 

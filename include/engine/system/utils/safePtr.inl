@@ -21,36 +21,71 @@
  *                                                                              *
  ********************************************************************************/
 
-#pragma once
-
-#include <core/config.hpp>
-#include <core/common.hpp>
-
-namespace wnd
+namespace sys
 {
 template <typename T>
-class CURLY_API SafePtr final
+template <typename... TArgs>
+inline SafePtr<T>::SafePtr(TArgs... args)
 {
-public:
-    template <typename... TArgs>
-    SafePtr(TArgs... args);
-    SafePtr(SafePtr<T>&& o);
-    ~SafePtr();
+    m_data = new T(args...);
+}
 
-    T& operator*();
-    T* operator->();
-    bool operator==(const SafePtr<T>& o);
-    bool operator!=(const SafePtr<T>& o);
-    bool operator==(const std::nullptr_t nullPtr);
-    bool operator!=(const std::nullptr_t nullPtr);
-    operator T*();
+template <typename T>
+inline SafePtr<T>::SafePtr(SafePtr<T>&& o)
+    : m_data {o.m_data}
+{
+    o.m_data = nullptr;
+}
 
-private:
-    T* m_data;
+template <typename T>
+inline SafePtr<T>::~SafePtr()
+{
+    if(m_data != nullptr)
+    {
+        delete m_data;
+    }
+}
 
-    SafePtr(const SafePtr<T>& o) = delete;
-};
+template <typename T>
+inline T& SafePtr<T>::operator*()
+{
+    return *m_data;
+}
+
+template <typename T>
+inline T* SafePtr<T>::operator->()
+{
+    return m_data;
+}
+
+template <typename T>
+inline bool SafePtr<T>::operator==(const SafePtr<T>& o)
+{
+    return this->m_data == o.m_data;
+}
+
+template <typename T>
+inline bool SafePtr<T>::operator!=(const SafePtr<T>& o)
+{
+    return this->m_data != o.m_data;
+}
+
+template <typename T>
+inline bool SafePtr<T>::operator==(const std::nullptr_t nullPtr)
+{
+    return this->m_data == nullPtr;
+}
+
+template <typename T>
+inline bool SafePtr<T>::operator!=(const std::nullptr_t nullPtr)
+{
+    return this->m_data != nullPtr;
+}
+
+template <typename T>
+inline SafePtr<T>::operator T*()
+{
+    return m_data;
+}
 
 } // namespace wnd
-
-#include "safePtr.inl"

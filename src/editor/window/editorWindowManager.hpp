@@ -26,16 +26,10 @@
 #include <core/config.hpp>
 #include <core/common.hpp>
 
-namespace wnd
-{
-/**
- * @brief Function that checks if an OpenGL extension is supported
- * 
- * @param extList 
- * @param extension 
- * @return true 
- * @return false 
- */
-CURLY_API bool isExtensionSupported(const char* extList, const char* extension);
-
-} // namespace wnd
+#if defined(CF__CURLY_OS_WINDOWS)
+    #include "win32/editorWindowManagerPlatform.hpp"
+#elif defined(CF__CURLY_OS_LINUX)
+    #include "linux/editorWindowManagerPlatform.hpp"
+#else
+    #error Curly Engine has no support for this OS
+#endif

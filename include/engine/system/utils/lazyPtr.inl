@@ -1,7 +1,7 @@
 /********************************************************************************
  *                                                                              *
- * Curly Engine                                                                 *
- * Copyright (c) 2021-2024 Adrian Bedregal                                      *
+ * HSGIL - Handy Scalable Graphics Integration Library                          *
+ * Copyright (c) 2019-2024 Adrian Bedregal                                      *
  *                                                                              *
  * This software is provided 'as-is', without any express or implied            *
  * warranty. In no event will the authors be held liable for any damages        *
@@ -21,66 +21,80 @@
  *                                                                              *
  ********************************************************************************/
 
-#include "wmLazyPtr.hpp"
-
-#include "windowManager.hpp"
-
-namespace wnd
+namespace sys
 {
-WMLazyPtr::WMLazyPtr()
-    : m_wm {nullptr}
+template <typename T>
+inline LazyPtr<T>::LazyPtr(LazyPtr<T>&& o)
+    : m_data {o.m_data}
+{
+    o.m_data = nullptr;
+}
+
+template <typename T>
+inline LazyPtr<T>::LazyPtr()
+    : m_data {nullptr}
 {
 }
 
-WMLazyPtr::~WMLazyPtr()
+template <typename T>
+inline LazyPtr<T>::~LazyPtr()
 {
-    if(m_wm != nullptr)
+    if(m_data != nullptr)
     {
-        delete m_wm;
+        delete m_data;
     }
 }
 
-void WMLazyPtr::init(const cfg::uint32 index)
+template <typename T>
+template <typename... TArgs>
+inline void LazyPtr<T>::init(TArgs... args)
 {
-    if(m_wm == nullptr)
+    if(m_data == nullptr)
     {
-        m_wm = new WindowManager(index);
+        m_data = new T(args...);
     }
 }
 
-WindowManager& WMLazyPtr::operator*()
+template <typename T>
+inline T& LazyPtr<T>::operator*()
 {
-    return *m_wm;
+    return *m_data;
 }
 
-WindowManager* WMLazyPtr::operator->()
+template <typename T>
+inline T* LazyPtr<T>::operator->()
 {
-    return m_wm;
+    return m_data;
 }
 
-bool WMLazyPtr::operator==(const WMLazyPtr& o)
+template <typename T>
+inline bool LazyPtr<T>::operator==(const LazyPtr<T>& o)
 {
-    return this->m_wm == o.m_wm;
+    return this->m_data == o.m_data;
 }
 
-bool WMLazyPtr::operator!=(const WMLazyPtr& o)
+template <typename T>
+inline bool LazyPtr<T>::operator!=(const LazyPtr<T>& o)
 {
-    return this->m_wm != o.m_wm;
+    return this->m_data != o.m_data;
 }
 
-bool WMLazyPtr::operator==(const std::nullptr_t nullPtr)
+template <typename T>
+inline bool LazyPtr<T>::operator==(const std::nullptr_t nullPtr)
 {
-    return this->m_wm == nullPtr;
+    return this->m_data == nullPtr;
 }
 
-bool WMLazyPtr::operator!=(const std::nullptr_t nullPtr)
+template <typename T>
+inline bool LazyPtr<T>::operator!=(const std::nullptr_t nullPtr)
 {
-    return this->m_wm != nullPtr;
+    return this->m_data != nullPtr;
 }
 
-WMLazyPtr::operator WindowManager*()
+template <typename T>
+inline LazyPtr<T>::operator T*()
 {
-    return m_wm;
+    return m_data;
 }
 
-} // namespace wnd
+} // namespace sys

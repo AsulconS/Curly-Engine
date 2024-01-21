@@ -21,48 +21,36 @@
  *                                                                              *
  ********************************************************************************/
 
-#include "wUtils.hpp"
+#pragma once
 
-#include <cstring>
+#include <core/config.hpp>
+#include <core/common.hpp>
 
-namespace wnd
+namespace sys
 {
-bool isExtensionSupported(const char* extList, const char* extension)
+template <typename T>
+class SafePtr
 {
-	const char* start;
-	const char* where;
-    const char* terminator;
+public:
+    template <typename... TArgs>
+    SafePtr(TArgs... args);
+    SafePtr(SafePtr<T>&& o);
+    ~SafePtr();
 
-	where = strchr(extension, ' ');
-	if(where || *extension == '\0')
-    {
-	    return false;
-    }
+    T& operator*();
+    T* operator->();
+    bool operator==(const SafePtr<T>& o);
+    bool operator!=(const SafePtr<T>& o);
+    bool operator==(const std::nullptr_t nullPtr);
+    bool operator!=(const std::nullptr_t nullPtr);
+    operator T*();
 
-    start = extList;
-	while(true)
-    {
-	    where = strstr(start, extension);
+protected:
+    T* m_data;
 
-	    if(!where)
-        {
-	 	    break;
-        }
+    SafePtr(const SafePtr<T>& o) = delete;
+};
 
-        terminator = where + strlen(extension);
+} // namespace wnd
 
-        if(where == start || *(where - 1) == ' ')
-        {
-            if(*terminator == ' ' || *terminator == '\0' )
-            {
-                return true;
-            }
-	    }
-
-	    start = terminator;
-	}
-
-	return false;
-}
-
-} // namepace wnd
+#include "safePtr.inl"

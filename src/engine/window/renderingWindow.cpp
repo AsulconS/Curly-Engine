@@ -25,9 +25,10 @@
 
 #include <exception/window/windowException.hpp>
 
+#include <window/windowParams.hpp>
+
 #include <iostream>
 
-#include "windowParams.hpp"
 #include "windowManager.hpp"
 
 namespace wnd

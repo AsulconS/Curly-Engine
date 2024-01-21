@@ -26,28 +26,33 @@
 #include <core/config.hpp>
 #include <core/common.hpp>
 
-namespace wnd
+namespace sys
 {
-class WindowManager;
-
-class CURLY_API WMLazyPtr final
+template <typename T>
+class LazyPtr
 {
 public:
-    WMLazyPtr();
-    ~WMLazyPtr();
+    LazyPtr(LazyPtr<T>&& o);
+    LazyPtr();
+    ~LazyPtr();
 
-    void init(const cfg::uint32 t_index);
+    template <typename... TArgs>
+    void init(TArgs... args);
 
-    WindowManager& operator*();
-    WindowManager* operator->();
-    bool operator==(const WMLazyPtr& o);
-    bool operator!=(const WMLazyPtr& o);
+    T& operator*();
+    T* operator->();
+    bool operator==(const LazyPtr<T>& o);
+    bool operator!=(const LazyPtr<T>& o);
     bool operator==(const std::nullptr_t nullPtr);
     bool operator!=(const std::nullptr_t nullPtr);
-    operator WindowManager*();
+    operator T*();
 
 private:
-    WindowManager* m_wm;
+    T* m_data;
+
+    LazyPtr(const LazyPtr<T>& o) = delete;
 };
 
 } // namespace wnd
+
+#include "lazyPtr.inl"

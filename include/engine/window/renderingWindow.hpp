@@ -33,8 +33,6 @@
 
 namespace wnd
 {
-struct WindowParams;
-
 /**
  * @brief Rendering Window Class that handle a window for render of the program
  * 
@@ -127,7 +125,7 @@ private:
      * @param inputCode 
      * @param repeat 
      */
-    static void eventCallback(IWindow* window, InputEvent event, WindowParams* params);
+    static void eventCallback(IWindow* window, InputEvent event, struct WindowParams* params);
 };
 
 } // namespace wnd

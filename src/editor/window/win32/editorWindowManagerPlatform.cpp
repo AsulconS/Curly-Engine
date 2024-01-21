@@ -21,7 +21,7 @@
  *                                                                              *
  ********************************************************************************/
 
-#include "windowManagerPlatform.hpp"
+#include "editorWindowManagerPlatform.hpp"
 
 #include <window/inputBindings.hpp>
 
@@ -29,17 +29,17 @@
 
 namespace wnd
 {
-cfg::uint32 WindowManager::s_activeSessions  {0u};
-cfg::uint32 WindowManager::s_wmInstanceCount {0u};
-sys::LazyPtr<WindowManager> WindowManager::s_wmInstances[MAX_WINDOW_INSTANCES] {};
+cfg::uint32 EditorWindowManager::s_activeSessions  {0u};
+cfg::uint32 EditorWindowManager::s_wmInstanceCount {0u};
+sys::LazyPtr<EditorWindowManager> EditorWindowManager::s_wmInstances[MAX_WINDOW_INSTANCES] {};
 
-sys::SafePtr<Map<HWND, cfg::uint32>> WindowManager::s_hwndMap {};
+sys::SafePtr<Map<HWND, cfg::uint32>> EditorWindowManager::s_hwndMap {};
 
-WNDCLASSEXA WindowManager::s_appWndClass {};
-const char* WindowManager::s_appWndClassName {"CurlyBuiltApp"};
+WNDCLASSEXA EditorWindowManager::s_appWndClass {};
+const char* EditorWindowManager::s_appWndClassName {"CurlyApp"};
 
-PIXELFORMATDESCRIPTOR WindowManager::s_pfd {};
-const int WindowManager::s_attribs[ATTRIB_LIST_SIZE]
+PIXELFORMATDESCRIPTOR EditorWindowManager::s_pfd {};
+const int EditorWindowManager::s_attribs[ATTRIB_LIST_SIZE]
 {
     WGL_DRAW_TO_WINDOW_ARB  , GL_TRUE,
     WGL_SUPPORT_OPENGL_ARB  , GL_TRUE,
@@ -52,25 +52,25 @@ const int WindowManager::s_attribs[ATTRIB_LIST_SIZE]
     0
 };
 
-int WindowManager::s_mouseTrackCount {0};
-int WindowManager::s_keyPhysicStates[NUM_KEYS_SIZE] {};
+int EditorWindowManager::s_mouseTrackCount {0};
+int EditorWindowManager::s_keyPhysicStates[NUM_KEYS_SIZE] {};
 
-MSG WindowManager::s_msg {};
-HMODULE WindowManager::s_ogl32Module {nullptr};
-HINSTANCE WindowManager::s_procInstanceHandle {nullptr};
+MSG EditorWindowManager::s_msg {};
+HMODULE EditorWindowManager::s_ogl32Module {nullptr};
+HINSTANCE EditorWindowManager::s_procInstanceHandle {nullptr};
 
-bool WindowManager::s_vSyncCompat {true};
-bool WindowManager::s_attribCtxCompat {true};
-bool WindowManager::s_pixelFormatCompat {true};
+bool EditorWindowManager::s_vSyncCompat {true};
+bool EditorWindowManager::s_attribCtxCompat {true};
+bool EditorWindowManager::s_pixelFormatCompat {true};
 
-PFNWGLCHOOSEPIXELFORMATARBPROC WindowManager::wglChoosePixelFormatARB {nullptr};
-PFNWGLGETEXTENSIONSSTRINGARBPROC WindowManager::wglGetExtensionsStringARB {nullptr};
-PFNWGLCREATECONTEXTATTRIBSARBPROC WindowManager::wglCreateContextAttribsARB {nullptr};
+PFNWGLCHOOSEPIXELFORMATARBPROC EditorWindowManager::wglChoosePixelFormatARB {nullptr};
+PFNWGLGETEXTENSIONSSTRINGARBPROC EditorWindowManager::wglGetExtensionsStringARB {nullptr};
+PFNWGLCREATECONTEXTATTRIBSARBPROC EditorWindowManager::wglCreateContextAttribsARB {nullptr};
 
-PFNWGLSWAPINTERVALEXTPROC WindowManager::wglSwapIntervalEXT {nullptr};
-PFNWGLGETSWAPINTERVALEXTPROC WindowManager::wglGetSwapIntervalEXT {nullptr};
+PFNWGLSWAPINTERVALEXTPROC EditorWindowManager::wglSwapIntervalEXT {nullptr};
+PFNWGLGETSWAPINTERVALEXTPROC EditorWindowManager::wglGetSwapIntervalEXT {nullptr};
 
-WindowManager* WindowManager::createInstance()
+EditorWindowManager* EditorWindowManager::createInstance()
 {
     if(!s_wmInstanceCount)
     {
@@ -96,7 +96,7 @@ WindowManager* WindowManager::createInstance()
     return s_wmInstances[s_wmInstanceCount++];
 }
 
-WindowManager* WindowManager::getInstance(const cfg::uint32 index)
+EditorWindowManager* EditorWindowManager::getInstance(const cfg::uint32 index)
 {
     if(index > 0 && index < (MAX_WINDOW_INSTANCES - 1))
     {
@@ -112,12 +112,12 @@ WindowManager* WindowManager::getInstance(const cfg::uint32 index)
     return nullptr;
 }
 
-bool WindowManager::isActive()
+bool EditorWindowManager::isActive()
 {
     return m_active;
 }
 
-WindowRectParams WindowManager::createRenderingWindow(const char* title, int x, int y, int width, int height, WindowStyle style)
+WindowRectParams EditorWindowManager::createRenderingWindow(const char* title, int x, int y, int width, int height, WindowStyle style)
 {
     if(!m_active)
     {
@@ -179,7 +179,7 @@ WindowRectParams WindowManager::createRenderingWindow(const char* title, int x, 
     return rectParams;
 }
 
-void WindowManager::destroyWindow()
+void EditorWindowManager::destroyWindow()
 {
     if(m_active)
     {
@@ -188,13 +188,13 @@ void WindowManager::destroyWindow()
     }
 }
 
-void WindowManager::setEventCallbackFunction(IWindow* t_windowCallbackInstance, EventCallbackFunction tf_eventCallbackFunction)
+void EditorWindowManager::setEventCallbackFunction(IWindow* t_windowCallbackInstance, EventCallbackFunction tf_eventCallbackFunction)
 {
     m_windowCallbackInstance = t_windowCallbackInstance;
     mf_eventCallbackFunction = tf_eventCallbackFunction;
 }
 
-void WindowManager::pollEvents()
+void EditorWindowManager::pollEvents()
 {
     if(PeekMessageW(&s_msg, nullptr, 0, 0, PM_REMOVE))
     {
@@ -203,7 +203,7 @@ void WindowManager::pollEvents()
     }
 }
 
-void WindowManager::swapBuffers()
+void EditorWindowManager::swapBuffers()
 {
     if(m_active)
     {
@@ -215,7 +215,7 @@ void WindowManager::swapBuffers()
     }
 }
 
-WindowManager::WindowManager(const cfg::uint32 t_index)
+EditorWindowManager::EditorWindowManager(const cfg::uint32 t_index)
     : m_active                   {false},
       m_index                    {t_index},
       m_windowHandle             {nullptr},
@@ -224,11 +224,11 @@ WindowManager::WindowManager(const cfg::uint32 t_index)
 {
 }
 
-WindowManager::~WindowManager()
+EditorWindowManager::~EditorWindowManager()
 {
 }
 
-void WindowManager::registerAppWndClass()
+void EditorWindowManager::registerAppWndClass()
 {
     s_appWndClass.cbSize        = sizeof(WNDCLASSEXA);
     s_appWndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -249,7 +249,7 @@ void WindowManager::registerAppWndClass()
     }
 }
 
-void WindowManager::loadGLExtensions()
+void EditorWindowManager::loadGLExtensions()
 {
     WNDCLASSEXA dWindowClass;
     dWindowClass.cbSize         = sizeof(WNDCLASSEXA);
@@ -382,18 +382,18 @@ void WindowManager::loadGLExtensions()
     DestroyWindow(dWindow);
 }
 
-void WindowManager::warning(const char* msg)
+void EditorWindowManager::warning(const char* msg)
 {
     MessageBoxA(nullptr, msg, "Warning", MB_OK | MB_ICONWARNING);
 }
 
-void WindowManager::fatalError(const char* msg)
+void EditorWindowManager::fatalError(const char* msg)
 {
     MessageBoxA(nullptr, msg, "Fatal Error", MB_OK | MB_ICONERROR);
     exit(EXIT_FAILURE);
 }
 
-bool WindowManager::isInvalidFuncAddress(void* funcAddress)
+bool EditorWindowManager::isInvalidFuncAddress(void* funcAddress)
 {
     return  (funcAddress == 0) ||
             (funcAddress == (void*)0x1) ||
@@ -402,7 +402,7 @@ bool WindowManager::isInvalidFuncAddress(void* funcAddress)
             (funcAddress == (void*)-1);
 }
 
-bool WindowManager::isExtensionSupported(const char* extList, const char* extension)
+bool EditorWindowManager::isExtensionSupported(const char* extList, const char* extension)
 {
 	const char* start;
 	const char* where;
@@ -440,7 +440,7 @@ bool WindowManager::isExtensionSupported(const char* extList, const char* extens
 	return false;
 }
 
-void* WindowManager::CurlyGetProcAddress(const char* name)
+void* EditorWindowManager::CurlyGetProcAddress(const char* name)
 {
     void* gpa = (void*)wglGetProcAddress(name);
     if (isInvalidFuncAddress(gpa))
@@ -454,13 +454,13 @@ void* WindowManager::CurlyGetProcAddress(const char* name)
     return gpa;
 }
 
-LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK EditorWindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch(uMsg)
     {
         case WM_CREATE:
             {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 HDC& hdc = windowInstance->m_deviceContextHandle;
                 hdc = GetDC(hWnd);
 
@@ -511,7 +511,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
         case WM_DESTROY:
             {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 --s_activeSessions;
                 windowInstance->m_active = false;
                 wglMakeCurrent(windowInstance->m_deviceContextHandle, nullptr);
@@ -525,7 +525,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
         case WM_KEYDOWN:
             {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 KeyboardParams params;
                 params.code = static_cast<InputCode>(wParam);
                 windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, KEY_PRESSED, &params);
@@ -536,7 +536,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         case WM_KEYUP:
             {
                 s_keyPhysicStates[wParam] = 0;
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 KeyboardParams params;
                 params.code = static_cast<InputCode>(wParam);
                 windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, KEY_RELEASED, &params);
@@ -545,7 +545,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
         case WM_KILLFOCUS:
             {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 for(cfg::uint32 i = 0; i < NUM_KEYS_SIZE; ++i)
                 {
                     if(s_keyPhysicStates[i])
@@ -569,7 +569,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             {
                 if(!(s_mouseTrackCount++))
                     SetCapture(hWnd);
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 MouseParams params;
                 params.code = InputCode::MOUSE_BUTTON_LEFT;
                 windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_PRESSED, &params);
@@ -578,7 +578,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
         case WM_LBUTTONUP:
             {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 MouseParams params;
                 params.code = InputCode::MOUSE_BUTTON_LEFT;
                 windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &params);
@@ -591,7 +591,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             {
                 if(!(s_mouseTrackCount++))
                     SetCapture(hWnd);
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 MouseParams params;
                 params.code = InputCode::MOUSE_BUTTON_RIGHT;
                 windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_PRESSED, &params);
@@ -600,7 +600,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
         case WM_RBUTTONUP:
             {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 MouseParams params;
                 params.code = InputCode::MOUSE_BUTTON_RIGHT;
                 windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &params);
@@ -613,7 +613,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             {
                 if(!(s_mouseTrackCount++))
                     SetCapture(hWnd);
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 MouseParams params;
                 params.code = InputCode::MOUSE_BUTTON_MIDDLE;
                 windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_PRESSED, &params);
@@ -622,7 +622,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
         case WM_MBUTTONUP:
             {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 MouseParams params;
                 params.code = InputCode::MOUSE_BUTTON_MIDDLE;
                 windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &params);
@@ -635,7 +635,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             {
                 if(!(s_mouseTrackCount++))
                     SetCapture(hWnd);
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 MouseParams params;
                 params.code = InputCode::MOUSE_BUTTON_04;
                 windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_PRESSED, &params);
@@ -644,7 +644,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
         case WM_XBUTTONUP:
             {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 MouseParams params;
                 params.code = InputCode::MOUSE_BUTTON_04;
                 windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &params);
@@ -655,7 +655,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
         case WM_MOUSEMOVE:
             {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+                EditorWindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 MouseParams params;
                 params.pos.x = GET_X_LPARAM(lParam);
                 params.pos.y = GET_Y_LPARAM(lParam);

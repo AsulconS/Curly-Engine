@@ -31,8 +31,6 @@
 
 namespace wnd
 {
-class WindowManager;
-
 /**
  * @brief Window Class that handle a Window of the program
  * 
@@ -121,7 +119,7 @@ protected:
     bool m_ready;
 
     InputHandler* m_inputHandler;
-    WindowManager* m_windowManager;
+    class WindowManager* m_windowManager;
 };
 
 } // namespace wnd
