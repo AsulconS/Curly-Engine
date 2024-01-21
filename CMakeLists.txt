@@ -25,7 +25,7 @@ set(CURLY_GLX_CTX_VERSION_MINOR 6 CACHE STRING "Specifies Forced GLX Version Min
 # Set C++20 as the standard
 set(CMAKE_CXX_STANDARD 20)
 
-set(CURLY_LIB_NAME curly-runtime)
+set(CURLY_RUNTIME_LIB_NAME curly-runtime)
 
 # Set Target Platform
 if(WIN32)
@@ -71,15 +71,15 @@ if(CURLY_FORCE_GLX_CTX_VERSION)
 endif()
 
 # Build library modules
-add_library(${CURLY_LIB_NAME} SHARED ${CURLY_RUNTIME_SOURCES})
-set_target_properties(${CURLY_LIB_NAME}
+add_library(${CURLY_RUNTIME_LIB_NAME} SHARED ${CURLY_RUNTIME_SOURCES})
+set_target_properties(${CURLY_RUNTIME_LIB_NAME}
 PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${SO_VERSION}
 )
 
 # Set Compile Definitions
-target_compile_definitions(${CURLY_LIB_NAME}
+target_compile_definitions(${CURLY_RUNTIME_LIB_NAME}
 PUBLIC
     GLAD_API_CALL_EXPORT
     C__CURLY_API_CALL_EXPORT
@@ -91,16 +91,16 @@ PRIVATE
 )
 
 # Add Include Directories and Link
-target_include_directories(${CURLY_LIB_NAME} PRIVATE include)
+target_include_directories(${CURLY_RUNTIME_LIB_NAME} PRIVATE include/engine)
 if(WIN32)
-    target_link_libraries(${CURLY_LIB_NAME} opengl32)
+    target_link_libraries(${CURLY_RUNTIME_LIB_NAME} opengl32)
 else()
-    target_link_libraries(${CURLY_LIB_NAME} GL X11)
+    target_link_libraries(${CURLY_RUNTIME_LIB_NAME} GL X11)
 endif()
 
 # Build main runtime module
 add_executable(curly src/editor/app.cpp ${OPT_RES_OBJ})
-add_dependencies(curly ${CURLY_LIB_NAME})
+add_dependencies(curly ${CURLY_RUNTIME_LIB_NAME})
 target_compile_definitions(curly
 PUBLIC
     GLAD_API_CALL_EXPORT
@@ -109,8 +109,10 @@ PRIVATE
     __STDC_LIB_EXT1__
 )
 target_include_directories(curly PRIVATE include)
+target_include_directories(curly PRIVATE include/engine)
+target_include_directories(curly PRIVATE include/editor)
 if(WIN32)
-    target_link_libraries(curly LINK_PUBLIC ${CURLY_LIB_NAME} opengl32)
+    target_link_libraries(curly LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME} opengl32)
 else()
-    target_link_libraries(curly LINK_PUBLIC ${CURLY_LIB_NAME})
+    target_link_libraries(curly LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME})
 endif()

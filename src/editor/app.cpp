@@ -1,7 +1,7 @@
-#include <math.hpp>
-#include <system.hpp>
-#include <window.hpp>
-#include <graphics.hpp>
+#include <engine/math.hpp>
+#include <engine/system.hpp>
+#include <engine/window.hpp>
+#include <engine/graphics.hpp>
 
 #include "../engine/core/GL/gl.h"
 
@@ -17,7 +17,7 @@ int main()
 
     wnd::InputHandler inputHandler;
     window.setInputHandler(inputHandler);
-    while(window.isActive())
+    while (window.isActive())
     {
         window.pollEvents();
         if (inputHandler.onKeyTriggered(wnd::KEY_ESCAPE))
