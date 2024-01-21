@@ -43,7 +43,7 @@ endif()
 
 # Get Source Files
 set(CURLY_RUNTIME_SOURCES
-    src/engine/core/glad/gl.c
+    src/engine/core/GL/gl.c
     src/engine/system/timer.cpp
     src/engine/system/${CURLY_PLATFORM}/timerPlatform.cpp
     src/engine/graphics/gUtils.cpp

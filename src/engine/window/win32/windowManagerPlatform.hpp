@@ -26,8 +26,8 @@
 #include <Windows.h>
 #include <Windowsx.h>
 
-#include <core/glad/gl.h>
-#include <external/GL/wglext.h>
+#include "../../core/GL/gl.h"
+#include "../../core/GL/wglext.h"
 
 #include <core/config.hpp>
 #include <core/common.hpp>

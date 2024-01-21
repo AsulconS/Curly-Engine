@@ -24,7 +24,8 @@
 #include <graphics/gUtils.hpp>
 
 #define  STB_IMAGE_IMPLEMENTATION
-#include <external/stb_image.h>
+#include "../core/stb_image.h"
+#include "../core/GL/gl.h"
 
 #include <fstream>
 #include <iostream>

@@ -25,6 +25,8 @@
 
 #include <graphics/gUtils.hpp>
 
+#include "../core/GL/gl.h"
+
 namespace gfx
 {
 Mesh::Mesh()

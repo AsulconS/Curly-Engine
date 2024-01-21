@@ -3,6 +3,8 @@
 #include <window.hpp>
 #include <graphics.hpp>
 
+#include "../engine/core/GL/gl.h"
+
 #include <iostream>
 
 int main()

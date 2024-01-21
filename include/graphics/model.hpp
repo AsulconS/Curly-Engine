@@ -23,8 +23,6 @@
 
 #pragma once
 
-#include <external/glm/glm.hpp>
-
 #include <core/config.hpp>
 #include <core/common.hpp>
 

@@ -31,12 +31,14 @@
 #include <sstream>
 #include <iostream>
 
+#include "../core/GL/gl.h"
+
 namespace gfx
 {
 Shader::Shader(const std::string& t_name)
 {
-    std::string vsSrc {loadShaderFromFile(GL_VERTEX_SHADER, "shaders/" + t_name)};
-    std::string fsSrc {loadShaderFromFile(GL_FRAGMENT_SHADER, "shaders/" + t_name)};
+    std::string vsSrc {loadShaderFromFile(ShaderType::VERTEX_SHADER, "shaders/" + t_name)};
+    std::string fsSrc {loadShaderFromFile(ShaderType::FRAGMENT_SHADER, "shaders/" + t_name)};
 
 #if defined(C__CURLY_FORCE_GLX_CTX_VERSION)
     constexpr int glxCtxMajorVersion{ C__CURLY_GLX_CTX_VERSION_MAJOR };
@@ -72,8 +74,8 @@ Shader::Shader(const std::string& t_name)
     }
 #endif
 
-    cfg::uint32 vertexShader {createShader(GL_VERTEX_SHADER, vsSrc)};
-    cfg::uint32 fragmentShader {createShader(GL_FRAGMENT_SHADER, fsSrc)};
+    cfg::uint32 vertexShader {createShader(ShaderType::VERTEX_SHADER, vsSrc)};
+    cfg::uint32 fragmentShader {createShader(ShaderType::FRAGMENT_SHADER, fsSrc)};
 
     m_program = glCreateProgram();
     glAttachShader(m_program, vertexShader);
@@ -88,8 +90,8 @@ Shader::Shader(const std::string& t_name)
 
 Shader::Shader(const std::string& vsSrc, const std::string& fsSrc)
 {
-    cfg::uint32 vertexShader {createShader(GL_VERTEX_SHADER, vsSrc)};
-    cfg::uint32 fragmentShader {createShader(GL_FRAGMENT_SHADER, fsSrc)};
+    cfg::uint32 vertexShader {createShader(ShaderType::VERTEX_SHADER, vsSrc)};
+    cfg::uint32 fragmentShader {createShader(ShaderType::FRAGMENT_SHADER, fsSrc)};
 
     m_program = glCreateProgram();
     glAttachShader(m_program, vertexShader);
@@ -167,7 +169,7 @@ void Shader::setMat4(const std::string& name, const glm::mat4& m0)
     glUniformMatrix4fv(glGetUniformLocation(m_program, name.c_str()), 1, GL_FALSE, glm::value_ptr(m0));
 }
 
-cfg::uint32 Shader::createShader(const GLenum type, const std::string& src)
+cfg::uint32 Shader::createShader(const ShaderType type, const std::string& src)
 {
     cfg::uint32 shader = glCreateShader(type);
     const char* shaderSrc {src.c_str()};
@@ -180,14 +182,14 @@ cfg::uint32 Shader::createShader(const GLenum type, const std::string& src)
     return shader;
 }
 
-std::string Shader::loadShaderFromFile(const GLenum type, const std::string& path)
+std::string Shader::loadShaderFromFile(const ShaderType type, const std::string& path)
 {
     std::ifstream shaderFile;
     std::stringstream shaderStrStream;
 
     shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-    std::string extension {(type == GL_VERTEX_SHADER) ? ".vs" : ".fs"};
+    std::string extension {(type == ShaderType::VERTEX_SHADER) ? ".vs" : ".fs"};
     try
     {
         shaderFile.open(path + extension);

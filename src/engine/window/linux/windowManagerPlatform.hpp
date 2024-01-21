@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <core/glad/gl.h>
+#include <core/GL/gl.h>
 
 #include <core/config.hpp>
 #include <core/common.hpp>
