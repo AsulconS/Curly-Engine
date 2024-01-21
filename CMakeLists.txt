@@ -25,7 +25,7 @@ set(CURLY_GLX_CTX_VERSION_MINOR 6 CACHE STRING "Specifies Forced GLX Version Min
 # Set C++20 as the standard
 set(CMAKE_CXX_STANDARD 20)
 
-set(CURLY_LIB_NAME curly_lib)
+set(CURLY_LIB_NAME curly-runtime)
 
 # Set Target Platform
 if(WIN32)
@@ -42,28 +42,28 @@ else()
 endif()
 
 # Get Source Files
-set(CURLY_SOURCES
-    src/core/glad/gl.c
-    src/system/timer.cpp
-    src/system/${CURLY_PLATFORM}/timerPlatform.cpp
-    src/graphics/gUtils.cpp
-    src/graphics/mesh.cpp
-    src/graphics/model.cpp
-    src/graphics/shader.cpp
-    src/math/mUtils.cpp
-    src/math/vecArithmetic.cpp
-    src/window/inputHandler.cpp
-    src/window/renderingWindow.cpp
-    src/window/${CURLY_PLATFORM}/windowManagerPlatform.cpp
-    src/window/${CURLY_PLATFORM}/compatUtilsPlatform.cpp
-    src/window/wmLazyPtr.cpp
-    src/window/wUtils.cpp
+set(CURLY_RUNTIME_SOURCES
+    src/engine/core/glad/gl.c
+    src/engine/system/timer.cpp
+    src/engine/system/${CURLY_PLATFORM}/timerPlatform.cpp
+    src/engine/graphics/gUtils.cpp
+    src/engine/graphics/mesh.cpp
+    src/engine/graphics/model.cpp
+    src/engine/graphics/shader.cpp
+    src/engine/math/mUtils.cpp
+    src/engine/math/vecArithmetic.cpp
+    src/engine/window/inputHandler.cpp
+    src/engine/window/renderingWindow.cpp
+    src/engine/window/${CURLY_PLATFORM}/windowManagerPlatform.cpp
+    src/engine/window/${CURLY_PLATFORM}/compatUtilsPlatform.cpp
+    src/engine/window/wmLazyPtr.cpp
+    src/engine/window/wUtils.cpp
 )
 
 # Set Dynamic Compile Definitions
-set(CURLY_COMPILE_DEFINITIONS C__CURLY_COMPILING)
+set(CURLY_BUILD_DEFINITIONS)
 if(CURLY_FORCE_GLX_CTX_VERSION)
-    set(CURLY_COMPILE_DEFINITIONS ${CURLY_COMPILE_DEFINITIONS}
+    set(CURLY_BUILD_DEFINITIONS ${CURLY_BUILD_DEFINITIONS}
         C__CURLY_FORCE_GLX_CTX_VERSION
         C__CURLY_GLX_CTX_VERSION_MAJOR=${CURLY_GLX_CTX_VERSION_MAJOR}
         C__CURLY_GLX_CTX_VERSION_MINOR=${CURLY_GLX_CTX_VERSION_MINOR}
@@ -71,7 +71,7 @@ if(CURLY_FORCE_GLX_CTX_VERSION)
 endif()
 
 # Build library modules
-add_library(${CURLY_LIB_NAME} STATIC ${CURLY_SOURCES})
+add_library(${CURLY_LIB_NAME} SHARED ${CURLY_RUNTIME_SOURCES})
 set_target_properties(${CURLY_LIB_NAME}
 PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -80,9 +80,14 @@ PROPERTIES
 
 # Set Compile Definitions
 target_compile_definitions(${CURLY_LIB_NAME}
+PUBLIC
+    GLAD_API_CALL_EXPORT
+    C__CURLY_API_CALL_EXPORT
 PRIVATE
     __STDC_LIB_EXT1__
-    ${CURLY_COMPILE_DEFINITIONS}
+    GLAD_API_CALL_EXPORT_BUILD
+    C__CURLY_API_CALL_EXPORT_BUILD
+    ${CURLY_BUILD_DEFINITIONS}
 )
 
 # Add Include Directories and Link
@@ -95,6 +100,14 @@ endif()
 
 # Build main runtime module
 add_executable(curly src/main.cpp ${OPT_RES_OBJ})
+add_dependencies(curly ${CURLY_LIB_NAME})
+target_compile_definitions(curly
+PUBLIC
+    GLAD_API_CALL_EXPORT
+    C__CURLY_API_CALL_EXPORT
+PRIVATE
+    __STDC_LIB_EXT1__
+)
 target_include_directories(curly PRIVATE include)
 if(WIN32)
     target_link_libraries(curly LINK_PUBLIC ${CURLY_LIB_NAME} opengl32)

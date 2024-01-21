@@ -44,8 +44,8 @@
     #error Curly Engine has no support for this OS
 #endif
 
-#if defined(C__CURLY_SHARED_LIB)
-    #if defined(C__CURLY_COMPILING)
+#if defined(C__CURLY_API_CALL_EXPORT)
+    #if defined(C__CURLY_API_CALL_EXPORT_BUILD)
         #define CURLY_API CF__CURLY_DLL_EXPORT
     #else
         #define CURLY_API CF__CURLY_DLL_IMPORT

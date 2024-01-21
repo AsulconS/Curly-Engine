@@ -116,7 +116,7 @@ private:
     static bool s_attribCtxCompat;
     static bool s_pixelFormatCompat;
 
-    static void registerAppGlobalClass();
+    static void registerAppWndClass();
     static void loadGLExtensions();
     static void warning(const char* msg);
     static void fatalError(const char* msg);

@@ -40,7 +40,7 @@ WMLazyPtr WindowManager::s_wmInstances[MAX_WINDOW_INSTANCES] {};
 SafePtr<Map<HWND, cfg::uint32>> WindowManager::s_hwndMap {};
 
 WNDCLASSEXA WindowManager::s_appWndClass {};
-const char* WindowManager::s_appWndClassName {"GLDCC"};
+const char* WindowManager::s_appWndClassName {"CurlyApp"};
 
 PIXELFORMATDESCRIPTOR WindowManager::s_pfd {};
 const int WindowManager::s_attribs[ATTRIB_LIST_SIZE]
