@@ -14,6 +14,24 @@
 # Curly Engine
 ---
 
+## IMPORTANT NOTE
+
+Curly Engine is currently being recovered from a Legacy `Manjaro 18.1.5 "Juhraya"` version. Currently working on multi-platform support since it got broken on Forward Rendering Graphics Pipeline Big Update.
+
 ## What is Curly Engine?
 
-Curly Engine is a game engine written in C++ designed for allowing a simple and block-customizable core dependencies to allow shipping be an easy and lightweight experience. It uses as core the graphics library HSGIL and implements its own UI flow. Its on an early stage and was used to launch some simple prototype examples/projects like the ECS-based RPG _The Rise of Hullstorm_
+Curly Engine is a game engine written in C++ designed to allow simple and block-customizable core dependencies to allow shipping to be an easy and lightweight experience. It uses as core the graphics library HSGIL and implements its UI flow. It was in an early stage and was used to launch some simple prototype examples/projects like the ECS-based RPG _The Rise of Hullstorm_.
+
+## History/Legacy
+
+### Curly Engine 2019 Early Stage:
+
+[![Curly2019](https://img.youtube.com/vi/x8uVRjqBVvM/0.jpg)](https://www.youtube.com/watch?v=x8uVRjqBVvM)
+
+***C++ Videogame - CS UNSA 2019 - https://www.youtube.com/watch?v=x8uVRjqBVvM***
+
+### Curly Engine 2021 Early Stage
+
+[![Curly2021](https://img.youtube.com/vi/x4T5kCNi0G8/0.jpg)](https://www.youtube.com/watch?v=x4T5kCNi0G8)
+
+***The Rise of Hullstorm - Curly Engine Early Test - https://www.youtube.com/watch?v=x4T5kCNi0G8***
