@@ -32,6 +32,6 @@ Curly Engine is a game engine written in C++ designed to allow simple and block-
 
 ### Curly Engine 2021 Early Stage
 
-[![Curly2021](https://img.youtube.com/vi/x4T5kCNi0G8/0.jpg)](https://www.youtube.com/watch?v=x4T5kCNi0G8)
+[![troh](https://github.com/AsulconS/Curly-Engine/assets/42551197/b46bad25-9074-428f-8d2c-5b28ac60a4a4)](https://www.youtube.com/watch?v=x4T5kCNi0G8)
 
 ***The Rise of Hullstorm - Curly Engine Early Test - https://www.youtube.com/watch?v=x4T5kCNi0G8***
