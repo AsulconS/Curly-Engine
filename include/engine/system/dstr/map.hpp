@@ -23,13 +23,13 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
-#include <system/utility.hpp>
-#include <system/dstr/stack.hpp>
+#include <engine/system/utility.hpp>
+#include <engine/system/dstr/stack.hpp>
 
-#include <exception/system/dstrException.hpp>
+#include <engine/exception/system/dstrException.hpp>
 
 #define CURLY_CONST_RED true
 #define CURLY_CONST_BLACK false
@@ -185,7 +185,7 @@ private:
 
 } // namespace sys
 
-#include <system/dstr/map.inl>
+#include <engine/system/dstr/map.inl>
 
 #undef CURLY_CONST_RED
 #undef CURLY_CONST_BLACK

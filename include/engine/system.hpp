@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <core/config.hpp>
+#include <engine/core/config.hpp>
 
-#include <system/time.hpp>
-#include <system/timer.hpp>
-#include <system/utility.hpp>
+#include <engine/system/time.hpp>
+#include <engine/system/timer.hpp>
+#include <engine/system/utility.hpp>

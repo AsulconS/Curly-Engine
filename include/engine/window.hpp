@@ -23,11 +23,11 @@
 
 #pragma once
 
-#include <core/config.hpp>
+#include <engine/core/config.hpp>
 
-#include <window/inputEvents.hpp>
-#include <window/inputBindings.hpp>
-#include <window/inputHandler.hpp>
+#include <engine/window/inputEvents.hpp>
+#include <engine/window/inputBindings.hpp>
+#include <engine/window/inputHandler.hpp>
 
-#include <window/iWindow.hpp>
-#include <window/renderingWindow.hpp>
+#include <engine/window/iWindow.hpp>
+#include <engine/window/renderingWindow.hpp>

@@ -29,19 +29,19 @@
 #include "../../core/GL/gl.h"
 #include "../../core/GL/wglext.h"
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
-#include <system/utils/lazyPtr.hpp>
-#include <system/utils/safePtr.hpp>
+#include <engine/system/utils/lazyPtr.hpp>
+#include <engine/system/utils/safePtr.hpp>
 
-//#include <system/dstr/map.hpp>
+//#include <engine/system/dstr/map.hpp>
 #include <map>
 #define Map std::map
 
-#include <window/inputEvents.hpp>
-#include <window/windowParams.hpp>
-#include <window/customization.hpp>
+#include <engine/window/inputEvents.hpp>
+#include <engine/window/windowParams.hpp>
+#include <engine/window/customization.hpp>
 
 #define NUM_KEYS_SIZE 256u
 #define ATTRIB_LIST_SIZE 17u

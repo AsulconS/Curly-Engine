@@ -21,19 +21,16 @@
  *                                                                              *
  ********************************************************************************/
 
-#include <engine/window/compatUtils.hpp>
+#pragma once
 
-#include "windowManagerPlatform.hpp"
+#include <editor/core/config.hpp>
 
-namespace wnd
-{
-namespace compat
-{
-void forceGlxContextToVersion(const int major, const int minor)
-{
-    WindowManager::internalSetGlxContextVersion(major, minor);
-}
+#include <engine/core/common.hpp>
 
-} // namespace compat
-
-} // namespace wnd
+#if defined(CF__CURLY_OS_WINDOWS)
+    #include "win32/windowManagerPlatform.hpp"
+#elif defined(CF__CURLY_OS_LINUX)
+    #include "linux/windowManagerPlatform.hpp"
+#else
+    #error Curly Engine has no support for this OS
+#endif

@@ -21,7 +21,7 @@
  *                                                                              *
  ********************************************************************************/
 
-#include <math/vecArithmetic.hpp>
+#include <engine/math/vecArithmetic.hpp>
 
 #include <cmath>
 

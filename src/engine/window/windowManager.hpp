@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
 #if defined(CF__CURLY_OS_WINDOWS)
     #include "win32/windowManagerPlatform.hpp"

@@ -29,19 +29,20 @@
 #include "../../../engine/core/GL/gl.h"
 #include "../../../engine/core/GL/wglext.h"
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <editor/core/config.hpp>
 
-#include <system/utils/lazyPtr.hpp>
-#include <system/utils/safePtr.hpp>
+#include <engine/core/common.hpp>
 
-//#include <system/dstr/map.hpp>
+#include <engine/system/utils/lazyPtr.hpp>
+#include <engine/system/utils/safePtr.hpp>
+
+//#include <engine/system/dstr/map.hpp>
 #include <map>
 #define Map std::map
 
-#include <window/inputEvents.hpp>
-#include <window/windowParams.hpp>
-#include <window/customization.hpp>
+#include <engine/window/inputEvents.hpp>
+#include <engine/window/windowParams.hpp>
+#include <engine/window/customization.hpp>
 
 #define NUM_KEYS_SIZE 256u
 #define ATTRIB_LIST_SIZE 17u
@@ -53,16 +54,16 @@ class IWindow;
 
 using EventCallbackFunction = void (*)(IWindow*, InputEvent, WindowParams*);
 
-class EditorWindowManager final
+class WindowManager final
 {
-    friend class sys::LazyPtr<class EditorWindowManager>;
+    friend class sys::LazyPtr<class WindowManager>;
 
 public:
-    static EditorWindowManager* createInstance();
-    static EditorWindowManager* getInstance(const cfg::uint32 index);
+    static WindowManager* createInstance();
+    static WindowManager* getInstance(const cfg::uint32 index);
 
     bool isActive();
-    WindowRectParams createRenderingWindow(const char* title, int x, int y, int width, int height, WindowStyle style);
+    WindowRectParams createEditorWindow(const char* title, int x, int y, int width, int height, WindowStyle style);
     void destroyWindow();
 
     void setEventCallbackFunction(IWindow* t_windowCallbackInstance, EventCallbackFunction tf_eventCallbackFunction);
@@ -84,14 +85,14 @@ private:
 
     /* Privated constructor and destructor */
 
-    EditorWindowManager(const cfg::uint32 t_index);
-    ~EditorWindowManager();
+    WindowManager(const cfg::uint32 t_index);
+    ~WindowManager();
 
     /* Static Instances */
 
     static cfg::uint32 s_activeSessions;
     static cfg::uint32 s_wmInstanceCount;
-    static sys::LazyPtr<EditorWindowManager> s_wmInstances[MAX_WINDOW_INSTANCES];
+    static sys::LazyPtr<WindowManager> s_wmInstances[MAX_WINDOW_INSTANCES];
 
     /**
      * @brief   Window Hash Table <Window Handler, Instance ID>
@@ -136,10 +137,10 @@ private:
 
     /* Deleted Constructors and assignment */
 
-    EditorWindowManager(const EditorWindowManager&) = delete;
-    EditorWindowManager(EditorWindowManager&&) = delete;
+    WindowManager(const WindowManager&) = delete;
+    WindowManager(WindowManager&&) = delete;
 
-    EditorWindowManager& operator=(const EditorWindowManager&) = delete;
+    WindowManager& operator=(const WindowManager&) = delete;
 };
 
 } // namespace wnd

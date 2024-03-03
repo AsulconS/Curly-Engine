@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
 namespace wnd
 {

@@ -21,9 +21,9 @@
  *                                                                              *
  ********************************************************************************/
 
-#include <graphics/shader.hpp>
+#include <engine/graphics/shader.hpp>
 
-#include <exception/graphics/graphicsException.hpp>
+#include <engine/exception/graphics/graphicsException.hpp>
 
 #include <cctype>
 #include <string>

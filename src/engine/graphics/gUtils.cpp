@@ -21,7 +21,7 @@
  *                                                                              *
  ********************************************************************************/
 
-#include <graphics/gUtils.hpp>
+#include <engine/graphics/gUtils.hpp>
 
 #define  STB_IMAGE_IMPLEMENTATION
 #include "../core/stb_image.h"

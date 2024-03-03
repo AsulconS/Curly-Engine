@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
 namespace sys
 {
@@ -311,4 +311,4 @@ Time& operator/=(Time& lhs, cfg::int64 rhs);
 
 } // namespace sys
 
-#include <system/time.inl>
+#include <engine/system/time.inl>

@@ -23,13 +23,5 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
-
-#if defined(CF__CURLY_OS_WINDOWS)
-    #include "win32/editorWindowManagerPlatform.hpp"
-#elif defined(CF__CURLY_OS_LINUX)
-    #include "linux/editorWindowManagerPlatform.hpp"
-#else
-    #error Curly Engine has no support for this OS
-#endif
+#define IDI_CURLYICON 101
+#define IDI_CURLYICONSM 102

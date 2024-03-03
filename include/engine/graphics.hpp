@@ -23,9 +23,9 @@
 
 #pragma once
 
-#include <core/config.hpp>
+#include <engine/core/config.hpp>
 
-#include <graphics/shader.hpp>
-#include <graphics/gUtils.hpp>
-#include <graphics/mesh.hpp>
-#include <graphics/model.hpp>
+#include <engine/graphics/shader.hpp>
+#include <engine/graphics/gUtils.hpp>
+#include <engine/graphics/mesh.hpp>
+#include <engine/graphics/model.hpp>

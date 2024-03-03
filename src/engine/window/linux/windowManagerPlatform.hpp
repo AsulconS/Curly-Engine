@@ -23,23 +23,23 @@
 
 #pragma once
 
-#include <core/GL/gl.h>
+#include <engine/core/GL/gl.h>
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
-#include <system/utils/lazyPtr.hpp>
-#include <system/utils/safePtr.hpp>
+#include <engine/system/utils/lazyPtr.hpp>
+#include <engine/system/utils/safePtr.hpp>
 
-//#include <system/dstr/map.hpp>
+//#include <engine/system/dstr/map.hpp>
 #include <map>
 #define Map std::map
 
-#include <window/compatUtils.hpp>
-#include <window/inputEvents.hpp>
+#include <engine/window/compatUtils.hpp>
+#include <engine/window/inputEvents.hpp>
 #include "window/windowParams.hpp"
-#include <window/inputBindings.hpp>
-#include <window/customization.hpp>
+#include <engine/window/inputBindings.hpp>
+#include <engine/window/customization.hpp>
 
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>

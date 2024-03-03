@@ -23,10 +23,10 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
-#include <system/utility.hpp>
+#include <engine/system/utility.hpp>
 
 #define CURLY_INITIAL_CAPACITY 4
 
@@ -220,6 +220,6 @@ cfg::uint64 p2RoundUp(cfg::uint64 val);
 
 } // namespace sys
 
-#include <system/dstr/vector.inl>
+#include <engine/system/dstr/vector.inl>
 
 #undef CURLY_INITIAL_CAPACITY

@@ -23,11 +23,11 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
-#include <graphics/mesh.hpp>
-#include <graphics/shader.hpp>
+#include <engine/graphics/mesh.hpp>
+#include <engine/graphics/shader.hpp>
 
 namespace gfx
 {

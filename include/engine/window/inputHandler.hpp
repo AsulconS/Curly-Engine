@@ -23,17 +23,17 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
-//#include <system/dstr/map.hpp>
+//#include <engine/system/dstr/map.hpp>
 #include <map>
 #define Map std::map
 
-#include <math/vec2.hpp>
+#include <engine/math/vec2.hpp>
 
-#include <window/inputEvents.hpp>
-#include <window/inputBindings.hpp>
+#include <engine/window/inputEvents.hpp>
+#include <engine/window/inputBindings.hpp>
 
 namespace wnd
 {
@@ -43,7 +43,6 @@ namespace wnd
  */
 class CURLY_API InputHandler
 {
-    friend class RenderingWindow;
 public:
     InputHandler();
     virtual ~InputHandler();
@@ -60,6 +59,12 @@ public:
 
     math::Vec2i getMousePos();
 
+    void _tick();
+
+    void _updateKeyEvent(InputCode key, InputEvent event);
+    void _updateMouseEvent(InputCode button, InputEvent event);
+    void _updateMousePosition(math::Vec2i position);
+
 private:
     struct KeyInfo
     {
@@ -74,14 +79,8 @@ private:
     };
 
 private:
-    void tick();
-
     void initKey(InputCode key);
     void initButton(InputCode button);
-
-    void updateKeyEvent(InputCode key, InputEvent event);
-    void updateMouseEvent(InputCode button, InputEvent event);
-    void updateMousePosition(math::Vec2i position);
 
     math::Vec2i m_mousePos;
     Map<InputCode, KeyInfo>* m_keys;

@@ -23,11 +23,11 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
-#include <window/inputHandler.hpp>
-#include <window/customization.hpp>
+#include <engine/window/inputHandler.hpp>
+#include <engine/window/customization.hpp>
 
 namespace wnd
 {
@@ -35,7 +35,7 @@ namespace wnd
  * @brief Window Class that handle a Window of the program
  * 
  */
-class CURLY_API IWindow
+class IWindow
 {
 public:
     /**

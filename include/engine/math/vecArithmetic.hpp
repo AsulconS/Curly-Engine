@@ -23,12 +23,12 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
-#include <math/vec2.hpp>
-#include <math/vec3.hpp>
-#include <math/vec4.hpp>
+#include <engine/math/vec2.hpp>
+#include <engine/math/vec3.hpp>
+#include <engine/math/vec4.hpp>
 
 namespace math
 {

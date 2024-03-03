@@ -23,10 +23,10 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
-#include <system/utility.hpp>
+#include <engine/system/utility.hpp>
 
 #define CURLY_QUEUE_DEFAULT_CAPACITY 16
 
@@ -144,6 +144,6 @@ private:
 
 } // namespace sys
 
-#include <system/dstr/queue.inl>
+#include <engine/system/dstr/queue.inl>
 
 #undef CURLY_QUEUE_DEFAULT_CAPACITY

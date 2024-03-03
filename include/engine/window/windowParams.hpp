@@ -23,9 +23,9 @@
 
 #pragma once
 
-#include <math/vec2.hpp>
+#include <engine/math/vec2.hpp>
 
-#include <window/inputBindings.hpp>
+#include <engine/window/inputBindings.hpp>
 
 namespace wnd
 {

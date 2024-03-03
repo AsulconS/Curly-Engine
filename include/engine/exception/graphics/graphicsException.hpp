@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <exception/genericException.hpp>
+#include <engine/exception/genericException.hpp>
 
 namespace exc
 {
@@ -59,4 +59,4 @@ public:
 
 } // namespace exc
 
-#include <exception/graphics/graphicsException.inl>
+#include <engine/exception/graphics/graphicsException.inl>

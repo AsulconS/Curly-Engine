@@ -1,9 +1,9 @@
+#include <editor/window/editorWindow.hpp>
+
 #include <engine/math.hpp>
 #include <engine/system.hpp>
 #include <engine/window.hpp>
 #include <engine/graphics.hpp>
-
-#include "window/win32/editorWindowManagerPlatform.hpp"
 
 #include "../engine/core/GL/gl.h"
 
@@ -11,7 +11,7 @@
 
 int main()
 {
-    wnd::RenderingWindow window(800, 600, "Curly Engine");
+    wnd::EditorWindow window(1920, 1080, "Curly Engine");
     if (!window.isReady())
     {
         return 1;

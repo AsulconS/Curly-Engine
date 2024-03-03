@@ -10,8 +10,10 @@ desktop.ini
 # Excecutables and dlls
 *.dll
 *.exe
+*.pdb
 
 # Local res files
 other/res/*.o
 other/res/*.rc
 other/res/*.ico
+other/res/*.res

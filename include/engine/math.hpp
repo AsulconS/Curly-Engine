@@ -23,11 +23,11 @@
 
 #pragma once
 
-#include <core/config.hpp>
+#include <engine/core/config.hpp>
 
-#include <math/constants.hpp>
-#include <math/vec2.hpp>
-#include <math/vec3.hpp>
-#include <math/vec4.hpp>
-#include <math/mUtils.hpp>
-#include <math/vecArithmetic.hpp>
+#include <engine/math/constants.hpp>
+#include <engine/math/vec2.hpp>
+#include <engine/math/vec3.hpp>
+#include <engine/math/vec4.hpp>
+#include <engine/math/mUtils.hpp>
+#include <engine/math/vecArithmetic.hpp>

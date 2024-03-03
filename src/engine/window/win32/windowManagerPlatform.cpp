@@ -23,7 +23,7 @@
 
 #include "windowManagerPlatform.hpp"
 
-#include <window/inputBindings.hpp>
+#include <engine/window/inputBindings.hpp>
 
 #include <iostream>
 

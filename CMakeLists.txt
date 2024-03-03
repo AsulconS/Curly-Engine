@@ -37,9 +37,9 @@ endif()
 
 # Icon
 if(CURLY_LOCAL_RC)
-    set(OPT_RES_OBJ "other/res/curly-rc.o")
+    set(OPT_RES_FILE "other/res/curly.res")
 else()
-    set(OPT_RES_OBJ "")
+    set(OPT_RES_FILE "")
 endif()
 
 # Get Source Files
@@ -59,7 +59,8 @@ set(CURLY_RUNTIME_SOURCES
     src/engine/window/${CURLY_PLATFORM}/compatUtilsPlatform.cpp
 )
 set(CURLY_EDITOR_SOURCES
-    src/editor/window/${CURLY_PLATFORM}/editorWindowManagerPlatform.cpp
+    src/editor/window/editorWindow.cpp
+    src/editor/window/${CURLY_PLATFORM}/windowManagerPlatform.cpp
     src/editor/app.cpp
 )
 
@@ -94,7 +95,7 @@ PRIVATE
 )
 
 # Add Include Directories and Link
-target_include_directories(${CURLY_RUNTIME_LIB_NAME} PRIVATE include/engine)
+target_include_directories(${CURLY_RUNTIME_LIB_NAME} PRIVATE include)
 if(WIN32)
     target_link_libraries(${CURLY_RUNTIME_LIB_NAME} opengl32)
 else()
@@ -102,20 +103,24 @@ else()
 endif()
 
 # Build main runtime module
-add_executable(${CURLY_EDITOR_EXEC_NAME} ${CURLY_EDITOR_SOURCES} ${OPT_RES_OBJ})
+add_executable(${CURLY_EDITOR_EXEC_NAME} ${CURLY_EDITOR_SOURCES})
 add_dependencies(${CURLY_EDITOR_EXEC_NAME} ${CURLY_RUNTIME_LIB_NAME})
 target_compile_definitions(${CURLY_EDITOR_EXEC_NAME}
 PUBLIC
     GLAD_API_CALL_EXPORT
-    C__CURLY_API_CALL_EXPORT
+    C__CURLY_EDITOR_API_CALL_EXPORT
 PRIVATE
     __STDC_LIB_EXT1__
+    C__CURLY_EDITOR_API_CALL_EXPORT_BUILD
 )
 target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE include)
-target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE include/engine)
-target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE include/editor)
 if(WIN32)
     target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME} opengl32)
 else()
     target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME})
 endif()
+set(CURLY_LINK_FLAGS ${CMAKE_CURRENT_SOURCE_DIR}/${OPT_RES_FILE})
+set_target_properties(${CURLY_EDITOR_EXEC_NAME}
+PROPERTIES
+    LINK_FLAGS ${CURLY_LINK_FLAGS}
+)

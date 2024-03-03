@@ -21,7 +21,7 @@
  *                                                                              *
  ********************************************************************************/
 
-#include <window/inputHandler.hpp>
+#include <engine/window/inputHandler.hpp>
 
 namespace wnd
 {
@@ -38,7 +38,7 @@ InputHandler::~InputHandler()
     delete m_mouseButtons;
 }
 
-void InputHandler::tick()
+void InputHandler::_tick()
 {
     ++m_currentTime;
 }
@@ -73,7 +73,7 @@ bool InputHandler::onKeyReleased(InputCode key)
     return onKeyUp(key) && ((*m_keys)[key].time == m_currentTime);
 }
 
-void InputHandler::updateKeyEvent(InputCode key, InputEvent event)
+void InputHandler::_updateKeyEvent(InputCode key, InputEvent event)
 {
     if((*m_keys)[key].event != event)
     {
@@ -112,7 +112,7 @@ bool InputHandler::onButtonUp(InputCode button)
     return ((*m_mouseButtons)[button].event == InputEvent::BUTTON_RELEASED);
 }
 
-void InputHandler::updateMouseEvent(InputCode button, InputEvent event)
+void InputHandler::_updateMouseEvent(InputCode button, InputEvent event)
 {
     if((*m_mouseButtons)[button].event != event)
     {
@@ -121,7 +121,7 @@ void InputHandler::updateMouseEvent(InputCode button, InputEvent event)
     }
 }
 
-void InputHandler::updateMousePosition(math::Vec2i position)
+void InputHandler::_updateMousePosition(math::Vec2i position)
 {
     m_mousePos = position;
 }

@@ -23,10 +23,10 @@
 
 #pragma once
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
-#include <system/utility.hpp>
+#include <engine/system/utility.hpp>
 
 #define CURLY_STACK_DEFAULT_CAPACITY 16
 
@@ -130,6 +130,6 @@ private:
 
 } // namespace sys
 
-#include <system/dstr/stack.inl>
+#include <engine/system/dstr/stack.inl>
 
 #undef CURLY_STACK_DEFAULT_CAPACITY

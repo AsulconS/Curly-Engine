@@ -23,15 +23,15 @@
 
 #pragma once
 
-#include <external/glm/glm.hpp>
-#include <external/glm/gtc/type_ptr.hpp>
+#include <engine/external/glm/glm.hpp>
+#include <engine/external/glm/gtc/type_ptr.hpp>
 
-#include <core/config.hpp>
-#include <core/common.hpp>
+#include <engine/core/config.hpp>
+#include <engine/core/common.hpp>
 
-#include <math/vec2.hpp>
-#include <math/vec3.hpp>
-#include <math/vec4.hpp>
+#include <engine/math/vec2.hpp>
+#include <engine/math/vec3.hpp>
+#include <engine/math/vec4.hpp>
 
 #include <string>
 

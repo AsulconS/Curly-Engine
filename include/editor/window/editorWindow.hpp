@@ -23,7 +23,8 @@
 
 #pragma once
 
-#include <engine/core/config.hpp>
+#include <editor/core/config.hpp>
+
 #include <engine/core/common.hpp>
 
 #include <engine/window/iWindow.hpp>
@@ -37,22 +38,22 @@ namespace wnd
  * @brief Rendering Window Class that handle a window for render of the program
  * 
  */
-class CURLY_API RenderingWindow : public IWindow
+class CURLY_EDITOR_API EditorWindow : public IWindow
 {
 public:
     /**
-     * @brief Construct a new RenderingWindow object
+     * @brief Construct a new EditorWindow object
      * 
      * @param t_title 
      * @param t_width 
      * @param t_height 
      */
-    explicit RenderingWindow(const cfg::uint32 t_width = 800u, const cfg::uint32 t_height = 600u, const char* t_title = "Untitled", WindowStyle t_style = WindowStyle::WINDOWED_STYLE, InputHandler* t_inputHandler = nullptr);
+    explicit EditorWindow(const cfg::uint32 t_width = 800u, const cfg::uint32 t_height = 600u, const char* t_title = "Untitled", WindowStyle t_style = WindowStyle::WINDOWED_STYLE, InputHandler* t_inputHandler = nullptr);
     /**
-     * @brief Destroy the RenderingWindow object
+     * @brief Destroy the EditorWindow object
      * 
      */
-    virtual ~RenderingWindow();
+    virtual ~EditorWindow();
 
     /**
      * @brief Swap the framebuffers
@@ -128,4 +129,4 @@ private:
     static void eventCallback(IWindow* window, InputEvent event, struct WindowParams* params);
 };
 
-} // namespace wnd
+} // namespace ewnd

@@ -21,9 +21,9 @@
  *                                                                              *
  ********************************************************************************/
 
-#include <graphics/model.hpp>
+#include <engine/graphics/model.hpp>
 
-#include <graphics/gUtils.hpp>
+#include <engine/graphics/gUtils.hpp>
 
 #include "../core/GL/gl.h"
 
