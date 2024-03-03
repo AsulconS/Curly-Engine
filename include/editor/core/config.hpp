@@ -54,6 +54,16 @@
     #define CURLY_EDITOR_API
 #endif
 
+/**
+ * This defines SDK Version to allow certain
+ * Windows 10/11 dependant customizations
+ */
+#if defined(CF__CURLY_EDITOR_OS_WINDOWS)
+    #if (C__WIN_SDK_VERSION_PATCH >= 22000)
+        #define CF__CURLY_EDITOR_ENHANCED_UI
+    #endif
+#endif
+
 #if defined(C__CURLY_DEV_OPT_1)
     #include <vld.h>
 #endif

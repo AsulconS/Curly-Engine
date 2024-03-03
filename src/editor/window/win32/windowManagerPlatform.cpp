@@ -27,7 +27,22 @@
 
 #include <engine/window/inputBindings.hpp>
 
+#include <dwmapi.h>
+
 #include <iostream>
+
+#define MAKE_COLOR_ATTRIBUTE_RGB(CATTRIB)\
+((CATTRIB & 0x0000FF) << 16) | \
+ (CATTRIB & 0x00FF00)        | \
+((CATTRIB & 0xFF0000) >> 16)
+
+#define MAKE_COLOR_ATTRIBUTE_RGBA(CATTRIB)\
+((CATTRIB & 0x000000FF) << 24) | \
+((CATTRIB & 0x0000FF00) <<  8) | \
+((CATTRIB & 0x00FF0000) >>  8) | \
+((CATTRIB & 0xFF000000) >> 24)
+
+#define IDI_MODAL_TIMER 322
 
 namespace wnd
 {
@@ -116,12 +131,12 @@ WindowManager* WindowManager::getInstance(const cfg::uint32 index)
 
 bool WindowManager::isActive()
 {
-    return m_active;
+    return m_isInstanceActive;
 }
 
 WindowRectParams WindowManager::createEditorWindow(const char* title, int x, int y, int width, int height, WindowStyle style)
 {
-    if(!m_active)
+    if(!m_isInstanceActive)
     {
         DWORD windowStyle = WS_VISIBLE;
         switch(style)
@@ -164,7 +179,16 @@ WindowRectParams WindowManager::createEditorWindow(const char* title, int x, int
             s_procInstanceHandle, // Handle to current instance
             nullptr               // Additional Application Data
         );
-        m_active = true;
+#if defined(CF__CURLY_EDITOR_ENHANCED_UI)
+        const COLORREF DARK_COLOR = MAKE_COLOR_ATTRIBUTE_RGB(0x202025);
+        DwmSetWindowAttribute(m_windowHandle, DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &DARK_COLOR, sizeof(DARK_COLOR));
+        DwmSetWindowAttribute(m_windowHandle, DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &DARK_COLOR, sizeof(DARK_COLOR));
+#else
+        const BOOL USE_DARK_MODE = true;
+        DwmSetWindowAttribute(m_windowHandle, DWMWINDOWATTRIBUTE::DWMWA_USE_IMMERSIVE_DARK_MODE, &USE_DARK_MODE, sizeof(USE_DARK_MODE));
+#endif
+
+        m_isInstanceActive = true;
         ++s_activeSessions;
         (*s_hwndMap)[m_windowHandle] = m_index;
     }
@@ -183,17 +207,26 @@ WindowRectParams WindowManager::createEditorWindow(const char* title, int x, int
 
 void WindowManager::destroyWindow()
 {
-    if(m_active)
+    if(m_isInstanceActive)
     {
         DestroyWindow(m_windowHandle);
-        m_active = false;
+        m_isInstanceActive = false;
     }
 }
 
-void WindowManager::setEventCallbackFunction(IWindow* t_windowCallbackInstance, EventCallbackFunction tf_eventCallbackFunction)
+void WindowManager::registerWindowInstance(IWindow* windowInstance)
 {
-    m_windowCallbackInstance = t_windowCallbackInstance;
+    m_windowCallbackInstance = windowInstance;
+}
+
+void WindowManager::setEventCallbackFunction(EventCallbackFunction tf_eventCallbackFunction)
+{
     mf_eventCallbackFunction = tf_eventCallbackFunction;
+}
+
+void WindowManager::setExternalTickCallbackFunction(ExternalTickCallbackFunction tf_externalTickCallbackFunction)
+{
+    mf_externalTickCallbackFunction = tf_externalTickCallbackFunction;
 }
 
 void WindowManager::pollEvents()
@@ -207,7 +240,7 @@ void WindowManager::pollEvents()
 
 void WindowManager::swapBuffers()
 {
-    if(m_active)
+    if(m_isInstanceActive)
     {
         if(s_vSyncCompat)
         {
@@ -218,7 +251,7 @@ void WindowManager::swapBuffers()
 }
 
 WindowManager::WindowManager(const cfg::uint32 t_index)
-    : m_active                   {false},
+    : m_isInstanceActive         {false},
       m_index                    {t_index},
       m_windowHandle             {nullptr},
       m_deviceContextHandle      {nullptr},
@@ -237,7 +270,7 @@ void WindowManager::registerAppWndClass()
 
     s_appWndClass.cbSize        = sizeof(WNDCLASSEXA);
     s_appWndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-    s_appWndClass.lpfnWndProc   = CurlyProc;
+    s_appWndClass.lpfnWndProc   = CurlyWndProc;
     s_appWndClass.cbClsExtra    = 0;
     s_appWndClass.cbWndExtra    = 0;
     s_appWndClass.hInstance     = s_procInstanceHandle;
@@ -459,231 +492,250 @@ void* WindowManager::CurlyGetProcAddress(const char* name)
     return gpa;
 }
 
-LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+void WindowManager::handleWindowCreateMsg(HWND hWnd)
+{
+    WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+    HDC& hdc = windowInstance->m_deviceContextHandle;
+    hdc = GetDC(hWnd);
+
+    int pixelFormat;
+
+    if(s_pixelFormatCompat)
+    {
+        cfg::uint32 numFormats;
+        wglChoosePixelFormatARB(hdc, s_attribs, nullptr, 1, &pixelFormat, &numFormats);
+        DescribePixelFormat(hdc, pixelFormat, sizeof(s_pfd), &s_pfd);
+    }
+    else
+    {
+        pixelFormat = ChoosePixelFormat(hdc, &s_pfd);
+    }
+
+    SetPixelFormat(hdc, pixelFormat, &s_pfd);
+
+    HGLRC& glContext = windowInstance->m_glRenderingContextHandle;
+
+    if(s_attribCtxCompat)
+    {
+        int glContextAttribs[] =
+        {
+            WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
+            WGL_CONTEXT_MINOR_VERSION_ARB, 6,
+            WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+            0
+        };
+
+        glContext = wglCreateContextAttribsARB(hdc, 0, glContextAttribs);
+    }
+    else
+    {
+        glContext = wglCreateContext(hdc);
+    }
+    wglMakeCurrent(hdc, glContext);
+
+    gladLoadGL((GLADloadfunc)CurlyGetProcAddress);
+
+    memset(s_keyPhysicStates, 0, sizeof(s_keyPhysicStates));
+
+    std::cout << "OpenGL " << (char*)glGetString(GL_VERSION);
+    std::cout << "Renderer: " << (char*)glGetString(GL_RENDERER) << std::endl;
+    std::cout << "GLSL Version: " << (char*)glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+}
+
+void WindowManager::handleWindowDestroyMsg(HWND hWnd)
+{
+    WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+    --s_activeSessions;
+    windowInstance->m_isInstanceActive = false;
+    wglMakeCurrent(windowInstance->m_deviceContextHandle, nullptr);
+    wglDeleteContext(windowInstance->m_glRenderingContextHandle);
+    if(!s_activeSessions)
+    {
+        PostQuitMessage(0);
+    }
+}
+
+void WindowManager::handleKeyDownMsg(HWND hWnd, WPARAM wParam)
+{
+    WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+    KeyboardParams params;
+    params.code = static_cast<InputCode>(wParam);
+    windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, KEY_PRESSED, &params);
+    s_keyPhysicStates[wParam] = 1;
+}
+
+void WindowManager::handleKeyUpMsg(HWND hWnd, WPARAM wParam)
+{
+    s_keyPhysicStates[wParam] = 0;
+    WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+    KeyboardParams params;
+    params.code = static_cast<InputCode>(wParam);
+    windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, KEY_RELEASED, &params);
+}
+
+void WindowManager::handleKillFocusMsg(HWND hWnd)
+{
+    WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+    for(cfg::uint32 i = 0; i < NUM_KEYS_SIZE; ++i)
+    {
+        if(s_keyPhysicStates[i])
+        {
+            s_keyPhysicStates[i] = 0;
+            KeyboardParams params;
+            params.code = static_cast<InputCode>(i);
+            windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, KEY_RELEASED, &params);
+        }
+    }
+    MouseParams lparam;
+    MouseParams rparam;
+    lparam.code = InputCode::MOUSE_BUTTON_LEFT;
+    rparam.code = InputCode::MOUSE_BUTTON_RIGHT;
+    windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &lparam);
+    windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &rparam);
+}
+
+void WindowManager::handleMouseButtonDownMsg(HWND hWnd, InputCode inputCode)
+{
+    if(!(s_mouseTrackCount++))
+    {
+        SetCapture(hWnd);
+    }
+    WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+    MouseParams params;
+    params.code = inputCode;
+    windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_PRESSED, &params);
+}
+
+void WindowManager::handleMouseButtonUpMsg(HWND hWnd, InputCode inputCode)
+{
+    WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+    MouseParams params;
+    params.code = inputCode;
+    windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &params);
+    if(!(--s_mouseTrackCount))
+    {
+        ReleaseCapture();
+    }
+}
+
+void WindowManager::handleMouseMoveMsg(HWND hWnd, LPARAM lParam)
+{
+    WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+    MouseParams params;
+    params.pos.x = GET_X_LPARAM(lParam);
+    params.pos.y = GET_Y_LPARAM(lParam);
+    windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, MOUSE_MOVE, &params);
+}
+
+void WindowManager::handleTimerMsg(HWND hWnd)
+{
+    WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
+    windowInstance->mf_externalTickCallbackFunction(windowInstance->m_windowCallbackInstance);
+}
+
+InputCode WindowManager::getInputCodeFromMsg(UINT uMsg)
 {
     switch(uMsg)
     {
+        case WM_LBUTTONDOWN:
+        case WM_LBUTTONUP:
+            return InputCode::MOUSE_BUTTON_LEFT;
+        case WM_RBUTTONDOWN:
+        case WM_RBUTTONUP:
+            return InputCode::MOUSE_BUTTON_RIGHT;
+        case WM_MBUTTONDOWN:
+        case WM_MBUTTONUP:
+            return InputCode::MOUSE_BUTTON_MIDDLE;
+        case WM_XBUTTONDOWN:
+        case WM_XBUTTONUP:
+            return InputCode::MOUSE_BUTTON_04;
+    }
+    return InputCode::UNKNOWN_INPUT_CODE;
+}
+
+void WindowManager::CurlyMainProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    InputCode inputCode = InputCode::NONE;
+    switch(uMsg)
+    {
         case WM_CREATE:
-            {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                HDC& hdc = windowInstance->m_deviceContextHandle;
-                hdc = GetDC(hWnd);
-
-                int pixelFormat;
-
-                if(s_pixelFormatCompat)
-                {
-                    cfg::uint32 numFormats;
-                    wglChoosePixelFormatARB(hdc, s_attribs, nullptr, 1, &pixelFormat, &numFormats);
-                    DescribePixelFormat(hdc, pixelFormat, sizeof(s_pfd), &s_pfd);
-                }
-                else
-                {
-                    pixelFormat = ChoosePixelFormat(hdc, &s_pfd);
-                }
-
-                SetPixelFormat(hdc, pixelFormat, &s_pfd);
-
-                HGLRC& glContext = windowInstance->m_glRenderingContextHandle;
-
-                if(s_attribCtxCompat)
-                {
-                    int glContextAttribs[] =
-                    {
-                        WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-                        WGL_CONTEXT_MINOR_VERSION_ARB, 6,
-                        WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-                        0
-                    };
-
-                    glContext = wglCreateContextAttribsARB(hdc, 0, glContextAttribs);
-                }
-                else
-                {
-                    glContext = wglCreateContext(hdc);
-                }
-                wglMakeCurrent(hdc, glContext);
-
-                gladLoadGL((GLADloadfunc)CurlyGetProcAddress);
-
-                memset(s_keyPhysicStates, 0, sizeof(s_keyPhysicStates));
-
-                std::cout << "OpenGL " << (char*)glGetString(GL_VERSION);
-                std::cout << " Renderer: " << (char*)glGetString(GL_RENDERER) << std::endl;
-                std::cout << "GLSL Version: " << (char*)glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-            }
+            handleWindowCreateMsg(hWnd);
             break;
-
         case WM_DESTROY:
-            {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                --s_activeSessions;
-                windowInstance->m_active = false;
-                wglMakeCurrent(windowInstance->m_deviceContextHandle, nullptr);
-                wglDeleteContext(windowInstance->m_glRenderingContextHandle);
-                if(!s_activeSessions)
-                {
-                    PostQuitMessage(0);
-                }
-            }
+            handleWindowDestroyMsg(hWnd);
             break;
 
         case WM_KEYDOWN:
-            {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                KeyboardParams params;
-                params.code = static_cast<InputCode>(wParam);
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, KEY_PRESSED, &params);
-                s_keyPhysicStates[wParam] = 1;
-            }
+            handleKeyDownMsg(hWnd, wParam);
             break;
-
         case WM_KEYUP:
-            {
-                s_keyPhysicStates[wParam] = 0;
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                KeyboardParams params;
-                params.code = static_cast<InputCode>(wParam);
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, KEY_RELEASED, &params);
-            }
+            handleKeyUpMsg(hWnd, wParam);
             break;
-
         case WM_KILLFOCUS:
-            {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                for(cfg::uint32 i = 0; i < NUM_KEYS_SIZE; ++i)
-                {
-                    if(s_keyPhysicStates[i])
-                    {
-                        s_keyPhysicStates[i] = 0;
-                        KeyboardParams params;
-                        params.code = static_cast<InputCode>(i);
-                        windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, KEY_RELEASED, &params);
-                    }
-                }
-                MouseParams lparam;
-                MouseParams rparam;
-                lparam.code = InputCode::MOUSE_BUTTON_LEFT;
-                rparam.code = InputCode::MOUSE_BUTTON_RIGHT;
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &lparam);
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &rparam);
-            }
+            handleKillFocusMsg(hWnd);
             break;
 
         case WM_LBUTTONDOWN:
-            {
-                if(!(s_mouseTrackCount++))
-                    SetCapture(hWnd);
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                MouseParams params;
-                params.code = InputCode::MOUSE_BUTTON_LEFT;
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_PRESSED, &params);
-            }
+        case WM_RBUTTONDOWN:
+        case WM_MBUTTONDOWN:
+        case WM_XBUTTONDOWN:
+        {
+            inputCode = getInputCodeFromMsg(uMsg);
+            handleMouseButtonDownMsg(hWnd, inputCode);
             break;
+        }
 
         case WM_LBUTTONUP:
-            {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                MouseParams params;
-                params.code = InputCode::MOUSE_BUTTON_LEFT;
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &params);
-                if(!(--s_mouseTrackCount))
-                    ReleaseCapture();
-            }
-            break;
-
-        case WM_RBUTTONDOWN:
-            {
-                if(!(s_mouseTrackCount++))
-                    SetCapture(hWnd);
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                MouseParams params;
-                params.code = InputCode::MOUSE_BUTTON_RIGHT;
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_PRESSED, &params);
-            }
-            break;
-
         case WM_RBUTTONUP:
-            {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                MouseParams params;
-                params.code = InputCode::MOUSE_BUTTON_RIGHT;
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &params);
-                if(!(--s_mouseTrackCount))
-                    ReleaseCapture();
-            }
-            break;
-
-        case WM_MBUTTONDOWN:
-            {
-                if(!(s_mouseTrackCount++))
-                    SetCapture(hWnd);
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                MouseParams params;
-                params.code = InputCode::MOUSE_BUTTON_MIDDLE;
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_PRESSED, &params);
-            }
-            break;
-
         case WM_MBUTTONUP:
-            {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                MouseParams params;
-                params.code = InputCode::MOUSE_BUTTON_MIDDLE;
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &params);
-                if(!(--s_mouseTrackCount))
-                    ReleaseCapture();
-            }
-            break;
-
-        case WM_XBUTTONDOWN:
-            {
-                if(!(s_mouseTrackCount++))
-                    SetCapture(hWnd);
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                MouseParams params;
-                params.code = InputCode::MOUSE_BUTTON_04;
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_PRESSED, &params);
-            }
-            break;
-
         case WM_XBUTTONUP:
-            {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                MouseParams params;
-                params.code = InputCode::MOUSE_BUTTON_04;
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &params);
-                if(!(--s_mouseTrackCount))
-                    ReleaseCapture();
-            }
+        {
+            inputCode = getInputCodeFromMsg(uMsg);
+            handleMouseButtonUpMsg(hWnd, inputCode);
             break;
+        }
 
         case WM_MOUSEMOVE:
-            {
-                WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-                MouseParams params;
-                params.pos.x = GET_X_LPARAM(lParam);
-                params.pos.y = GET_Y_LPARAM(lParam);
-                windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, MOUSE_MOVE, &params);
-            }
+            handleMouseMoveMsg(hWnd, lParam);
             break;
 
         case WM_SYSKEYDOWN:
-            {
-                std::cout << "WM_SYSKEYDOWN" << std::endl;
-            }
+        {
+            std::cout << "WM_SYSKEYDOWN" << std::endl;
             break;
-
+        }
         case WM_SYSKEYUP:
+        {
+            std::cout << "WM_SYSKEYUP" << std::endl;
+            break;
+        }
+
+        case WM_TIMER:
+        {
+            if(wParam == IDI_MODAL_TIMER)
             {
-                std::cout << "WM_SYSKEYUP" << std::endl;
+                handleTimerMsg(hWnd);
             }
-            break;
-
-        default:
-            break;
+        }
     }
+}
 
+LRESULT CALLBACK WindowManager::CurlyWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch(uMsg)
+    {
+        case WM_ENTERSIZEMOVE:
+        {
+            SetTimer(hWnd, IDI_MODAL_TIMER, USER_TIMER_MINIMUM, nullptr);
+            break;
+        }
+        case WM_EXITSIZEMOVE:
+        {
+            KillTimer(hWnd, IDI_MODAL_TIMER);
+            break;
+        }
+    }
+    CurlyMainProc(hWnd, uMsg, wParam, lParam);
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 

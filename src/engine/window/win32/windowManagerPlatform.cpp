@@ -114,12 +114,12 @@ WindowManager* WindowManager::getInstance(const cfg::uint32 index)
 
 bool WindowManager::isActive()
 {
-    return m_active;
+    return m_isInstanceActive;
 }
 
 WindowRectParams WindowManager::createRenderingWindow(const char* title, int x, int y, int width, int height, WindowStyle style)
 {
-    if(!m_active)
+    if(!m_isInstanceActive)
     {
         DWORD windowStyle = WS_VISIBLE;
         switch(style)
@@ -162,7 +162,7 @@ WindowRectParams WindowManager::createRenderingWindow(const char* title, int x, 
             s_procInstanceHandle, // Handle to current instance
             nullptr               // Additional Application Data
         );
-        m_active = true;
+        m_isInstanceActive = true;
         ++s_activeSessions;
         (*s_hwndMap)[m_windowHandle] = m_index;
     }
@@ -181,10 +181,10 @@ WindowRectParams WindowManager::createRenderingWindow(const char* title, int x, 
 
 void WindowManager::destroyWindow()
 {
-    if(m_active)
+    if(m_isInstanceActive)
     {
         DestroyWindow(m_windowHandle);
-        m_active = false;
+        m_isInstanceActive = false;
     }
 }
 
@@ -205,7 +205,7 @@ void WindowManager::pollEvents()
 
 void WindowManager::swapBuffers()
 {
-    if(m_active)
+    if(m_isInstanceActive)
     {
         if(s_vSyncCompat)
         {
@@ -216,7 +216,7 @@ void WindowManager::swapBuffers()
 }
 
 WindowManager::WindowManager(const cfg::uint32 t_index)
-    : m_active                   {false},
+    : m_isInstanceActive                   {false},
       m_index                    {t_index},
       m_windowHandle             {nullptr},
       m_deviceContextHandle      {nullptr},
@@ -513,7 +513,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             {
                 WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
                 --s_activeSessions;
-                windowInstance->m_active = false;
+                windowInstance->m_isInstanceActive = false;
                 wglMakeCurrent(windowInstance->m_deviceContextHandle, nullptr);
                 wglDeleteContext(windowInstance->m_glRenderingContextHandle);
                 if(!s_activeSessions)

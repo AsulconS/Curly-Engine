@@ -41,6 +41,9 @@ namespace wnd
 class CURLY_EDITOR_API EditorWindow : public IWindow
 {
 public:
+    using MainLoopCallback = bool (*)(EditorWindow*);
+
+public:
     /**
      * @brief Construct a new EditorWindow object
      * 
@@ -56,10 +59,28 @@ public:
     virtual ~EditorWindow();
 
     /**
+     * @brief Starts Registered Main Loop
+     * 
+     */
+    int mainLoop();
+    /**
+     * @brief Ticks the main loop once
+     * 
+     */
+    bool externalTick();
+
+    /**
      * @brief Swap the framebuffers
      * 
      */
     void swapBuffers();
+
+    /**
+     * @brief Set the Main Loop Callback Function object
+     * 
+     * @param callback 
+     */
+    void setMainLoopCallbackFunction(MainLoopCallback callback);
 
     /**
      * @brief Check if the Window shouldn't close
@@ -127,6 +148,14 @@ private:
      * @param repeat 
      */
     static void eventCallback(IWindow* window, InputEvent event, struct WindowParams* params);
+    /**
+     * @brief Ticks the main loop once (Callback Version)
+     * 
+     */
+    static bool externalTickCallback(IWindow* window);
+
+private:
+    MainLoopCallback m_mainLoopCallback;
 };
 
 } // namespace ewnd

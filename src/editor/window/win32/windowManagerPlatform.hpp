@@ -53,6 +53,7 @@ namespace wnd
 class IWindow;
 
 using EventCallbackFunction = void (*)(IWindow*, InputEvent, WindowParams*);
+using ExternalTickCallbackFunction = bool (*)(IWindow*);
 
 class WindowManager final
 {
@@ -66,13 +67,15 @@ public:
     WindowRectParams createEditorWindow(const char* title, int x, int y, int width, int height, WindowStyle style);
     void destroyWindow();
 
-    void setEventCallbackFunction(IWindow* t_windowCallbackInstance, EventCallbackFunction tf_eventCallbackFunction);
+    void registerWindowInstance(IWindow* windowInstance);
+    void setEventCallbackFunction(EventCallbackFunction tf_eventCallbackFunction);
+    void setExternalTickCallbackFunction(ExternalTickCallbackFunction tf_externalTickCallbackFunction);
 
     void pollEvents();
     void swapBuffers();
 
 private:
-    bool m_active;
+    bool m_isInstanceActive;
 
     cfg::uint32 m_index;
     HWND m_windowHandle;
@@ -82,6 +85,7 @@ private:
 
     IWindow* m_windowCallbackInstance;
     EventCallbackFunction mf_eventCallbackFunction;
+    ExternalTickCallbackFunction mf_externalTickCallbackFunction;
 
     /* Privated constructor and destructor */
 
@@ -132,8 +136,22 @@ private:
     static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
     static PFNWGLGETSWAPINTERVALEXTPROC wglGetSwapIntervalEXT;
 
+    static void handleWindowCreateMsg(HWND hWnd);
+    static void handleWindowDestroyMsg(HWND hWnd);
+    static void handleKeyDownMsg(HWND hWnd, WPARAM wParam);
+    static void handleKeyUpMsg(HWND hWnd, WPARAM wParam);
+    static void handleKillFocusMsg(HWND hWnd);
+    static void handleMouseButtonDownMsg(HWND hWnd, InputCode inputCode);
+    static void handleMouseButtonUpMsg(HWND hWnd, InputCode inputCode);
+    static void handleMouseMoveMsg(HWND hWnd, LPARAM lParam);
+    static void handleTimerMsg(HWND hWnd);
+
+    static InputCode getInputCodeFromMsg(UINT uMsg);
+
     static void* CurlyGetProcAddress(const char* name);
-    static LRESULT CALLBACK CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    static void CurlyMainProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+    static LRESULT CALLBACK CurlyWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     /* Deleted Constructors and assignment */
 

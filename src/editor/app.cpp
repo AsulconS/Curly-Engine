@@ -9,6 +9,18 @@
 
 #include <iostream>
 
+static sys::Timer timer(true);
+
+bool mainLoop(wnd::EditorWindow* window)
+{
+    timer.tick();
+    window->pollEvents();
+    glClearColor(0.15f, 0.15f, 0.174f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    window->swapBuffers();
+    return window->isActive();
+}
+
 int main()
 {
     wnd::EditorWindow window(1920, 1080, "Curly Engine");
@@ -19,18 +31,6 @@ int main()
 
     wnd::InputHandler inputHandler;
     window.setInputHandler(inputHandler);
-    while (window.isActive())
-    {
-        window.pollEvents();
-        if (inputHandler.onKeyTriggered(wnd::KEY_ESCAPE))
-        {
-            window.close();
-            continue;
-        }
-        glClearColor(0.0f, 0.5f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        window.swapBuffers();
-    }
-
-    return 0;
+    window.setMainLoopCallbackFunction(mainLoop);
+    return window.mainLoop();
 }

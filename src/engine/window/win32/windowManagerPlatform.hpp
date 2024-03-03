@@ -71,7 +71,7 @@ public:
     void swapBuffers();
 
 private:
-    bool m_active;
+    bool m_isInstanceActive;
 
     cfg::uint32 m_index;
     HWND m_windowHandle;

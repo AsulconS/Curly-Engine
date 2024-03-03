@@ -34,10 +34,13 @@
 namespace wnd
 {
 EditorWindow::EditorWindow(const cfg::uint32 t_width, const cfg::uint32 t_height, const char* t_title, WindowStyle t_style, InputHandler* t_inputHandler)
-    : wnd::IWindow {t_width, t_height, t_title, t_style, t_inputHandler}
+    : wnd::IWindow {t_width, t_height, t_title, t_style, t_inputHandler},
+      m_mainLoopCallback {nullptr}
 {
     m_windowManager = WindowManager::createInstance();
-    m_windowManager->setEventCallbackFunction(this, eventCallback);
+    m_windowManager->registerWindowInstance(this);
+    m_windowManager->setEventCallbackFunction(eventCallback);
+    m_windowManager->setExternalTickCallbackFunction(externalTickCallback);
     try
     {
         initializeWindow();
@@ -59,6 +62,25 @@ EditorWindow::~EditorWindow()
         close();
     }
     std::cout << "Window " << m_title << " destroyed" << std::endl;
+}
+
+int EditorWindow::mainLoop()
+{
+    if(m_mainLoopCallback == nullptr)
+    {
+        return 1;
+    }
+    while(m_mainLoopCallback(this));
+    return 0;
+}
+
+bool EditorWindow::externalTick()
+{
+    if (m_mainLoopCallback != nullptr)
+    {
+        return m_mainLoopCallback(this);
+    }
+    return false;
 }
 
 bool EditorWindow::isActive()
@@ -93,6 +115,11 @@ void EditorWindow::swapBuffers()
     m_windowManager->swapBuffers();
 }
 
+void EditorWindow::setMainLoopCallbackFunction(MainLoopCallback callback)
+{
+    m_mainLoopCallback = callback;
+}
+
 float EditorWindow::getAspectRatio() const
 {
     return static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight);
@@ -123,35 +150,46 @@ void EditorWindow::initializeWindow()
 
 void EditorWindow::eventCallback(IWindow* window, InputEvent event, WindowParams* params)
 {
-    EditorWindow* rWindow{ static_cast<EditorWindow*>(window) };
-    if(rWindow->m_inputHandler != nullptr)
+    EditorWindow* eWindow{ static_cast<EditorWindow*>(window) };
+    if(eWindow->m_inputHandler == nullptr)
     {
-        switch(event)
-        {
-            case KEY_PRESSED:
-            case KEY_RELEASED:
-                {
-                    rWindow->m_inputHandler->_updateKeyEvent(static_cast<KeyboardParams*>(params)->code, event);
-                }
-                break;
-
-            case BUTTON_PRESSED:
-            case BUTTON_RELEASED:
-                {
-                    rWindow->m_inputHandler->_updateMouseEvent(static_cast<MouseParams*>(params)->code, event);
-                }
-                break;
-
-            case MOUSE_MOVE:
-                {
-                    rWindow->m_inputHandler->_updateMousePosition(static_cast<MouseParams*>(params)->pos);
-                }
-                break;
-
-            default:
-                break;
-        }
+        return;
     }
+    switch(event)
+    {
+        case KEY_PRESSED:
+        case KEY_RELEASED:
+        {
+            eWindow->m_inputHandler->_updateKeyEvent(static_cast<KeyboardParams*>(params)->code, event);
+            break;
+        }
+
+        case BUTTON_PRESSED:
+        case BUTTON_RELEASED:
+        {
+            eWindow->m_inputHandler->_updateMouseEvent(static_cast<MouseParams*>(params)->code, event);
+            break;
+        }
+
+        case MOUSE_MOVE:
+        {
+            eWindow->m_inputHandler->_updateMousePosition(static_cast<MouseParams*>(params)->pos);
+            break;
+        }
+
+        default:
+            break;
+    }
+}
+
+bool EditorWindow::externalTickCallback(IWindow* window)
+{
+    EditorWindow* eWindow{ static_cast<EditorWindow*>(window) };
+    if (eWindow == nullptr)
+    {
+        return false;
+    }
+    return eWindow->externalTick();
 }
 
 } // namespace wnd

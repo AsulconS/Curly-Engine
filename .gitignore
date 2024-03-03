@@ -2,6 +2,7 @@
 .vscode
 .VSCodeCounter
 build
+binaries
 
 # Files
 *.bat
