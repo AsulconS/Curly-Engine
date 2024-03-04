@@ -1,25 +1,23 @@
-/********************************************************************************
- *                                                                              *
- * Curly Engine                                                                 *
- * Copyright (c) 2019-2024 Adrian Bedregal                                      *
- *                                                                              *
- * This software is provided 'as-is', without any express or implied            *
- * warranty. In no event will the authors be held liable for any damages        *
- * arising from the use of this software.                                       *
- *                                                                              *
- * Permission is granted to anyone to use this software for any purpose,        *
- * including commercial applications, and to alter it and redistribute it       *
- * freely, subject to the following restrictions:                               *
- *                                                                              *
- * 1. The origin of this software must not be misrepresented; you must not      *
- *    claim that you wrote the original software. If you use this software      *
- *    in a product, an acknowledgment in the product documentation would be     *
- *    appreciated but is not required.                                          *
- * 2. Altered source versions must be plainly marked as such, and must not be   *
- *    misrepresented as being the original software.                            *
- * 3. This notice may not be removed or altered from any source distribution.   *
- *                                                                              *
- ********************************************************************************/
+/**
+ * Curly Engine
+ * Copyright (c) 2019-2024 Adrian Bedregal
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ */
 
 #include <engine/window/renderingWindow.hpp>
 
@@ -33,6 +31,7 @@
 
 namespace wnd
 {
+//--------------------------------------------------------------------------------
 RenderingWindow::RenderingWindow(const cfg::uint32 t_width, const cfg::uint32 t_height, const char* t_title, WindowStyle t_style, InputHandler* t_inputHandler)
     : IWindow     {t_width, t_height, t_title, t_style, t_inputHandler}
 {
@@ -54,6 +53,7 @@ RenderingWindow::RenderingWindow(const cfg::uint32 t_width, const cfg::uint32 t_
     }
 }
 
+//--------------------------------------------------------------------------------
 RenderingWindow::~RenderingWindow()
 {
     std::cout << "Destructing Window " << m_title << std::endl;
@@ -64,26 +64,31 @@ RenderingWindow::~RenderingWindow()
     std::cout << "Window " << m_title << " destroyed" << std::endl;
 }
 
+//--------------------------------------------------------------------------------
 bool RenderingWindow::isActive()
 {
     return m_windowManager->isActive();
 }
 
+//--------------------------------------------------------------------------------
 bool RenderingWindow::isReady()
 {
     return m_ready;
 }
 
+//--------------------------------------------------------------------------------
 void RenderingWindow::close()
 {
     m_windowManager->destroyWindow();
 }
 
+//--------------------------------------------------------------------------------
 void RenderingWindow::setInputHandler(InputHandler& t_inputHandler)
 {
     m_inputHandler = &t_inputHandler;
 }
 
+//--------------------------------------------------------------------------------
 void RenderingWindow::pollEvents()
 {
     if(m_inputHandler != nullptr)
@@ -91,26 +96,31 @@ void RenderingWindow::pollEvents()
     m_windowManager->pollEvents();
 }
 
+//--------------------------------------------------------------------------------
 void RenderingWindow::swapBuffers()
 {
     m_windowManager->swapBuffers();
 }
 
+//--------------------------------------------------------------------------------
 float RenderingWindow::getAspectRatio() const
 {
     return static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight);
 }
 
+//--------------------------------------------------------------------------------
 math::Vec2i RenderingWindow::getWindowRect() const
 {
     return { m_windowWidth, m_windowHeight };
 }
 
+//--------------------------------------------------------------------------------
 math::Vec2i RenderingWindow::getViewportRect() const
 {
     return { m_viewportWidth, m_viewportHeight };
 }
 
+//--------------------------------------------------------------------------------
 void RenderingWindow::initializeWindow()
 {
     WindowRectParams rectParams{ m_windowManager->createRenderingWindow(m_title, 0, 0, m_windowWidth, m_windowHeight, m_style) };
@@ -124,6 +134,7 @@ void RenderingWindow::initializeWindow()
     }
 }
 
+//--------------------------------------------------------------------------------
 void RenderingWindow::eventCallback(IWindow* window, InputEvent event, WindowParams* params)
 {
     RenderingWindow* rWindow{ static_cast<RenderingWindow*>(window) };
