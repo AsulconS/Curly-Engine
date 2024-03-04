@@ -23,6 +23,7 @@
 
 namespace wnd
 {
+//--------------------------------------------------------------------------------
 InputHandler::InputHandler()
     : m_keys         {new Map<InputCode, KeyInfo>},
       m_mouseButtons {new Map<InputCode, MouseInfo>},
@@ -30,23 +31,27 @@ InputHandler::InputHandler()
 {
 }
 
+//--------------------------------------------------------------------------------
 InputHandler::~InputHandler()
 {
     delete m_keys;
     delete m_mouseButtons;
 }
 
+//--------------------------------------------------------------------------------
 void InputHandler::_tick()
 {
     ++m_currentTime;
 }
 
+//--------------------------------------------------------------------------------
 void InputHandler::initKey(InputCode key)
 {
     (*m_keys)[key].event = InputEvent::KEY_RELEASED;
     (*m_keys)[key].time = m_currentTime - 1;
 }
 
+//--------------------------------------------------------------------------------
 bool InputHandler::onKeyDown(InputCode key)
 {
     if(m_keys->find(key) == m_keys->end())//if(!m_keys.contains(key))
@@ -54,11 +59,13 @@ bool InputHandler::onKeyDown(InputCode key)
     return ((*m_keys)[key].event == InputEvent::KEY_PRESSED);
 }
 
+//--------------------------------------------------------------------------------
 bool InputHandler::onKeyTriggered(InputCode key)
 {
     return onKeyDown(key) && ((*m_keys)[key].time == m_currentTime);
 }
 
+//--------------------------------------------------------------------------------
 bool InputHandler::onKeyUp(InputCode key)
 {
     if(m_keys->find(key) == m_keys->end())//if(!m_keys.contains(key))
@@ -66,11 +73,13 @@ bool InputHandler::onKeyUp(InputCode key)
     return ((*m_keys)[key].event == InputEvent::KEY_RELEASED);
 }
 
+//--------------------------------------------------------------------------------
 bool InputHandler::onKeyReleased(InputCode key)
 {
     return onKeyUp(key) && ((*m_keys)[key].time == m_currentTime);
 }
 
+//--------------------------------------------------------------------------------
 void InputHandler::_updateKeyEvent(InputCode key, InputEvent event)
 {
     if((*m_keys)[key].event != event)
@@ -80,22 +89,26 @@ void InputHandler::_updateKeyEvent(InputCode key, InputEvent event)
     }
 }
 
+//--------------------------------------------------------------------------------
 void InputHandler::initButton(InputCode button)
 {
     (*m_mouseButtons)[button].event = InputEvent::BUTTON_RELEASED;
     (*m_mouseButtons)[button].time = m_currentTime - 1;
 }
 
+//--------------------------------------------------------------------------------
 bool InputHandler::onClick(InputCode button)
 {
     return onButtonDown(button) && ((*m_mouseButtons)[button].time == m_currentTime);
 }
 
+//--------------------------------------------------------------------------------
 bool InputHandler::onRelease(InputCode button)
 {
     return onButtonUp(button) && ((*m_mouseButtons)[button].time == m_currentTime);
 }
 
+//--------------------------------------------------------------------------------
 bool InputHandler::onButtonDown(InputCode button)
 {
     if(m_mouseButtons->find(button) == m_mouseButtons->end())//if(!m_mouseButtons.contains(button))
@@ -103,6 +116,7 @@ bool InputHandler::onButtonDown(InputCode button)
     return ((*m_mouseButtons)[button].event == InputEvent::BUTTON_PRESSED);
 }
 
+//--------------------------------------------------------------------------------
 bool InputHandler::onButtonUp(InputCode button)
 {
     if(m_mouseButtons->find(button) == m_mouseButtons->end())//if(!m_mouseButtons.contains(button))
@@ -110,6 +124,7 @@ bool InputHandler::onButtonUp(InputCode button)
     return ((*m_mouseButtons)[button].event == InputEvent::BUTTON_RELEASED);
 }
 
+//--------------------------------------------------------------------------------
 void InputHandler::_updateMouseEvent(InputCode button, InputEvent event)
 {
     if((*m_mouseButtons)[button].event != event)
@@ -119,11 +134,13 @@ void InputHandler::_updateMouseEvent(InputCode button, InputEvent event)
     }
 }
 
+//--------------------------------------------------------------------------------
 void InputHandler::_updateMousePosition(math::Vec2i position)
 {
     m_mousePos = position;
 }
 
+//--------------------------------------------------------------------------------
 math::Vec2i InputHandler::getMousePos()
 {
     return m_mousePos;
