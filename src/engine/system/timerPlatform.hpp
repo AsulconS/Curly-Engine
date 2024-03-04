@@ -1,7 +1,7 @@
 /********************************************************************************
  *                                                                              *
  * Curly Engine                                                                 *
- * Copyright (c) 2021-2024 Adrian Bedregal                                      *
+ * Copyright (c) 2019-2024 Adrian Bedregal                                      *
  *                                                                              *
  * This software is provided 'as-is', without any express or implied            *
  * warranty. In no event will the authors be held liable for any damages        *
