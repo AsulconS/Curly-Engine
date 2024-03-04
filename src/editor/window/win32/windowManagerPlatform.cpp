@@ -179,7 +179,7 @@ WindowRectParams WindowManager::createEditorWindow(const char* title, int x, int
             s_procInstanceHandle, // Handle to current instance
             nullptr               // Additional Application Data
         );
-#if defined(CF__CURLY_EDITOR_ENHANCED_UI)
+#if defined(CURLY_EDITOR_ENHANCED_UI)
         const COLORREF DARK_COLOR = MAKE_COLOR_ATTRIBUTE_RGB(0x202025);
         DwmSetWindowAttribute(m_windowHandle, DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &DARK_COLOR, sizeof(DARK_COLOR));
         DwmSetWindowAttribute(m_windowHandle, DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &DARK_COLOR, sizeof(DARK_COLOR));

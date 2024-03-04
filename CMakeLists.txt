@@ -19,6 +19,7 @@ project(CurlyEngine VERSION ${FULL_VERSION})
 # Project options
 option(CURLY_LOCAL_RC "Enable RC File Support for local builds (export icon)" OFF)
 option(CURLY_FORCE_GLX_CTX_VERSION OFF)
+option(CURLY_DEV_OPT_1 OFF) # VLD on Windows
 set(CURLY_GLX_CTX_VERSION_MAJOR 4 CACHE STRING "Specifies Forced GLX Version Major")
 set(CURLY_GLX_CTX_VERSION_MINOR 6 CACHE STRING "Specifies Forced GLX Version Minor")
 
@@ -65,8 +66,8 @@ set(CURLY_EDITOR_SOURCES
 )
 
 # Set Dynamic Compile Definitions
-set(CURLY_RUNTIME_BUILD_DEFINITIONS)
-set(CURLY_EDITOR_BUILD_DEFINITIONS)
+set(CURLY_RUNTIME_BUILD_DEFINITIONS $<IF:$<CONFIG:Debug>,CURLY_DEBUG,CURLY_RELEASE>)
+set(CURLY_EDITOR_BUILD_DEFINITIONS $<IF:$<CONFIG:Debug>,CURLY_DEBUG,CURLY_RELEASE>)
 if(CURLY_FORCE_GLX_CTX_VERSION)
     set(CURLY_RUNTIME_BUILD_DEFINITIONS ${CURLY_RUNTIME_BUILD_DEFINITIONS}
         C__CURLY_FORCE_GLX_CTX_VERSION
@@ -85,6 +86,14 @@ if (WIN32)
         C__WIN_SDK_VERSION_MINOR=${SDK_MINOR}
         C__WIN_SDK_VERSION_PATCH=${SDK_PATCH}
     )
+    if(CURLY_DEV_OPT_1)
+        set(CURLY_RUNTIME_BUILD_DEFINITIONS ${CURLY_RUNTIME_BUILD_DEFINITIONS}
+            C__CURLY_DEV_OPT_1
+        )
+        set(CURLY_EDITOR_BUILD_DEFINITIONS ${CURLY_EDITOR_BUILD_DEFINITIONS}
+            C__CURLY_DEV_OPT_1
+        )
+    endif()
 endif()
 
 # Build runtime module
@@ -110,7 +119,13 @@ PRIVATE
 # Add Include Directories and Link
 target_include_directories(${CURLY_RUNTIME_LIB_NAME} PRIVATE include)
 if(WIN32)
-    target_link_libraries(${CURLY_RUNTIME_LIB_NAME} opengl32)
+    if(CURLY_DEV_OPT_1)
+        target_include_directories(${CURLY_RUNTIME_LIB_NAME} PRIVATE "C:/Program Files (x86)/Visual Leak Detector/include")
+        target_link_directories(${CURLY_RUNTIME_LIB_NAME} PRIVATE "C:/Program Files (x86)/Visual Leak Detector/lib/Win64")
+        target_link_libraries(${CURLY_RUNTIME_LIB_NAME} opengl32 vld)
+    else()
+        target_link_libraries(${CURLY_RUNTIME_LIB_NAME} opengl32)
+    endif()
 else()
     target_link_libraries(${CURLY_RUNTIME_LIB_NAME} GL X11)
 endif()
@@ -129,10 +144,18 @@ PRIVATE
 )
 target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE include)
 if(WIN32)
-    target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME} opengl32 dwmapi)
+    if(CURLY_DEV_OPT_1)
+        target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE "C:/Program Files (x86)/Visual Leak Detector/include")
+        target_link_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE "C:/Program Files (x86)/Visual Leak Detector/lib/Win64")
+        target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME} opengl32 dwmapi vld)
+    else()
+        target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME} opengl32 dwmapi)
+    endif()
 else()
     target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME})
 endif()
+
+# Resource link
 set(CURLY_LINK_FLAGS ${CMAKE_CURRENT_SOURCE_DIR}/${OPT_RES_FILE})
 set_target_properties(${CURLY_EDITOR_EXEC_NAME}
 PROPERTIES

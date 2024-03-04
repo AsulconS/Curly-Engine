@@ -60,10 +60,14 @@
  */
 #if defined(CF__CURLY_EDITOR_OS_WINDOWS)
     #if (C__WIN_SDK_VERSION_PATCH >= 22000)
-        #define CF__CURLY_EDITOR_ENHANCED_UI
+        #define CURLY_EDITOR_ENHANCED_UI
     #endif
 #endif
 
-#if defined(C__CURLY_DEV_OPT_1)
+/**
+ * @brief This enables or disabled VLD based
+ * on build type and options
+ */
+#if !defined(CURLY_RELEASE) && defined(C__CURLY_DEV_OPT_1)
     #include <vld.h>
 #endif

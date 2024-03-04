@@ -30,12 +30,11 @@
 #include <iostream>
 
 #include "windowManager.hpp"
-
 namespace wnd
 {
 EditorWindow::EditorWindow(const cfg::uint32 t_width, const cfg::uint32 t_height, const char* t_title, WindowStyle t_style, InputHandler* t_inputHandler)
     : wnd::IWindow {t_width, t_height, t_title, t_style, t_inputHandler},
-      m_mainLoopCallback {nullptr}
+      m_tickCallback {nullptr}
 {
     m_windowManager = WindowManager::createInstance();
     m_windowManager->registerWindowInstance(this);
@@ -64,21 +63,26 @@ EditorWindow::~EditorWindow()
     std::cout << "Window " << m_title << " destroyed" << std::endl;
 }
 
-int EditorWindow::mainLoop()
+int EditorWindow::startTicking()
 {
-    if(m_mainLoopCallback == nullptr)
-    {
-        return 1;
-    }
-    while(m_mainLoopCallback(this));
+    while(tick());
     return 0;
+}
+
+bool EditorWindow::tick()
+{
+    if(m_tickCallback != nullptr)
+    {
+        return m_tickCallback(this, WindowTickType::PROC_TICK);
+    }
+    return false;
 }
 
 bool EditorWindow::externalTick()
 {
-    if (m_mainLoopCallback != nullptr)
+    if (m_tickCallback != nullptr)
     {
-        return m_mainLoopCallback(this);
+        return m_tickCallback(this, WindowTickType::EXTERNAL_TICK);
     }
     return false;
 }
@@ -115,9 +119,9 @@ void EditorWindow::swapBuffers()
     m_windowManager->swapBuffers();
 }
 
-void EditorWindow::setMainLoopCallbackFunction(MainLoopCallback callback)
+void EditorWindow::setTickCallbackFunction(MainLoopCallback callback)
 {
-    m_mainLoopCallback = callback;
+    m_tickCallback = callback;
 }
 
 float EditorWindow::getAspectRatio() const

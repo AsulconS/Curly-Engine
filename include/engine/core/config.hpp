@@ -54,6 +54,10 @@
     #define CURLY_API
 #endif
 
-#if defined(C__CURLY_DEV_OPT_1)
+/**
+ * @brief This enables or disabled VLD based
+ * on build type and options
+ */
+#if !defined(CURLY_DEBUG) && defined(C__CURLY_DEV_OPT_1)
     #include <vld.h>
 #endif

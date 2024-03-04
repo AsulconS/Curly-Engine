@@ -11,7 +11,7 @@
 
 static sys::Timer timer(true);
 
-bool mainLoop(wnd::EditorWindow* window)
+bool mainLoop(wnd::EditorWindow* window, const wnd::WindowTickType tickType)
 {
     timer.tick();
     window->pollEvents();
@@ -23,7 +23,7 @@ bool mainLoop(wnd::EditorWindow* window)
 
 int main()
 {
-    wnd::EditorWindow window(1920, 1080, "Curly Engine");
+    wnd::EditorWindow window(1600, 900, "Curly Engine");
     if (!window.isReady())
     {
         return 1;
@@ -31,6 +31,6 @@ int main()
 
     wnd::InputHandler inputHandler;
     window.setInputHandler(inputHandler);
-    window.setMainLoopCallbackFunction(mainLoop);
-    return window.mainLoop();
+    window.setTickCallbackFunction(mainLoop);
+    return window.startTicking();
 }

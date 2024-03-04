@@ -35,13 +35,24 @@
 namespace wnd
 {
 /**
+ * @brief Window Tick Type Class that identifies the type of tick being called
+ * 
+ */
+enum class CURLY_EDITOR_API WindowTickType
+{
+    NONE,
+    PROC_TICK,
+    EXTERNAL_TICK
+};
+
+/**
  * @brief Rendering Window Class that handle a window for render of the program
  * 
  */
 class CURLY_EDITOR_API EditorWindow : public IWindow
 {
 public:
-    using MainLoopCallback = bool (*)(EditorWindow*);
+    using MainLoopCallback = bool (*)(EditorWindow*, const WindowTickType);
 
 public:
     /**
@@ -59,10 +70,16 @@ public:
     virtual ~EditorWindow();
 
     /**
-     * @brief Starts Registered Main Loop
+     * @brief Starts Main Loop
+     * 
+     * @return int 
+     */
+    int startTicking();
+    /**
+     * @brief Starts Registered tick
      * 
      */
-    int mainLoop();
+    bool tick();
     /**
      * @brief Ticks the main loop once
      * 
@@ -80,7 +97,7 @@ public:
      * 
      * @param callback 
      */
-    void setMainLoopCallbackFunction(MainLoopCallback callback);
+    void setTickCallbackFunction(MainLoopCallback callback);
 
     /**
      * @brief Check if the Window shouldn't close
@@ -155,7 +172,7 @@ private:
     static bool externalTickCallback(IWindow* window);
 
 private:
-    MainLoopCallback m_mainLoopCallback;
+    MainLoopCallback m_tickCallback;
 };
 
 } // namespace ewnd
