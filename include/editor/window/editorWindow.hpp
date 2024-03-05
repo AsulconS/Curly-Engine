@@ -23,6 +23,8 @@
 
 #include <editor/core/config.hpp>
 
+#include <editor/core/appMainProc.hpp>
+
 #include <engine/core/common.hpp>
 
 #include <engine/window/iWindow.hpp>
@@ -36,7 +38,7 @@ namespace wnd
  * @brief Window Tick Type Class that identifies the type of tick being called
  * 
  */
-enum class CURLY_EDITOR_API WindowTickType
+enum class CURLY_EDITOR_API WindowTickType : cfg::uint8
 {
     NONE,
     PROC_TICK,
@@ -50,7 +52,8 @@ enum class CURLY_EDITOR_API WindowTickType
 class CURLY_EDITOR_API EditorWindow : public IWindow
 {
 public:
-    using MainLoopCallback = bool (*)(EditorWindow*, const WindowTickType);
+    using TickCallback = bool (AppMainProc::*)(EditorWindow*, const WindowTickType);
+    using TickStaticCallback = bool (*)(EditorWindow*, const WindowTickType);
 
 public:
     /**
@@ -91,11 +94,18 @@ public:
     void swapBuffers();
 
     /**
-     * @brief Set the Main Loop Callback Function object
+     * @brief Binds the Tick Callback Function to a member function pointer
+     * 
+     * @param obj 
+     * @param callback 
+     */
+    void bindTickCallbackFunction(AppMainProc* appMainProc, TickCallback callback);
+    /**
+     * @brief Binds the Tick Callback Function to a static function pointer
      * 
      * @param callback 
      */
-    void setTickCallbackFunction(MainLoopCallback callback);
+    void bindStaticTickCallbackFunction(TickStaticCallback callback);
 
     /**
      * @brief Check if the Window shouldn't close
@@ -155,6 +165,12 @@ protected:
 
 private:
     /**
+     * @brief Invokes bound tick callback
+     * 
+     */
+    bool invokeTickCallback(EditorWindow* window, const WindowTickType tickType);
+
+    /**
      * @brief Key Callback function
      * 
      * @param window 
@@ -170,7 +186,9 @@ private:
     static bool externalTickCallback(IWindow* window);
 
 private:
-    MainLoopCallback m_tickCallback;
+    TickCallback m_tickCallback;
+    TickStaticCallback m_tickStaticCallback;
+    AppMainProc* m_appMainProc;
 };
 
 } // namespace ewnd

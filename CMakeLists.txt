@@ -60,6 +60,7 @@ set(CURLY_RUNTIME_SOURCES
     src/engine/window/${CURLY_PLATFORM}/compatUtilsPlatform.cpp
 )
 set(CURLY_EDITOR_SOURCES
+    src/editor/core/appMainProc.cpp
     src/editor/window/editorWindow.cpp
     src/editor/window/${CURLY_PLATFORM}/windowManagerPlatform.cpp
     src/editor/app.cpp

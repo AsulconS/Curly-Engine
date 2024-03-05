@@ -19,30 +19,31 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-#include <editor/core/appMainProc.hpp>
+#pragma once
 
-#include <editor/window/editorWindow.hpp>
+#include <editor/core/config.hpp>
 
-#include <engine/math.hpp>
-#include <engine/system.hpp>
-#include <engine/window.hpp>
-#include <engine/graphics.hpp>
+#include <engine/core/common.hpp>
+#include <engine/system/timer.hpp>
 
-#include <iostream>
-
-//--------------------------------------------------------------------------------
-int main()
+// Forward Declarations
+namespace wnd
 {
-    wnd::EditorWindow window(1600, 900, "Curly Engine");
-    if (!window.isReady())
-    {
-        return 1;
-    }
-
-    AppMainProc appMainProc;
-    wnd::InputHandler inputHandler;
-    window.setInputHandler(inputHandler);
-    window.bindTickCallbackFunction(&appMainProc, &AppMainProc::mainProc);
-    bool status = window.startTicking();
-    return status;
+    class EditorWindow;
+    enum class WindowTickType : cfg::uint8;
 }
+
+/**
+ * @brief Application Main Procedure class to handle main tick
+ * 
+ */
+class CURLY_EDITOR_API AppMainProc
+{
+public:
+    AppMainProc();
+
+    bool mainProc(wnd::EditorWindow* window, const wnd::WindowTickType tickType);
+
+private:
+    sys::Timer m_timer;
+};

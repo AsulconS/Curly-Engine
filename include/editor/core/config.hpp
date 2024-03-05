@@ -44,9 +44,9 @@
 
 #if defined(C__CURLY_EDITOR_API_CALL_EXPORT)
     #if defined(C__CURLY_EDITOR_API_CALL_EXPORT_BUILD)
-        #define CURLY_EDITOR_API CF__CURLY_DLL_EXPORT
+        #define CURLY_EDITOR_API CF__CURLY_EDITOR_DLL_EXPORT
     #else
-        #define CURLY_EDITOR_API CF__CURLY_DLL_IMPORT
+        #define CURLY_EDITOR_API CF__CURLY_EDITOR_DLL_IMPORT
     #endif
 #else
     #define CURLY_EDITOR_API

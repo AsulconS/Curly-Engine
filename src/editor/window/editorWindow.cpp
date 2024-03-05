@@ -30,9 +30,11 @@
 #include "windowManager.hpp"
 namespace wnd
 {
+//--------------------------------------------------------------------------------
 EditorWindow::EditorWindow(const cfg::uint32 t_width, const cfg::uint32 t_height, const char* t_title, WindowStyle t_style, InputHandler* t_inputHandler)
     : wnd::IWindow {t_width, t_height, t_title, t_style, t_inputHandler},
-      m_tickCallback {nullptr}
+      m_tickCallback { nullptr },
+      m_tickStaticCallback { nullptr }
 {
     m_windowManager = WindowManager::createInstance();
     m_windowManager->registerWindowInstance(this);
@@ -51,6 +53,7 @@ EditorWindow::EditorWindow(const cfg::uint32 t_width, const cfg::uint32 t_height
     }
 }
 
+//--------------------------------------------------------------------------------
 EditorWindow::~EditorWindow()
 {
     std::cout << "Destructing Window " << m_title << std::endl;
@@ -61,50 +64,50 @@ EditorWindow::~EditorWindow()
     std::cout << "Window " << m_title << " destroyed" << std::endl;
 }
 
+//--------------------------------------------------------------------------------
 int EditorWindow::startTicking()
 {
     while(tick());
     return 0;
 }
 
+//--------------------------------------------------------------------------------
 bool EditorWindow::tick()
 {
-    if(m_tickCallback != nullptr)
-    {
-        return m_tickCallback(this, WindowTickType::PROC_TICK);
-    }
-    return false;
+    return invokeTickCallback(this, WindowTickType::PROC_TICK);
 }
 
+//--------------------------------------------------------------------------------
 bool EditorWindow::externalTick()
 {
-    if (m_tickCallback != nullptr)
-    {
-        return m_tickCallback(this, WindowTickType::EXTERNAL_TICK);
-    }
-    return false;
+    return invokeTickCallback(this, WindowTickType::EXTERNAL_TICK);
 }
 
+//--------------------------------------------------------------------------------
 bool EditorWindow::isActive()
 {
     return m_windowManager->isActive();
 }
 
+//--------------------------------------------------------------------------------
 bool EditorWindow::isReady()
 {
     return m_ready;
 }
 
+//--------------------------------------------------------------------------------
 void EditorWindow::close()
 {
     m_windowManager->destroyWindow();
 }
 
+//--------------------------------------------------------------------------------
 void EditorWindow::setInputHandler(InputHandler& t_inputHandler)
 {
     m_inputHandler = &t_inputHandler;
 }
 
+//--------------------------------------------------------------------------------
 void EditorWindow::pollEvents()
 {
     if(m_inputHandler != nullptr)
@@ -112,31 +115,47 @@ void EditorWindow::pollEvents()
     m_windowManager->pollEvents();
 }
 
+//--------------------------------------------------------------------------------
 void EditorWindow::swapBuffers()
 {
     m_windowManager->swapBuffers();
 }
 
-void EditorWindow::setTickCallbackFunction(MainLoopCallback callback)
+//--------------------------------------------------------------------------------
+void EditorWindow::bindTickCallbackFunction(AppMainProc* appMainProc, TickCallback callback)
 {
+    m_appMainProc = appMainProc;
     m_tickCallback = callback;
+    m_tickStaticCallback = nullptr;
 }
 
+//--------------------------------------------------------------------------------
+void EditorWindow::bindStaticTickCallbackFunction(TickStaticCallback callback)
+{
+    m_appMainProc = nullptr;
+    m_tickCallback = nullptr;
+    m_tickStaticCallback = callback;
+}
+
+//--------------------------------------------------------------------------------
 float EditorWindow::getAspectRatio() const
 {
     return static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight);
 }
 
+//--------------------------------------------------------------------------------
 math::Vec2i EditorWindow::getWindowRect() const
 {
     return { m_windowWidth, m_windowHeight };
 }
 
+//--------------------------------------------------------------------------------
 math::Vec2i EditorWindow::getViewportRect() const
 {
     return { m_viewportWidth, m_viewportHeight };
 }
 
+//--------------------------------------------------------------------------------
 void EditorWindow::initializeWindow()
 {
     WindowRectParams rectParams{ m_windowManager->createEditorWindow(m_title, 0, 0, m_windowWidth, m_windowHeight, m_style) };
@@ -150,6 +169,21 @@ void EditorWindow::initializeWindow()
     }
 }
 
+//--------------------------------------------------------------------------------
+bool EditorWindow::invokeTickCallback(EditorWindow* window, const WindowTickType tickType)
+{
+    if (m_tickStaticCallback != nullptr)
+    {
+        return m_tickStaticCallback(window, tickType);
+    }
+    if ((m_appMainProc == nullptr) || (m_tickCallback == nullptr))
+    {
+        return false;
+    }
+    return (m_appMainProc->*m_tickCallback)(window, tickType);
+}
+
+//--------------------------------------------------------------------------------
 void EditorWindow::eventCallback(IWindow* window, InputEvent event, WindowParams* params)
 {
     EditorWindow* eWindow{ static_cast<EditorWindow*>(window) };
@@ -184,6 +218,7 @@ void EditorWindow::eventCallback(IWindow* window, InputEvent event, WindowParams
     }
 }
 
+//--------------------------------------------------------------------------------
 bool EditorWindow::externalTickCallback(IWindow* window)
 {
     EditorWindow* eWindow{ static_cast<EditorWindow*>(window) };

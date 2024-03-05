@@ -23,26 +23,21 @@
 
 #include <editor/window/editorWindow.hpp>
 
-#include <engine/math.hpp>
-#include <engine/system.hpp>
-#include <engine/window.hpp>
-#include <engine/graphics.hpp>
-
-#include <iostream>
+#include "../../engine/core/GL/gl.h"
 
 //--------------------------------------------------------------------------------
-int main()
+AppMainProc::AppMainProc()
+    : m_timer(true)
 {
-    wnd::EditorWindow window(1600, 900, "Curly Engine");
-    if (!window.isReady())
-    {
-        return 1;
-    }
+}
 
-    AppMainProc appMainProc;
-    wnd::InputHandler inputHandler;
-    window.setInputHandler(inputHandler);
-    window.bindTickCallbackFunction(&appMainProc, &AppMainProc::mainProc);
-    bool status = window.startTicking();
-    return status;
+//--------------------------------------------------------------------------------
+bool AppMainProc::mainProc(wnd::EditorWindow* window, const wnd::WindowTickType tickType)
+{
+    m_timer.tick();
+    window->pollEvents();
+    glClearColor(0.15f, 0.15f, 0.174f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    window->swapBuffers();
+    return window->isActive();
 }
