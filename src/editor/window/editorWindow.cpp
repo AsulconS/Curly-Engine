@@ -33,6 +33,7 @@ namespace wnd
 //--------------------------------------------------------------------------------
 EditorWindow::EditorWindow(const cfg::uint32 t_width, const cfg::uint32 t_height, const char* t_title, WindowStyle t_style, InputHandler* t_inputHandler)
     : wnd::IWindow {t_width, t_height, t_title, t_style, t_inputHandler},
+      m_appMainProc { nullptr },
       m_tickCallback { nullptr },
       m_tickStaticCallback { nullptr }
 {
@@ -46,7 +47,7 @@ EditorWindow::EditorWindow(const cfg::uint32 t_width, const cfg::uint32 t_height
         m_windowManager->pollEvents();
         m_ready = true;
     }
-    catch(const exc::GenericException& e)
+    catch (const exc::GenericException& e)
     {
         std::cerr << "An Exception has occurred: " << e.what() << std::endl;
         m_ready = false;
@@ -57,7 +58,7 @@ EditorWindow::EditorWindow(const cfg::uint32 t_width, const cfg::uint32 t_height
 EditorWindow::~EditorWindow()
 {
     std::cout << "Destructing Window " << m_title << std::endl;
-    if(isActive())
+    if (isActive())
     {
         close();
     }
@@ -67,7 +68,7 @@ EditorWindow::~EditorWindow()
 //--------------------------------------------------------------------------------
 int EditorWindow::startTicking()
 {
-    while(tick());
+    while (tick());
     return 0;
 }
 
@@ -111,7 +112,9 @@ void EditorWindow::setInputHandler(InputHandler& t_inputHandler)
 void EditorWindow::pollEvents()
 {
     if(m_inputHandler != nullptr)
+    {
         m_inputHandler->_tick();
+    }
     m_windowManager->pollEvents();
 }
 
@@ -187,11 +190,11 @@ bool EditorWindow::invokeTickCallback(EditorWindow* window, const WindowTickType
 void EditorWindow::eventCallback(IWindow* window, InputEvent event, WindowParams* params)
 {
     EditorWindow* eWindow{ static_cast<EditorWindow*>(window) };
-    if(eWindow->m_inputHandler == nullptr)
+    if (eWindow->m_inputHandler == nullptr)
     {
         return;
     }
-    switch(event)
+    switch (event)
     {
         case KEY_PRESSED:
         case KEY_RELEASED:

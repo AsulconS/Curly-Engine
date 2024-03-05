@@ -186,9 +186,9 @@ private:
     static bool externalTickCallback(IWindow* window);
 
 private:
+    AppMainProc* m_appMainProc;
     TickCallback m_tickCallback;
     TickStaticCallback m_tickStaticCallback;
-    AppMainProc* m_appMainProc;
 };
 
 } // namespace ewnd
