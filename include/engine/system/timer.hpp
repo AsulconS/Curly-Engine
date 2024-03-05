@@ -35,63 +35,63 @@ namespace sys
 class CURLY_API Timer
 {
 public:
-    /**
-     * @brief Construct a new Timer object
-     * 
-     */
-    explicit Timer(const bool t_debugMode = false, const float t_period = 1.0f);
-    /**
-     * @brief Destroy the Timer object
-     * 
-     */
-    virtual ~Timer();
+	/**
+	 * @brief Construct a new Timer object
+	 * 
+	 */
+	explicit Timer(const bool t_debugMode = false, const float t_period = 1.0f);
+	/**
+	 * @brief Destroy the Timer object
+	 * 
+	 */
+	virtual ~Timer();
 
-    /**
-     * @brief Update the timer
-     * 
-     */
-    void tick();
-    /**
-     * @brief Restart the timer
-     * 
-     */
-    void restart();
+	/**
+	 * @brief Update the timer
+	 * 
+	 */
+	void tick();
+	/**
+	 * @brief Restart the timer
+	 * 
+	 */
+	void restart();
 
-    /**
-     * @brief Get the Delta Time
-     * 
-     * @return float 
-     */
-    cfg::secT getDeltaTime();
-    /**
-     * @brief Get the Total Frame count
-     * 
-     * @return cfg::uint32 
-     */
-    cfg::uint32 getTotalFrames();
-    /**
-     * @brief Get the Frames Per Second count
-     * 
-     * @return cfg::uint32 
-     */
-    cfg::uint32 getFramesPerSecond();
+	/**
+	 * @brief Get the Delta Time
+	 * 
+	 * @return float 
+	 */
+	cfg::secT getDeltaTime();
+	/**
+	 * @brief Get the Total Frame count
+	 * 
+	 * @return cfg::uint32 
+	 */
+	cfg::uint32 getTotalFrames();
+	/**
+	 * @brief Get the Frames Per Second count
+	 * 
+	 * @return cfg::uint32 
+	 */
+	cfg::uint32 getFramesPerSecond();
 
 private:
-    cfg::secT procDeltaTime();
-    cfg::secT procTotalElapsedTime();
-    cfg::secT procCurrentElapsedTime();
+	cfg::secT procDeltaTime();
+	cfg::secT procTotalElapsedTime();
+	cfg::secT procCurrentElapsedTime();
 
-    cfg::microT m_start;
-    cfg::microT m_currentStart;
-    cfg::microT m_lastTime;
+	cfg::microT m_start;
+	cfg::microT m_currentStart;
+	cfg::microT m_lastTime;
 
-    cfg::secT m_deltaTime;
-    cfg::secT m_currentTime;
-    cfg::uint32 m_totalFrames;
-    cfg::uint32 m_framesPerSecond;
+	cfg::secT m_deltaTime;
+	cfg::secT m_currentTime;
+	cfg::uint32 m_totalFrames;
+	cfg::uint32 m_framesPerSecond;
 
-    cfg::secT m_period;
-    bool m_debugMode;
+	cfg::secT m_period;
+	bool m_debugMode;
 };
 
 } // namespace sys

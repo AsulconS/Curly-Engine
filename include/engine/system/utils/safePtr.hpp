@@ -30,23 +30,23 @@ template <typename T>
 class SafePtr
 {
 public:
-    template <typename... TArgs>
-    SafePtr(TArgs... args);
-    SafePtr(SafePtr<T>&& o);
-    ~SafePtr();
+	template <typename... TArgs>
+	SafePtr(TArgs... args);
+	SafePtr(SafePtr<T>&& o);
+	~SafePtr();
 
-    T& operator*();
-    T* operator->();
-    bool operator==(const SafePtr<T>& o);
-    bool operator!=(const SafePtr<T>& o);
-    bool operator==(const std::nullptr_t nullPtr);
-    bool operator!=(const std::nullptr_t nullPtr);
-    operator T*();
+	T& operator*();
+	T* operator->();
+	bool operator==(const SafePtr<T>& o);
+	bool operator!=(const SafePtr<T>& o);
+	bool operator==(const std::nullptr_t nullPtr);
+	bool operator!=(const std::nullptr_t nullPtr);
+	operator T*();
 
 protected:
-    T* m_data;
+	T* m_data;
 
-    SafePtr(const SafePtr<T>& o) = delete;
+	SafePtr(const SafePtr<T>& o) = delete;
 };
 
 } // namespace wnd

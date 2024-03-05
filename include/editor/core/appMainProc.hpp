@@ -29,8 +29,8 @@
 // Forward Declarations
 namespace wnd
 {
-    class EditorWindow;
-    enum class WindowTickType : cfg::uint8;
+	class EditorWindow;
+	enum class WindowTickType : cfg::uint8;
 }
 
 /**
@@ -40,10 +40,10 @@ namespace wnd
 class CURLY_EDITOR_API AppMainProc
 {
 public:
-    AppMainProc();
+	AppMainProc();
 
-    bool mainProc(wnd::EditorWindow* window, const wnd::WindowTickType tickType);
+	bool mainProc(wnd::EditorWindow* window, const wnd::WindowTickType tickType);
 
 private:
-    sys::Timer m_timer;
+	sys::Timer m_timer;
 };

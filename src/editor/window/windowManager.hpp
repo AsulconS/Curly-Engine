@@ -26,9 +26,9 @@
 #include <engine/core/common.hpp>
 
 #if defined(CF__CURLY_OS_WINDOWS)
-    #include "win32/windowManagerPlatform.hpp"
+	#include "win32/windowManagerPlatform.hpp"
 #elif defined(CF__CURLY_OS_LINUX)
-    #include "linux/windowManagerPlatform.hpp"
+	#include "linux/windowManagerPlatform.hpp"
 #else
-    #error Curly Engine has no support for this OS
+	#error Curly Engine has no support for this OS
 #endif

@@ -30,25 +30,25 @@ template <typename T>
 class LazyPtr
 {
 public:
-    LazyPtr(LazyPtr<T>&& o);
-    LazyPtr();
-    ~LazyPtr();
+	LazyPtr(LazyPtr<T>&& o);
+	LazyPtr();
+	~LazyPtr();
 
-    template <typename... TArgs>
-    void init(TArgs... args);
+	template <typename... TArgs>
+	void init(TArgs... args);
 
-    T& operator*();
-    T* operator->();
-    bool operator==(const LazyPtr<T>& o);
-    bool operator!=(const LazyPtr<T>& o);
-    bool operator==(const std::nullptr_t nullPtr);
-    bool operator!=(const std::nullptr_t nullPtr);
-    operator T*();
+	T& operator*();
+	T* operator->();
+	bool operator==(const LazyPtr<T>& o);
+	bool operator!=(const LazyPtr<T>& o);
+	bool operator==(const std::nullptr_t nullPtr);
+	bool operator!=(const std::nullptr_t nullPtr);
+	operator T*();
 
 private:
-    T* m_data;
+	T* m_data;
 
-    LazyPtr(const LazyPtr<T>& o) = delete;
+	LazyPtr(const LazyPtr<T>& o) = delete;
 };
 
 } // namespace wnd

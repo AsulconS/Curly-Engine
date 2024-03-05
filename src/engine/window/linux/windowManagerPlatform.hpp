@@ -65,106 +65,106 @@ typedef int  (*PFNGLXSWAPINTERVALPROC2)(int);
 
 class CURLY_API WindowManager final
 {
-    friend class sys::LazyPtr<class WindowManager>;
-    friend void compat::forceGlxContextToVersion(const int major, const int minor);
+	friend class sys::LazyPtr<class WindowManager>;
+	friend void compat::forceGlxContextToVersion(const int major, const int minor);
 
 public:
-    static WindowManager* createInstance();
-    static WindowManager* getInstance(const cfg::uint32 index);
+	static WindowManager* createInstance();
+	static WindowManager* getInstance(const cfg::uint32 index);
 
-    bool isActive();
-    WindowRectParams createRenderingWindow(const char* title, int x, int y, int width, int height, WindowStyle style);
-    void destroyWindow();
+	bool isActive();
+	WindowRectParams createRenderingWindow(const char* title, int x, int y, int width, int height, WindowStyle style);
+	void destroyWindow();
 
-    void setEventCallbackFunction(IWindow* t_windowCallbackInstance, EventCallbackFunction tf_eventCallbackFunction);
+	void setEventCallbackFunction(IWindow* t_windowCallbackInstance, EventCallbackFunction tf_eventCallbackFunction);
 
-    void pollEvents();
-    void swapBuffers();
+	void pollEvents();
+	void swapBuffers();
 
 private:
-    bool m_active;
+	bool m_active;
 
-    cfg::uint32 m_index;
-    XWND m_windowHandle;
-    Atom m_atomWmDeleteWindow;
+	cfg::uint32 m_index;
+	XWND m_windowHandle;
+	Atom m_atomWmDeleteWindow;
 
-    GLXFBConfig m_fbConfig;
-    GLXContext m_context;
+	GLXFBConfig m_fbConfig;
+	GLXContext m_context;
 
-    XVisualInfo* m_visual;
-    XSetWindowAttributes m_windowAttributes;
+	XVisualInfo* m_visual;
+	XSetWindowAttributes m_windowAttributes;
 
-    IWindow* m_windowCallbackInstance;
-    EventCallbackFunction mf_eventCallbackFunction;
+	IWindow* m_windowCallbackInstance;
+	EventCallbackFunction mf_eventCallbackFunction;
 
-    void createContext();
+	void createContext();
 
-    /* Privated constructor and destructor */
+	/* Privated constructor and destructor */
 
-    WindowManager(const cfg::uint32 t_index);
-    ~WindowManager();
+	WindowManager(const cfg::uint32 t_index);
+	~WindowManager();
 
-    /* ---- Static Instances ---- */
+	/* ---- Static Instances ---- */
 
-    /* Instance Tracking variables */
+	/* Instance Tracking variables */
 
-    static cfg::uint32 s_activeSessions;
-    static cfg::uint32 s_wmInstanceCount;
-    static sys::LazyPtr<WindowManager> s_wmInstances[MAX_WINDOW_INSTANCES];
+	static cfg::uint32 s_activeSessions;
+	static cfg::uint32 s_wmInstanceCount;
+	static sys::LazyPtr<WindowManager> s_wmInstances[MAX_WINDOW_INSTANCES];
 
-    /**
-     * @brief   Window Hash Table <Window Handler, Instance ID>
-     */
-    static sys::SafePtr<Map<XWND, cfg::uint32>> s_hwndMap;
+	/**
+	 * @brief   Window Hash Table <Window Handler, Instance ID>
+	 */
+	static sys::SafePtr<Map<XWND, cfg::uint32>> s_hwndMap;
 
-    /* Static Internal Data */
+	/* Static Internal Data */
 
-    static const int s_glxAttribs[ATTRIB_LIST_SIZE];
+	static const int s_glxAttribs[ATTRIB_LIST_SIZE];
 
-    static int s_keyCodesMap[NUM_KEYS_SIZE];
-    static int s_keyPhysicStates[NUM_KEYS_SIZE];
-    static int s_mouseButtonsMap[NUM_BUTTONS_SIZE];
+	static int s_keyCodesMap[NUM_KEYS_SIZE];
+	static int s_keyPhysicStates[NUM_KEYS_SIZE];
+	static int s_mouseButtonsMap[NUM_BUTTONS_SIZE];
 
-    static XEvent s_event;
-    static XkbDescPtr s_kbDesc;
-    static Display* s_display;
-    static Screen*  s_screen;
-    static int s_screenID;
+	static XEvent s_event;
+	static XkbDescPtr s_kbDesc;
+	static Display* s_display;
+	static Screen*  s_screen;
+	static int s_screenID;
 
-    static int s_fbCount;
-    static GLXFBConfig* s_fbConfigs;
+	static int s_fbCount;
+	static GLXFBConfig* s_fbConfigs;
 
-    static bool s_vSyncCompat;
-    static bool s_attribCtxCompat;
-    static int s_glxCtxVersionMajorCompat;
-    static int s_glxCtxVersionMinorCompat;
+	static bool s_vSyncCompat;
+	static bool s_attribCtxCompat;
+	static int s_glxCtxVersionMajorCompat;
+	static int s_glxCtxVersionMinorCompat;
 
-    static PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB;
+	static PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB;
 
-    static bool glXSwapIntervalEXTMode;
-    static PFNGLXSWAPINTERVALPROC1 glXSwapInterval1;
-    static PFNGLXSWAPINTERVALPROC2 glXSwapInterval2;
+	static bool glXSwapIntervalEXTMode;
+	static PFNGLXSWAPINTERVALPROC1 glXSwapInterval1;
+	static PFNGLXSWAPINTERVALPROC2 glXSwapInterval2;
 
-    static void internalSetGlxContextVersion(const int major, const int minor);
+	static void internalSetGlxContextVersion(const int major, const int minor);
 
-    static void loadInputMap();
-    static int rawToStandard(int rawCode);
+	static void loadInputMap();
+	static int rawToStandard(int rawCode);
 
-    static void loadGLExtensions();
-    static GLXFBConfig chooseBestFBC();
+	static void loadGLExtensions();
+	static GLXFBConfig chooseBestFBC();
 
-    static void fatalError(const char* msg);
+	static void fatalError(const char* msg);
 
-    static bool isExtensionSupported(const char* extList, const char* extension);
+	static bool isExtensionSupported(const char* extList, const char* extension);
 
-    static void CurlyProc();
+	static void CurlyProc();
 
-    /* Deleted Constructors and assignment */
+	/* Deleted Constructors and assignment */
 
-    WindowManager(const WindowManager&) = delete;
-    WindowManager(WindowManager&&) = delete;
+	WindowManager(const WindowManager&) = delete;
+	WindowManager(WindowManager&&) = delete;
 
-    WindowManager& operator=(const WindowManager&) = delete;
+	WindowManager& operator=(const WindowManager&) = delete;
 };
 
 } // namespace wnd

@@ -32,54 +32,54 @@ namespace sys
  */
 class Time final
 {
-    friend constexpr Time seconds(cfg::secT seconds);
-    friend constexpr Time milliseconds(cfg::milliT milliseconds);
-    friend constexpr Time microseconds(cfg::microT microseconds);
-    friend constexpr Time rawTimeBuilder(cfg::microT microseconds);
+	friend constexpr Time seconds(cfg::secT seconds);
+	friend constexpr Time milliseconds(cfg::milliT milliseconds);
+	friend constexpr Time microseconds(cfg::microT microseconds);
+	friend constexpr Time rawTimeBuilder(cfg::microT microseconds);
 public:
-    /**
-     * @brief Construct a new Time object
-     * 
-     */
-    constexpr Time();
+	/**
+	 * @brief Construct a new Time object
+	 * 
+	 */
+	constexpr Time();
 
-    /**
-     * @brief Get the Time Point value as seconds
-     * 
-     * @return secT 
-     */
-    constexpr cfg::secT asSeconds() const;
-    /**
-     * @brief Get the Time Point value as milliseconds
-     * 
-     * @return milliT 
-     */
-    constexpr cfg::milliT asMilliseconds() const;
-    /**
-     * @brief Get the Time Point value as microseconds
-     * 
-     * @return microT 
-     */
-    constexpr cfg::microT asMicroseconds() const;
-    /**
-     * @brief Get the Raw Time Count as microseconds
-     * It's equivalent to asMicroseconds function
-     * 
-     * @return microT 
-     */
-    constexpr cfg::microT getRawTimeCount() const;
-
-private:
-    /**
-     * @brief Construct a new Time object explicitly
-     * in order to prevent outer construction
-     * 
-     * @param t_timeCount 
-     */
-    constexpr explicit Time(cfg::microT t_timeCount);
+	/**
+	 * @brief Get the Time Point value as seconds
+	 * 
+	 * @return secT 
+	 */
+	constexpr cfg::secT asSeconds() const;
+	/**
+	 * @brief Get the Time Point value as milliseconds
+	 * 
+	 * @return milliT 
+	 */
+	constexpr cfg::milliT asMilliseconds() const;
+	/**
+	 * @brief Get the Time Point value as microseconds
+	 * 
+	 * @return microT 
+	 */
+	constexpr cfg::microT asMicroseconds() const;
+	/**
+	 * @brief Get the Raw Time Count as microseconds
+	 * It's equivalent to asMicroseconds function
+	 * 
+	 * @return microT 
+	 */
+	constexpr cfg::microT getRawTimeCount() const;
 
 private:
-    cfg::microT m_timeCount;
+	/**
+	 * @brief Construct a new Time object explicitly
+	 * in order to prevent outer construction
+	 * 
+	 * @param t_timeCount 
+	 */
+	constexpr explicit Time(cfg::microT t_timeCount);
+
+private:
+	cfg::microT m_timeCount;
 };
 
 /**

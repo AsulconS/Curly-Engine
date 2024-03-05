@@ -42,152 +42,152 @@ namespace gfx
 class CURLY_API Shader
 {
 public:
-    enum ShaderType : int
-    {
-        VERTEX_SHADER = 0x8B31,
-        FRAGMENT_SHADER = 0x8B30
-    };
+	enum ShaderType : int
+	{
+		VERTEX_SHADER = 0x8B31,
+		FRAGMENT_SHADER = 0x8B30
+	};
 
 public:
-    /**
-     * @brief Construct a new Shader object from its name
-     * 
-     * @param name 
-     */
-    Shader(const std::string& name);
-    /**
-     * @brief Construct a new Shader object from string source
-     * 
-     * @param vsSrc 
-     * @param fsSrc 
-     */
-    Shader(const std::string& vsSrc, const std::string& fsSrc);
-    /**
-     * @brief Destroy the Shader object
-     * 
-     */
-    virtual ~Shader();
+	/**
+	 * @brief Construct a new Shader object from its name
+	 * 
+	 * @param name 
+	 */
+	Shader(const std::string& name);
+	/**
+	 * @brief Construct a new Shader object from string source
+	 * 
+	 * @param vsSrc 
+	 * @param fsSrc 
+	 */
+	Shader(const std::string& vsSrc, const std::string& fsSrc);
+	/**
+	 * @brief Destroy the Shader object
+	 * 
+	 */
+	virtual ~Shader();
 
-    /**
-     * @brief Binds the current context to this shader
-     * 
-     */
-    void use() const;
+	/**
+	 * @brief Binds the current context to this shader
+	 * 
+	 */
+	void use() const;
 
-    /**
-     * @brief Set the Bool object
-     * 
-     * @param name 
-     * @param v0 
-     */
-    void setBool(const std::string& name, bool v0);
-    /**
-     * @brief Set the Int object
-     * 
-     * @param name 
-     * @param v0 
-     */
-    void setInt(const std::string& name, int v0);
-    /**
-     * @brief Set the Float object
-     * 
-     * @param name 
-     * @param v0 
-     */
-    void setFloat(const std::string& name, float v0);
+	/**
+	 * @brief Set the Bool object
+	 * 
+	 * @param name 
+	 * @param v0 
+	 */
+	void setBool(const std::string& name, bool v0);
+	/**
+	 * @brief Set the Int object
+	 * 
+	 * @param name 
+	 * @param v0 
+	 */
+	void setInt(const std::string& name, int v0);
+	/**
+	 * @brief Set the Float object
+	 * 
+	 * @param name 
+	 * @param v0 
+	 */
+	void setFloat(const std::string& name, float v0);
 
-    /**
-     * @brief Set the Vec2 object
-     * 
-     * @param name 
-     * @param v0 
-     * @param v1 
-     */
-    void setVec2(const std::string& name, float v0, float v1);
-    /**
-     * @brief Set the Vec3 object
-     * 
-     * @param name 
-     * @param v0 
-     * @param v1 
-     * @param v2 
-     */
-    void setVec3(const std::string& name, float v0, float v1, float v2);
-    /**
-     * @brief Set the Vec4 object
-     * 
-     * @param name 
-     * @param v0 
-     * @param v1 
-     * @param v2 
-     * @param v3 
-     */
-    void setVec4(const std::string& name, float v0, float v1, float v2, float v3);
+	/**
+	 * @brief Set the Vec2 object
+	 * 
+	 * @param name 
+	 * @param v0 
+	 * @param v1 
+	 */
+	void setVec2(const std::string& name, float v0, float v1);
+	/**
+	 * @brief Set the Vec3 object
+	 * 
+	 * @param name 
+	 * @param v0 
+	 * @param v1 
+	 * @param v2 
+	 */
+	void setVec3(const std::string& name, float v0, float v1, float v2);
+	/**
+	 * @brief Set the Vec4 object
+	 * 
+	 * @param name 
+	 * @param v0 
+	 * @param v1 
+	 * @param v2 
+	 * @param v3 
+	 */
+	void setVec4(const std::string& name, float v0, float v1, float v2, float v3);
 
-    /**
-     * @brief Set the Vec2 object
-     * 
-     * @param name 
-     * @param v 
-     */
-    void setVec2(const std::string& name, const math::Vec2& v);
-    /**
-     * @brief Set the Vec3 object
-     * 
-     * @param name 
-     * @param v 
-     */
-    void setVec3(const std::string& name, const math::Vec3& v);
-    /**
-     * @brief Set the Vec4 object
-     * 
-     * @param name 
-     * @param v 
-     */
-    void setVec4(const std::string& name, const math::Vec4& v);
+	/**
+	 * @brief Set the Vec2 object
+	 * 
+	 * @param name 
+	 * @param v 
+	 */
+	void setVec2(const std::string& name, const math::Vec2& v);
+	/**
+	 * @brief Set the Vec3 object
+	 * 
+	 * @param name 
+	 * @param v 
+	 */
+	void setVec3(const std::string& name, const math::Vec3& v);
+	/**
+	 * @brief Set the Vec4 object
+	 * 
+	 * @param name 
+	 * @param v 
+	 */
+	void setVec4(const std::string& name, const math::Vec4& v);
 
-    /**
-     * @brief Set the Mat3 object
-     * 
-     * @param name 
-     * @param m0 
-     */
-    void setMat3(const std::string& name, const glm::mat3& m0);
-    /**
-     * @brief Set the Mat4 object
-     * 
-     * @param name 
-     * @param m0 
-     */
-    void setMat4(const std::string& name, const glm::mat4& m0);
-
-private:
-    /**
-     * @brief Create a Shader object
-     * 
-     * @param type 
-     * @param src 
-     * @return cfg::uint32 
-     */
-    cfg::uint32 createShader(const ShaderType type, const std::string& src);
-    /**
-     * @brief Loads some type of shader from a file
-     * 
-     * @param type Specifies the type of the shader (VS or FS)
-     * @return std::string 
-     */
-    std::string loadShaderFromFile(const ShaderType type, const std::string& path);
-
-    /**
-     * @brief Check if some error ocurred
-     * 
-     * @param target 
-     * @param isProgram 
-     */
-    void checkErrors(const cfg::uint32 target, const bool isProgram);
+	/**
+	 * @brief Set the Mat3 object
+	 * 
+	 * @param name 
+	 * @param m0 
+	 */
+	void setMat3(const std::string& name, const glm::mat3& m0);
+	/**
+	 * @brief Set the Mat4 object
+	 * 
+	 * @param name 
+	 * @param m0 
+	 */
+	void setMat4(const std::string& name, const glm::mat4& m0);
 
 private:
-    cfg::uint32 m_program;
+	/**
+	 * @brief Create a Shader object
+	 * 
+	 * @param type 
+	 * @param src 
+	 * @return cfg::uint32 
+	 */
+	cfg::uint32 createShader(const ShaderType type, const std::string& src);
+	/**
+	 * @brief Loads some type of shader from a file
+	 * 
+	 * @param type Specifies the type of the shader (VS or FS)
+	 * @return std::string 
+	 */
+	std::string loadShaderFromFile(const ShaderType type, const std::string& path);
+
+	/**
+	 * @brief Check if some error ocurred
+	 * 
+	 * @param target 
+	 * @param isProgram 
+	 */
+	void checkErrors(const cfg::uint32 target, const bool isProgram);
+
+private:
+	cfg::uint32 m_program;
 };
 
 } // namespace gfx

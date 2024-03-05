@@ -33,16 +33,16 @@
 //--------------------------------------------------------------------------------
 int main()
 {
-    wnd::EditorWindow window(1600, 900, "Curly Engine");
-    if (!window.isReady())
-    {
-        return 1;
-    }
+	wnd::EditorWindow window(1600, 900, "Curly Engine");
+	if (!window.isReady())
+	{
+		return 1;
+	}
 
-    AppMainProc appMainProc;
-    wnd::InputHandler inputHandler;
-    window.setInputHandler(inputHandler);
-    window.bindTickCallbackFunction(&appMainProc, &AppMainProc::mainProc);
-    bool status = window.startTicking();
-    return status;
+	AppMainProc appMainProc;
+	wnd::InputHandler inputHandler;
+	window.setInputHandler(inputHandler);
+	window.bindTickCallbackFunction(&appMainProc, &AppMainProc::mainProc);
+	bool status = window.startTicking();
+	return status;
 }

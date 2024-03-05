@@ -53,91 +53,91 @@ using EventCallbackFunction = void (*)(IWindow*, InputEvent, WindowParams*);
 
 class CURLY_API WindowManager final
 {
-    friend class sys::LazyPtr<class WindowManager>;
+	friend class sys::LazyPtr<class WindowManager>;
 
 public:
-    static WindowManager* createInstance();
-    static WindowManager* getInstance(const cfg::uint32 index);
+	static WindowManager* createInstance();
+	static WindowManager* getInstance(const cfg::uint32 index);
 
-    bool isActive();
-    WindowRectParams createRenderingWindow(const char* title, int x, int y, int width, int height, WindowStyle style);
-    void destroyWindow();
+	bool isActive();
+	WindowRectParams createRenderingWindow(const char* title, int x, int y, int width, int height, WindowStyle style);
+	void destroyWindow();
 
-    void setEventCallbackFunction(IWindow* t_windowCallbackInstance, EventCallbackFunction tf_eventCallbackFunction);
+	void setEventCallbackFunction(IWindow* t_windowCallbackInstance, EventCallbackFunction tf_eventCallbackFunction);
 
-    void pollEvents();
-    void swapBuffers();
+	void pollEvents();
+	void swapBuffers();
 
 private:
-    bool m_isInstanceActive;
+	bool m_isInstanceActive;
 
-    cfg::uint32 m_index;
-    HWND m_windowHandle;
+	cfg::uint32 m_index;
+	HWND m_windowHandle;
 
-    HDC m_deviceContextHandle;
-    HGLRC m_glRenderingContextHandle;
+	HDC m_deviceContextHandle;
+	HGLRC m_glRenderingContextHandle;
 
-    IWindow* m_windowCallbackInstance;
-    EventCallbackFunction mf_eventCallbackFunction;
+	IWindow* m_windowCallbackInstance;
+	EventCallbackFunction mf_eventCallbackFunction;
 
-    /* Privated constructor and destructor */
+	/* Privated constructor and destructor */
 
-    WindowManager(const cfg::uint32 t_index);
-    ~WindowManager();
+	WindowManager(const cfg::uint32 t_index);
+	~WindowManager();
 
-    /* Static Instances */
+	/* Static Instances */
 
-    static cfg::uint32 s_activeSessions;
-    static cfg::uint32 s_wmInstanceCount;
-    static sys::LazyPtr<WindowManager> s_wmInstances[MAX_WINDOW_INSTANCES];
+	static cfg::uint32 s_activeSessions;
+	static cfg::uint32 s_wmInstanceCount;
+	static sys::LazyPtr<WindowManager> s_wmInstances[MAX_WINDOW_INSTANCES];
 
-    /**
-     * @brief   Window Hash Table <Window Handler, Instance ID>
-     */
-    static sys::SafePtr<Map<HWND, cfg::uint32>> s_hwndMap;
+	/**
+	 * @brief   Window Hash Table <Window Handler, Instance ID>
+	 */
+	static sys::SafePtr<Map<HWND, cfg::uint32>> s_hwndMap;
 
-    /* Satatic Win32 API Internal Data */
+	/* Satatic Win32 API Internal Data */
 
-    static WNDCLASSEXA s_appWndClass;
-    static const char* s_appWndClassName;
+	static WNDCLASSEXA s_appWndClass;
+	static const char* s_appWndClassName;
 
-    static PIXELFORMATDESCRIPTOR s_pfd;
-    static const int s_attribs[ATTRIB_LIST_SIZE];
+	static PIXELFORMATDESCRIPTOR s_pfd;
+	static const int s_attribs[ATTRIB_LIST_SIZE];
 
-    static int s_mouseTrackCount;
-    static int s_keyPhysicStates[NUM_KEYS_SIZE];
+	static int s_mouseTrackCount;
+	static int s_keyPhysicStates[NUM_KEYS_SIZE];
 
-    static MSG s_msg;
-    static HMODULE s_ogl32Module;
-    static HINSTANCE s_procInstanceHandle;
+	static MSG s_msg;
+	static HMODULE s_ogl32Module;
+	static HINSTANCE s_procInstanceHandle;
 
-    static bool s_vSyncCompat;
-    static bool s_attribCtxCompat;
-    static bool s_pixelFormatCompat;
+	static bool s_vSyncCompat;
+	static bool s_attribCtxCompat;
+	static bool s_pixelFormatCompat;
 
-    static void registerAppWndClass();
-    static void loadGLExtensions();
-    static void warning(const char* msg);
-    static void fatalError(const char* msg);
-    static bool isInvalidFuncAddress(void* funcAddress);
-    static bool isExtensionSupported(const char* extList, const char* extension);
+	static void registerAppWndClass();
+	static void loadGLExtensions();
+	static void warning(const char* msg);
+	static void fatalError(const char* msg);
+	static bool isInvalidFuncAddress(void* funcAddress);
+	static bool isExtensionSupported(const char* extList, const char* extension);
 
-    static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
-    static PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
-    static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
+	static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
+	static PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
+	static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
 
-    static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
-    static PFNWGLGETSWAPINTERVALEXTPROC wglGetSwapIntervalEXT;
+	static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
+	static PFNWGLGETSWAPINTERVALEXTPROC wglGetSwapIntervalEXT;
 
-    static void* CurlyGetProcAddress(const char* name);
-    static LRESULT CALLBACK CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	static void* CurlyGetProcAddress(const char* name);
+	static LRESULT CALLBACK CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-    /* Deleted Constructors and assignment */
+	/* Deleted Constructors and assignment */
 
-    WindowManager(const WindowManager&) = delete;
-    WindowManager(WindowManager&&) = delete;
+	WindowManager(const WindowManager&) = delete;
+	WindowManager(WindowManager&&) = delete;
 
-    WindowManager& operator=(const WindowManager&) = delete;
+	WindowManager& operator=(const WindowManager&) = delete;
 };
 
 } // namespace wnd

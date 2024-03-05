@@ -27,17 +27,17 @@
 
 //--------------------------------------------------------------------------------
 AppMainProc::AppMainProc()
-    : m_timer(true)
+	: m_timer(true)
 {
 }
 
 //--------------------------------------------------------------------------------
 bool AppMainProc::mainProc(wnd::EditorWindow* window, const wnd::WindowTickType tickType)
 {
-    m_timer.tick();
-    window->pollEvents();
-    glClearColor(0.15f, 0.15f, 0.174f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    window->swapBuffers();
-    return window->isActive();
+	m_timer.tick();
+	window->pollEvents();
+	glClearColor(0.15f, 0.15f, 0.174f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	window->swapBuffers();
+	return window->isActive();
 }

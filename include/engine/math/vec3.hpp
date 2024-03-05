@@ -32,9 +32,9 @@ namespace math
  */
 struct Vec3f
 {
-    float x;
-    float y;
-    float z;
+	float x;
+	float y;
+	float z;
 };
 
 /**
@@ -43,9 +43,9 @@ struct Vec3f
  */
 struct Vec3i
 {
-    int x;
-    int y;
-    int z;
+	int x;
+	int y;
+	int z;
 };
 
 using Vec3 = Vec3f;

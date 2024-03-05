@@ -33,139 +33,139 @@ namespace wnd
 {
 //--------------------------------------------------------------------------------
 RenderingWindow::RenderingWindow(const cfg::uint32 t_width, const cfg::uint32 t_height, const char* t_title, WindowStyle t_style, InputHandler* t_inputHandler)
-    : IWindow     {t_width, t_height, t_title, t_style, t_inputHandler}
+	: IWindow     {t_width, t_height, t_title, t_style, t_inputHandler}
 {
-    m_windowManager = WindowManager::createInstance();
-    m_windowManager->setEventCallbackFunction(this, eventCallback);
-    std::cout << "Manager at: " << m_windowManager << std::endl;
-    std::cout << "Size is   : " << sizeof(WindowManager) << std::endl;
+	m_windowManager = WindowManager::createInstance();
+	m_windowManager->setEventCallbackFunction(this, eventCallback);
+	std::cout << "Manager at: " << m_windowManager << std::endl;
+	std::cout << "Size is   : " << sizeof(WindowManager) << std::endl;
 
-    try
-    {
-        initializeWindow();
-        m_windowManager->pollEvents();
-        m_ready = true;
-    }
-    catch(const exc::GenericException& e)
-    {
-        std::cerr << "An Exception has occurred: " << e.what() << std::endl;
-        m_ready = false;
-    }
+	try
+	{
+		initializeWindow();
+		m_windowManager->pollEvents();
+		m_ready = true;
+	}
+	catch(const exc::GenericException& e)
+	{
+		std::cerr << "An Exception has occurred: " << e.what() << std::endl;
+		m_ready = false;
+	}
 }
 
 //--------------------------------------------------------------------------------
 RenderingWindow::~RenderingWindow()
 {
-    std::cout << "Destructing Window " << m_title << std::endl;
-    if(isActive())
-    {
-        close();
-    }
-    std::cout << "Window " << m_title << " destroyed" << std::endl;
+	std::cout << "Destructing Window " << m_title << std::endl;
+	if(isActive())
+	{
+		close();
+	}
+	std::cout << "Window " << m_title << " destroyed" << std::endl;
 }
 
 //--------------------------------------------------------------------------------
 bool RenderingWindow::isActive()
 {
-    return m_windowManager->isActive();
+	return m_windowManager->isActive();
 }
 
 //--------------------------------------------------------------------------------
 bool RenderingWindow::isReady()
 {
-    return m_ready;
+	return m_ready;
 }
 
 //--------------------------------------------------------------------------------
 void RenderingWindow::close()
 {
-    m_windowManager->destroyWindow();
+	m_windowManager->destroyWindow();
 }
 
 //--------------------------------------------------------------------------------
 void RenderingWindow::setInputHandler(InputHandler& t_inputHandler)
 {
-    m_inputHandler = &t_inputHandler;
+	m_inputHandler = &t_inputHandler;
 }
 
 //--------------------------------------------------------------------------------
 void RenderingWindow::pollEvents()
 {
-    if(m_inputHandler != nullptr)
-        m_inputHandler->_tick();
-    m_windowManager->pollEvents();
+	if(m_inputHandler != nullptr)
+		m_inputHandler->_tick();
+	m_windowManager->pollEvents();
 }
 
 //--------------------------------------------------------------------------------
 void RenderingWindow::swapBuffers()
 {
-    m_windowManager->swapBuffers();
+	m_windowManager->swapBuffers();
 }
 
 //--------------------------------------------------------------------------------
 float RenderingWindow::getAspectRatio() const
 {
-    return static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight);
+	return static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight);
 }
 
 //--------------------------------------------------------------------------------
 math::Vec2i RenderingWindow::getWindowRect() const
 {
-    return { m_windowWidth, m_windowHeight };
+	return { m_windowWidth, m_windowHeight };
 }
 
 //--------------------------------------------------------------------------------
 math::Vec2i RenderingWindow::getViewportRect() const
 {
-    return { m_viewportWidth, m_viewportHeight };
+	return { m_viewportWidth, m_viewportHeight };
 }
 
 //--------------------------------------------------------------------------------
 void RenderingWindow::initializeWindow()
 {
-    WindowRectParams rectParams{ m_windowManager->createRenderingWindow(m_title, 0, 0, m_windowWidth, m_windowHeight, m_style) };
-    m_windowWidth = rectParams.windowWidth;
-    m_windowHeight = rectParams.windowHeight;
-    m_viewportWidth = rectParams.clientWidth;
-    m_viewportHeight = rectParams.clientHeight;
-    if(!m_windowManager->isActive())
-    {
-        throw exc::WindowInitException();
-    }
+	WindowRectParams rectParams{ m_windowManager->createRenderingWindow(m_title, 0, 0, m_windowWidth, m_windowHeight, m_style) };
+	m_windowWidth = rectParams.windowWidth;
+	m_windowHeight = rectParams.windowHeight;
+	m_viewportWidth = rectParams.clientWidth;
+	m_viewportHeight = rectParams.clientHeight;
+	if(!m_windowManager->isActive())
+	{
+		throw exc::WindowInitException();
+	}
 }
 
 //--------------------------------------------------------------------------------
 void RenderingWindow::eventCallback(IWindow* window, InputEvent event, WindowParams* params)
 {
-    RenderingWindow* rWindow{ static_cast<RenderingWindow*>(window) };
-    if(rWindow->m_inputHandler != nullptr)
-    {
-        switch(event)
-        {
-            case KEY_PRESSED:
-            case KEY_RELEASED:
-                {
-                    rWindow->m_inputHandler->_updateKeyEvent(static_cast<KeyboardParams*>(params)->code, event);
-                }
-                break;
+	RenderingWindow* rWindow{ static_cast<RenderingWindow*>(window) };
+	if(rWindow->m_inputHandler != nullptr)
+	{
+		switch(event)
+		{
+			case KEY_PRESSED:
+			case KEY_RELEASED:
+				{
+					rWindow->m_inputHandler->_updateKeyEvent(static_cast<KeyboardParams*>(params)->code, event);
+				}
+				break;
 
-            case BUTTON_PRESSED:
-            case BUTTON_RELEASED:
-                {
-                    rWindow->m_inputHandler->_updateMouseEvent(static_cast<MouseParams*>(params)->code, event);
-                }
-                break;
+			case BUTTON_PRESSED:
+			case BUTTON_RELEASED:
+				{
+					rWindow->m_inputHandler->_updateMouseEvent(static_cast<MouseParams*>(params)->code, event);
+				}
+				break;
 
-            case MOUSE_MOVE:
-                {
-                    rWindow->m_inputHandler->_updateMousePosition(static_cast<MouseParams*>(params)->pos);
-                }
-                break;
+			case MOUSE_MOVE:
+				{
+					rWindow->m_inputHandler->_updateMousePosition(static_cast<MouseParams*>(params)->pos);
+				}
+				break;
 
-            default:
-                break;
-        }
-    }
+			default:
+				break;
+		}
+	}
 }
 
 } // namespace wnd

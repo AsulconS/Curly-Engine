@@ -24,9 +24,9 @@
 #include "../timerPlatform.hpp"
 
 #ifdef _WIN64
-    #define CURLY_GET_TICK_COUNT GetTickCount64
+	#define CURLY_GET_TICK_COUNT GetTickCount64
 #else
-    #define CURLY_GET_TICK_COUNT GetTickCount
+	#define CURLY_GET_TICK_COUNT GetTickCount
 #endif
 
 namespace sys
@@ -40,7 +40,7 @@ namespace plat
  */
 Time getTime()
 {
-    return rawTimeBuilder(CURLY_GET_TICK_COUNT() * 1000ull);
+	return rawTimeBuilder(CURLY_GET_TICK_COUNT() * 1000ull);
 }
 
 } // namespace plat

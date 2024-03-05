@@ -37,45 +37,45 @@ namespace gfx
 class CURLY_API Mesh
 {
 public:
-    /**
-     * @brief Construct a new Mesh object
-     * 
-     */
-    Mesh();
-    /**
-     * @brief Construct a new Mesh object from a path to the OBJ file
-     * 
-     * @param path 
-     * @param hasNormals 
-     * @param hasUVs 
-     */
-    Mesh(const char* path, bool hasNormals = true, bool hasUVs = true);
-    /**
-     * @brief Destroy the Mesh object
-     * 
-     */
-    virtual ~Mesh();
+	/**
+	 * @brief Construct a new Mesh object
+	 * 
+	 */
+	Mesh();
+	/**
+	 * @brief Construct a new Mesh object from a path to the OBJ file
+	 * 
+	 * @param path 
+	 * @param hasNormals 
+	 * @param hasUVs 
+	 */
+	Mesh(const char* path, bool hasNormals = true, bool hasUVs = true);
+	/**
+	 * @brief Destroy the Mesh object
+	 * 
+	 */
+	virtual ~Mesh();
 
-    /**
-     * @brief Draw the Mesh object with the shader passed by
-     * 
-     * @param shader 
-     */
-    virtual void draw(const Shader& shader);
+	/**
+	 * @brief Draw the Mesh object with the shader passed by
+	 * 
+	 * @param shader 
+	 */
+	virtual void draw(const Shader& shader);
 
 protected:
-    /**
-     * @brief Generate the VAO, VBO and EBO and setups them
-     * 
-     */
-    virtual void generate();
+	/**
+	 * @brief Generate the VAO, VBO and EBO and setups them
+	 * 
+	 */
+	virtual void generate();
 
-    cfg::uint32 m_VAO;
-    cfg::uint32 m_VBO;
-    cfg::uint32 m_EBO;
+	cfg::uint32 m_VAO;
+	cfg::uint32 m_VBO;
+	cfg::uint32 m_EBO;
 
-    sys::Vector<cfg::uint32>* m_indices;
-    sys::Vector<float>* m_vertexData;
+	sys::Vector<cfg::uint32>* m_indices;
+	sys::Vector<float>* m_vertexData;
 };
 
 } // namespace gfx

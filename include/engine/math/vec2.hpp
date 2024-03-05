@@ -32,8 +32,8 @@ namespace math
  */
 struct Vec2f
 {
-    float x;
-    float y;
+	float x;
+	float y;
 };
 
 /**
@@ -42,8 +42,8 @@ struct Vec2f
  */
 struct Vec2i
 {
-    cfg::uint32 x;
-    cfg::uint32 y;
+	cfg::uint32 x;
+	cfg::uint32 y;
 };
 
 using Vec2 = Vec2f;

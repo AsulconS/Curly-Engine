@@ -27,29 +27,29 @@
  * Details: Deals with dynamic linking semantics
  */
 #if defined(_WIN32) || defined(WIN32) || defined(_MSC_VER)
-    #define CF__CURLY_OS_WINDOWS
-    #define CF__CURLY_DLL_EXPORT __declspec(dllexport)
-    #define CF__CURLY_DLL_IMPORT __declspec(dllimport)
+	#define CF__CURLY_OS_WINDOWS
+	#define CF__CURLY_DLL_EXPORT __declspec(dllexport)
+	#define CF__CURLY_DLL_IMPORT __declspec(dllimport)
 #elif defined(__unix__) || defined(linux) || defined(__GNUC__)
-    #define CF__CURLY_OS_LINUX
-    #define CF__CURLY_DLL_EXPORT __attribute__((visibility("default")))
-    #define CF__CURLY_DLL_IMPORT
+	#define CF__CURLY_OS_LINUX
+	#define CF__CURLY_DLL_EXPORT __attribute__((visibility("default")))
+	#define CF__CURLY_DLL_IMPORT
 #else
-    #define CF__CURLY_OS_UNKNOWN
-    #define CF__CURLY_DLL_EXPORT
-    #define CF__CURLY_DLL_IMPORT
-    #pragma warning Unknown semantics for dynamic linking
-    #error Curly Engine has no support for this OS
+	#define CF__CURLY_OS_UNKNOWN
+	#define CF__CURLY_DLL_EXPORT
+	#define CF__CURLY_DLL_IMPORT
+	#pragma warning Unknown semantics for dynamic linking
+	#error Curly Engine has no support for this OS
 #endif
 
 #if defined(C__CURLY_API_CALL_EXPORT)
-    #if defined(C__CURLY_API_CALL_EXPORT_BUILD)
-        #define CURLY_API CF__CURLY_DLL_EXPORT
-    #else
-        #define CURLY_API CF__CURLY_DLL_IMPORT
-    #endif
+	#if defined(C__CURLY_API_CALL_EXPORT_BUILD)
+		#define CURLY_API CF__CURLY_DLL_EXPORT
+	#else
+		#define CURLY_API CF__CURLY_DLL_IMPORT
+	#endif
 #else
-    #define CURLY_API
+	#define CURLY_API
 #endif
 
 /**
@@ -57,5 +57,5 @@
  * on build type and options
  */
 #if !defined(CURLY_RELEASE) && defined(C__CURLY_DEV_OPT_1)
-    #include <vld.h>
+	#include <vld.h>
 #endif

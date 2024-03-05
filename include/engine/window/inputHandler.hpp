@@ -42,49 +42,49 @@ namespace wnd
 class CURLY_API InputHandler
 {
 public:
-    InputHandler();
-    virtual ~InputHandler();
+	InputHandler();
+	virtual ~InputHandler();
 
-    bool onKeyDown(InputCode key);
-    bool onKeyUp(InputCode key);
-    bool onKeyReleased(InputCode key);
-    bool onKeyTriggered(InputCode key);
+	bool onKeyDown(InputCode key);
+	bool onKeyUp(InputCode key);
+	bool onKeyReleased(InputCode key);
+	bool onKeyTriggered(InputCode key);
 
-    bool onClick(InputCode button);
-    bool onRelease(InputCode button);
-    bool onButtonDown(InputCode button);
-    bool onButtonUp(InputCode button);
+	bool onClick(InputCode button);
+	bool onRelease(InputCode button);
+	bool onButtonDown(InputCode button);
+	bool onButtonUp(InputCode button);
 
-    math::Vec2i getMousePos();
+	math::Vec2i getMousePos();
 
-    void _tick();
+	void _tick();
 
-    void _updateKeyEvent(InputCode key, InputEvent event);
-    void _updateMouseEvent(InputCode button, InputEvent event);
-    void _updateMousePosition(math::Vec2i position);
-
-private:
-    struct KeyInfo
-    {
-        InputEvent event;
-        cfg::int32 time;
-    };
-
-    struct MouseInfo
-    {
-        InputEvent event;
-        cfg::int32 time;
-    };
+	void _updateKeyEvent(InputCode key, InputEvent event);
+	void _updateMouseEvent(InputCode button, InputEvent event);
+	void _updateMousePosition(math::Vec2i position);
 
 private:
-    void initKey(InputCode key);
-    void initButton(InputCode button);
+	struct KeyInfo
+	{
+		InputEvent event;
+		cfg::int32 time;
+	};
 
-    math::Vec2i m_mousePos;
-    Map<InputCode, KeyInfo>* m_keys;
-    Map<InputCode, MouseInfo>* m_mouseButtons;
+	struct MouseInfo
+	{
+		InputEvent event;
+		cfg::int32 time;
+	};
 
-    cfg::int32 m_currentTime;
+private:
+	void initKey(InputCode key);
+	void initButton(InputCode button);
+
+	math::Vec2i m_mousePos;
+	Map<InputCode, KeyInfo>* m_keys;
+	Map<InputCode, MouseInfo>* m_mouseButtons;
+
+	cfg::int32 m_currentTime;
 };
 
 } // namespace wnd
