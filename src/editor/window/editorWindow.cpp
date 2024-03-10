@@ -27,7 +27,8 @@
 
 #include <iostream>
 
-#include "windowManager.hpp"
+#include "editorWindowManager.hpp"
+
 namespace wnd
 {
 //--------------------------------------------------------------------------------
