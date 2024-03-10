@@ -27,11 +27,11 @@
 
 namespace wnd
 {
-cfg::uint32 WindowManager::s_activeSessions  {0u};
-cfg::uint32 WindowManager::s_wmInstanceCount {0u};
+uint32 WindowManager::s_activeSessions  {0u};
+uint32 WindowManager::s_wmInstanceCount {0u};
 sys::LazyPtr<WindowManager> WindowManager::s_wmInstances[MAX_WINDOW_INSTANCES] {};
 
-sys::SafePtr<Map<HWND, cfg::uint32>> WindowManager::s_hwndMap {};
+sys::SafePtr<Map<HWND, uint32>> WindowManager::s_hwndMap {};
 
 WNDCLASSEXA WindowManager::s_appWndClass {};
 const char* WindowManager::s_appWndClassName {"CurlyBuiltApp"};
@@ -94,7 +94,7 @@ WindowManager* WindowManager::createInstance()
 	return s_wmInstances[s_wmInstanceCount++];
 }
 
-WindowManager* WindowManager::getInstance(const cfg::uint32 index)
+WindowManager* WindowManager::getInstance(const uint32 index)
 {
 	if(index > 0 && index < (MAX_WINDOW_INSTANCES - 1))
 	{
@@ -213,7 +213,7 @@ void WindowManager::swapBuffers()
 	}
 }
 
-WindowManager::WindowManager(const cfg::uint32 t_index)
+WindowManager::WindowManager(const uint32 t_index)
 	: m_isInstanceActive                   {false},
 	  m_index                    {t_index},
 	  m_windowHandle             {nullptr},
@@ -466,7 +466,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
 				if(s_pixelFormatCompat)
 				{
-					cfg::uint32 numFormats;
+					uint32 numFormats;
 					wglChoosePixelFormatARB(hdc, s_attribs, nullptr, 1, &pixelFormat, &numFormats);
 					DescribePixelFormat(hdc, pixelFormat, sizeof(s_pfd), &s_pfd);
 				}
@@ -544,7 +544,7 @@ LRESULT CALLBACK WindowManager::CurlyProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 		case WM_KILLFOCUS:
 			{
 				WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
-				for(cfg::uint32 i = 0; i < NUM_KEYS_SIZE; ++i)
+				for(uint32 i = 0; i < NUM_KEYS_SIZE; ++i)
 				{
 					if(s_keyPhysicStates[i])
 					{

@@ -20,14 +20,20 @@
  */
 
 #include <editor/core/appMainProc.hpp>
-
 #include <editor/window/editorWindow.hpp>
+
+#include <engine/graphics/model.hpp>
 
 #include "../../engine/core/GL/gl.h"
 
 //--------------------------------------------------------------------------------
 AppMainProc::AppMainProc()
 	: m_timer(true)
+{
+}
+
+//--------------------------------------------------------------------------------
+AppMainProc::~AppMainProc()
 {
 }
 

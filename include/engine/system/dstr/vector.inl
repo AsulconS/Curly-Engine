@@ -31,7 +31,7 @@ inline Vector<T>::Vector()
 }
 
 template <typename T>
-inline Vector<T>::Vector(cfg::uint64 n)
+inline Vector<T>::Vector(uint64 n)
     : m_data     {nullptr},
       m_size     {n},
       m_capacity {hid::p2RoundUp(n)}
@@ -40,10 +40,10 @@ inline Vector<T>::Vector(cfg::uint64 n)
 }
 
 template <typename T>
-inline Vector<T>::Vector(cfg::uint64 n, const T& val)
+inline Vector<T>::Vector(uint64 n, const T& val)
     : Vector {n}
 {
-    for(cfg::uint64 i = 0; i < m_size; ++i)
+    for(uint64 i = 0; i < m_size; ++i)
     {
         m_data[i] = val;
     }
@@ -55,7 +55,7 @@ inline Vector<T>::Vector(const Vector<T>& o)
       m_capacity {o.m_capacity}
 {
     m_data = new T[m_capacity];
-    for(cfg::uint64 i = 0; i < m_size; ++i)
+    for(uint64 i = 0; i < m_size; ++i)
     {
         m_data[i] = o.m_data[i];
     }
@@ -85,7 +85,7 @@ inline Vector<T>& Vector<T>::operator=(const Vector<T>& o)
     m_capacity = o.m_capacity;
 
     m_data = new T[m_capacity];
-    for(cfg::uint64 i = 0; i < m_size; ++i)
+    for(uint64 i = 0; i < m_size; ++i)
     {
         m_data[i] = o.m_data[i];
     }
@@ -108,23 +108,23 @@ inline Vector<T>& Vector<T>::operator=(Vector<T>&& o)
 }
 
 template <typename T>
-inline cfg::uint64 Vector<T>::size() const noexcept
+inline uint64 Vector<T>::size() const noexcept
 {
     return m_size;
 }
 
 template <typename T>
-inline void Vector<T>::resize(cfg::uint64 n)
+inline void Vector<T>::resize(uint64 n)
 {
     guaranteeSpace(n);
     m_size = n;
 }
 
 template <typename T>
-inline void Vector<T>::resize(cfg::uint64 n, const T& val)
+inline void Vector<T>::resize(uint64 n, const T& val)
 {
     guaranteeSpace(n);
-    for(cfg::uint64 i = m_size; i < n; ++i)
+    for(uint64 i = m_size; i < n; ++i)
     {
         m_data[i] = val;
     }
@@ -132,7 +132,7 @@ inline void Vector<T>::resize(cfg::uint64 n, const T& val)
 }
 
 template <typename T>
-inline cfg::uint64 Vector<T>::capacity() const noexcept
+inline uint64 Vector<T>::capacity() const noexcept
 {
     return m_capacity;
 }
@@ -144,13 +144,13 @@ inline bool Vector<T>::empty() const noexcept
 }
 
 template <typename T>
-inline T& Vector<T>::operator[](cfg::uint64 n)
+inline T& Vector<T>::operator[](uint64 n)
 {
     return m_data[n];
 }
 
 template <typename T>
-inline const T& Vector<T>::operator[](cfg::uint64 n) const
+inline const T& Vector<T>::operator[](uint64 n) const
 {
     return m_data[n];
 }
@@ -192,10 +192,10 @@ inline const T* Vector<T>::data() const noexcept
 }
 
 template <typename T>
-inline void Vector<T>::assign(cfg::uint64 n, const T& val)
+inline void Vector<T>::assign(uint64 n, const T& val)
 {
     guaranteeSpace(n);
-    for(cfg::uint64 i = 0; i < n; ++i)
+    for(uint64 i = 0; i < n; ++i)
     {
         m_data[i] = val;
     }
@@ -243,7 +243,7 @@ template <typename T>
 inline void Vector<T>::reallocate()
 {
     T* n_data {new T[m_capacity]};
-    for(cfg::uint64 i = 0; i < m_size; ++i)
+    for(uint64 i = 0; i < m_size; ++i)
     {
         n_data[i] = curly_move(m_data[i]);
     }
@@ -252,7 +252,7 @@ inline void Vector<T>::reallocate()
 }
 
 template <typename T>
-inline void Vector<T>::guaranteeSpace(cfg::uint64 n)
+inline void Vector<T>::guaranteeSpace(uint64 n)
 {
     if(n > m_capacity)
     {
@@ -263,7 +263,7 @@ inline void Vector<T>::guaranteeSpace(cfg::uint64 n)
 
 namespace hid
 {
-inline cfg::uint64 p2RoundUp(cfg::uint64 val)
+inline uint64 p2RoundUp(uint64 val)
 {
     --val;
     val |= (val >> 0x01);

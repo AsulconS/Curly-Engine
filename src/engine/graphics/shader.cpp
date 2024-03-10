@@ -72,8 +72,8 @@ Shader::Shader(const std::string& t_name)
 	}
 #endif
 
-	cfg::uint32 vertexShader {createShader(ShaderType::VERTEX_SHADER, vsSrc)};
-	cfg::uint32 fragmentShader {createShader(ShaderType::FRAGMENT_SHADER, fsSrc)};
+	uint32 vertexShader {createShader(ShaderType::VERTEX_SHADER, vsSrc)};
+	uint32 fragmentShader {createShader(ShaderType::FRAGMENT_SHADER, fsSrc)};
 
 	m_program = glCreateProgram();
 	glAttachShader(m_program, vertexShader);
@@ -88,8 +88,8 @@ Shader::Shader(const std::string& t_name)
 
 Shader::Shader(const std::string& vsSrc, const std::string& fsSrc)
 {
-	cfg::uint32 vertexShader {createShader(ShaderType::VERTEX_SHADER, vsSrc)};
-	cfg::uint32 fragmentShader {createShader(ShaderType::FRAGMENT_SHADER, fsSrc)};
+	uint32 vertexShader {createShader(ShaderType::VERTEX_SHADER, vsSrc)};
+	uint32 fragmentShader {createShader(ShaderType::FRAGMENT_SHADER, fsSrc)};
 
 	m_program = glCreateProgram();
 	glAttachShader(m_program, vertexShader);
@@ -167,9 +167,9 @@ void Shader::setMat4(const std::string& name, const glm::mat4& m0)
 	glUniformMatrix4fv(glGetUniformLocation(m_program, name.c_str()), 1, GL_FALSE, glm::value_ptr(m0));
 }
 
-cfg::uint32 Shader::createShader(const ShaderType type, const std::string& src)
+uint32 Shader::createShader(const ShaderType type, const std::string& src)
 {
-	cfg::uint32 shader = glCreateShader(type);
+	uint32 shader = glCreateShader(type);
 	const char* shaderSrc {src.c_str()};
 
 	glShaderSource(shader, 1, &shaderSrc, nullptr);
@@ -201,9 +201,9 @@ std::string Shader::loadShaderFromFile(const ShaderType type, const std::string&
 	return shaderStrStream.str();
 }
 
-void Shader::checkErrors(const cfg::uint32 target, const bool isProgram)
+void Shader::checkErrors(const uint32 target, const bool isProgram)
 {
-	cfg::int32 success;
+	int32 success;
 	char infolog[512];
 
 	if(isProgram)

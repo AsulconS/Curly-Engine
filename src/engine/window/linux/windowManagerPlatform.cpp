@@ -26,11 +26,11 @@
 
 namespace wnd
 {
-cfg::uint32 WindowManager::s_activeSessions  {0u};
-cfg::uint32 WindowManager::s_wmInstanceCount {0u};
+uint32 WindowManager::s_activeSessions  {0u};
+uint32 WindowManager::s_wmInstanceCount {0u};
 sys::LazyPtr<WindowManager> WindowManager::s_wmInstances[MAX_WINDOW_INSTANCES] {};
 
-sys::SafePtr<Map<XWND, cfg::uint32>> WindowManager::s_hwndMap {};
+sys::SafePtr<Map<XWND, uint32>> WindowManager::s_hwndMap {};
 
 const int WindowManager::s_glxAttribs[ATTRIB_LIST_SIZE]
 {
@@ -98,7 +98,7 @@ WindowManager* WindowManager::createInstance()
 	return s_wmInstances[s_wmInstanceCount++];
 }
 
-WindowManager* WindowManager::getInstance(const cfg::uint32 index)
+WindowManager* WindowManager::getInstance(const uint32 index)
 {
 	if(index > 0 && index < (MAX_WINDOW_INSTANCES - 1))
 	{
@@ -229,7 +229,7 @@ void WindowManager::swapBuffers()
 	}
 }
 
-WindowManager::WindowManager(const cfg::uint32 t_index)
+WindowManager::WindowManager(const uint32 t_index)
 	: m_active      {false},
 	  m_index       {t_index}
 {
@@ -641,7 +641,7 @@ void WindowManager::CurlyProc()
 			{
 				std::cout << "Lost focus" << std::endl;
 				WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[s_event.xfocus.window]];
-				for(cfg::uint32 i = 0; i < NUM_KEYS_SIZE; ++i)
+				for(uint32 i = 0; i < NUM_KEYS_SIZE; ++i)
 				{
 					if(s_keyPhysicStates[i])
 					{

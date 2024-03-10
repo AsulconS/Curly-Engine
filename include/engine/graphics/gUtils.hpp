@@ -42,15 +42,15 @@ namespace gfx
  * @param hasUVs 
  * @return bool 
  */
-CURLY_API bool loadObj(const char* path, sys::Vector<float>& vertexData, sys::Vector<cfg::uint32>& indices, bool hasNormals = true, bool hasUVs = true);
+CURLY_API bool loadObj(const char* path, sys::Vector<float>& vertexData, sys::Vector<uint32>& indices, bool hasNormals = true, bool hasUVs = true);
 
 /**
  * @brief Load a texture from a path and return the texture object created by OpenGL
  * 
  * @param path 
- * @return cfg::uint32 
+ * @return uint32 
  */
-CURLY_API cfg::uint32 loadTexture(const char* path);
+CURLY_API uint32 loadTexture(const char* path);
 
 /**
  * @brief Setup the Default Lights for a shader from some view position

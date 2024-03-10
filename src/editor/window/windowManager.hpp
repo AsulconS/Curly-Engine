@@ -21,9 +21,7 @@
 
 #pragma once
 
-#include <editor/core/config.hpp>
-
-#include <engine/core/common.hpp>
+#include <editor/core/minimal.hpp>
 
 #if defined(CF__CURLY_OS_WINDOWS)
 	#include "win32/windowManagerPlatform.hpp"

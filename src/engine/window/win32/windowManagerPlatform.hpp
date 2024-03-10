@@ -57,7 +57,7 @@ class CURLY_API WindowManager final
 
 public:
 	static WindowManager* createInstance();
-	static WindowManager* getInstance(const cfg::uint32 index);
+	static WindowManager* getInstance(const uint32 index);
 
 	bool isActive();
 	WindowRectParams createRenderingWindow(const char* title, int x, int y, int width, int height, WindowStyle style);
@@ -71,7 +71,7 @@ public:
 private:
 	bool m_isInstanceActive;
 
-	cfg::uint32 m_index;
+	uint32 m_index;
 	HWND m_windowHandle;
 
 	HDC m_deviceContextHandle;
@@ -82,19 +82,19 @@ private:
 
 	/* Privated constructor and destructor */
 
-	WindowManager(const cfg::uint32 t_index);
+	WindowManager(const uint32 t_index);
 	~WindowManager();
 
 	/* Static Instances */
 
-	static cfg::uint32 s_activeSessions;
-	static cfg::uint32 s_wmInstanceCount;
+	static uint32 s_activeSessions;
+	static uint32 s_wmInstanceCount;
 	static sys::LazyPtr<WindowManager> s_wmInstances[MAX_WINDOW_INSTANCES];
 
 	/**
 	 * @brief   Window Hash Table <Window Handler, Instance ID>
 	 */
-	static sys::SafePtr<Map<HWND, cfg::uint32>> s_hwndMap;
+	static sys::SafePtr<Map<HWND, uint32>> s_hwndMap;
 
 	/* Satatic Win32 API Internal Data */
 

@@ -62,35 +62,35 @@ public:
 	 * 
 	 * @return float 
 	 */
-	cfg::secT getDeltaTime();
+	secT getDeltaTime();
 	/**
 	 * @brief Get the Total Frame count
 	 * 
-	 * @return cfg::uint32 
+	 * @return uint32 
 	 */
-	cfg::uint32 getTotalFrames();
+	uint32 getTotalFrames();
 	/**
 	 * @brief Get the Frames Per Second count
 	 * 
-	 * @return cfg::uint32 
+	 * @return uint32 
 	 */
-	cfg::uint32 getFramesPerSecond();
+	uint32 getFramesPerSecond();
 
 private:
-	cfg::secT procDeltaTime();
-	cfg::secT procTotalElapsedTime();
-	cfg::secT procCurrentElapsedTime();
+	secT procDeltaTime();
+	secT procTotalElapsedTime();
+	secT procCurrentElapsedTime();
 
-	cfg::microT m_start;
-	cfg::microT m_currentStart;
-	cfg::microT m_lastTime;
+	microT m_start;
+	microT m_currentStart;
+	microT m_lastTime;
 
-	cfg::secT m_deltaTime;
-	cfg::secT m_currentTime;
-	cfg::uint32 m_totalFrames;
-	cfg::uint32 m_framesPerSecond;
+	secT m_deltaTime;
+	secT m_currentTime;
+	uint32 m_totalFrames;
+	uint32 m_framesPerSecond;
 
-	cfg::secT m_period;
+	secT m_period;
 	bool m_debugMode;
 };
 

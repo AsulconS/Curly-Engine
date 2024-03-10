@@ -101,7 +101,7 @@ public:
 	 * 
 	 * @return uint64 
 	 */
-	cfg::uint64 size() const noexcept;
+	uint64 size() const noexcept;
 
 	/**
 	 * @brief Clears the content
@@ -176,9 +176,9 @@ private:
 private:
 	Comp mf_comp;
 	Node* m_root;
-	cfg::uint64 m_size;
+	uint64 m_size;
 
-	cfg::int32 m_height;
+	int32 m_height;
 };
 
 } // namespace sys

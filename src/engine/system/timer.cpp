@@ -68,36 +68,36 @@ void Timer::restart()
 	m_framesPerSecond = m_totalFrames = 0;
 }
 
-cfg::secT Timer::getDeltaTime()
+secT Timer::getDeltaTime()
 {
 	return m_deltaTime;
 }
 
-cfg::uint32 Timer::getTotalFrames()
+uint32 Timer::getTotalFrames()
 {
 	return m_totalFrames;
 }
 
-cfg::uint32 Timer::getFramesPerSecond()
+uint32 Timer::getFramesPerSecond()
 {
 	return m_framesPerSecond;
 }
 
-cfg::secT Timer::procDeltaTime()
+secT Timer::procDeltaTime()
 {
 	Time currentTime {plat::getTime()};
-	cfg::secT deltaTime {(currentTime - rawTimeBuilder(m_lastTime)).asSeconds()};
+	secT deltaTime {(currentTime - rawTimeBuilder(m_lastTime)).asSeconds()};
 	m_lastTime = currentTime.getRawTimeCount();
 	return deltaTime;
 }
 
-cfg::secT Timer::procTotalElapsedTime()
+secT Timer::procTotalElapsedTime()
 {
 	Time currentTime {plat::getTime()};
 	return (currentTime - rawTimeBuilder(m_start)).asSeconds();
 }
 
-cfg::secT Timer::procCurrentElapsedTime()
+secT Timer::procCurrentElapsedTime()
 {
 	Time currentTime {plat::getTime()};
 	return (currentTime - rawTimeBuilder(m_currentStart)).asSeconds();

@@ -39,7 +39,7 @@ public:
 	 * 
 	 * @param t_capacity 
 	 */
-	Stack(cfg::uint64 t_capacity = CURLY_STACK_DEFAULT_CAPACITY);
+	Stack(uint64 t_capacity = CURLY_STACK_DEFAULT_CAPACITY);
 
 	/**
 	 * @brief Construct a new Stack object
@@ -80,7 +80,7 @@ public:
 	 * 
 	 * @return uint64 
 	 */
-	cfg::uint64 size() const noexcept;
+	uint64 size() const noexcept;
 	/**
 	 * @brief Returns a boolean indicating if Stack is empty or not
 	 * 
@@ -122,8 +122,8 @@ public:
 
 private:
 	T* m_data;
-	cfg::uint64 m_size;
-	cfg::uint64 m_capacity;
+	uint64 m_size;
+	uint64 m_capacity;
 };
 
 } // namespace sys

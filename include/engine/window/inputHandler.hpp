@@ -67,13 +67,13 @@ private:
 	struct KeyInfo
 	{
 		InputEvent event;
-		cfg::int32 time;
+		int32 time;
 	};
 
 	struct MouseInfo
 	{
 		InputEvent event;
-		cfg::int32 time;
+		int32 time;
 	};
 
 private:
@@ -84,7 +84,7 @@ private:
 	Map<InputCode, KeyInfo>* m_keys;
 	Map<InputCode, MouseInfo>* m_mouseButtons;
 
-	cfg::int32 m_currentTime;
+	int32 m_currentTime;
 };
 
 } // namespace wnd

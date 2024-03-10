@@ -32,10 +32,10 @@ namespace sys
  */
 class Time final
 {
-	friend constexpr Time seconds(cfg::secT seconds);
-	friend constexpr Time milliseconds(cfg::milliT milliseconds);
-	friend constexpr Time microseconds(cfg::microT microseconds);
-	friend constexpr Time rawTimeBuilder(cfg::microT microseconds);
+	friend constexpr Time seconds(secT seconds);
+	friend constexpr Time milliseconds(milliT milliseconds);
+	friend constexpr Time microseconds(microT microseconds);
+	friend constexpr Time rawTimeBuilder(microT microseconds);
 public:
 	/**
 	 * @brief Construct a new Time object
@@ -48,26 +48,26 @@ public:
 	 * 
 	 * @return secT 
 	 */
-	constexpr cfg::secT asSeconds() const;
+	constexpr secT asSeconds() const;
 	/**
 	 * @brief Get the Time Point value as milliseconds
 	 * 
 	 * @return milliT 
 	 */
-	constexpr cfg::milliT asMilliseconds() const;
+	constexpr milliT asMilliseconds() const;
 	/**
 	 * @brief Get the Time Point value as microseconds
 	 * 
 	 * @return microT 
 	 */
-	constexpr cfg::microT asMicroseconds() const;
+	constexpr microT asMicroseconds() const;
 	/**
 	 * @brief Get the Raw Time Count as microseconds
 	 * It's equivalent to asMicroseconds function
 	 * 
 	 * @return microT 
 	 */
-	constexpr cfg::microT getRawTimeCount() const;
+	constexpr microT getRawTimeCount() const;
 
 private:
 	/**
@@ -76,10 +76,10 @@ private:
 	 * 
 	 * @param t_timeCount 
 	 */
-	constexpr explicit Time(cfg::microT t_timeCount);
+	constexpr explicit Time(microT t_timeCount);
 
 private:
-	cfg::microT m_timeCount;
+	microT m_timeCount;
 };
 
 /**
@@ -88,21 +88,21 @@ private:
  * @param seconds 
  * @return Time 
  */
-constexpr Time seconds(cfg::secT seconds);
+constexpr Time seconds(secT seconds);
 /**
  * @brief Construct a new Time object given milliseconds amount
  * 
  * @param milliseconds 
  * @return Time 
  */
-constexpr Time milliseconds(cfg::milliT milliseconds);
+constexpr Time milliseconds(milliT milliseconds);
 /**
  * @brief Construct a new Time object given microseconds amount
  * 
  * @param microseconds 
  * @return Time 
  */
-constexpr Time microseconds(cfg::microT microseconds);
+constexpr Time microseconds(microT microseconds);
 
 /**
  * @brief Construct a new Time object given microseconds amount
@@ -111,7 +111,7 @@ constexpr Time microseconds(cfg::microT microseconds);
  * @param microseconds 
  * @return Time 
  */
-constexpr Time rawTimeBuilder(cfg::microT microseconds);
+constexpr Time rawTimeBuilder(microT microseconds);
 
 /**
  * @brief Compare two Time Point values
@@ -208,7 +208,7 @@ constexpr Time operator*(const Time& lhs, float rhs);
  * @param rhs 
  * @return Time 
  */
-constexpr Time operator*(const Time& lhs, cfg::int64 rhs);
+constexpr Time operator*(const Time& lhs, int64 rhs);
 /**
  * @brief Multiply a floating point scalar by a Time Point
  * 
@@ -224,7 +224,7 @@ constexpr Time operator*(float lhs, const Time& rhs);
  * @param rhs 
  * @return Time 
  */
-constexpr Time operator*(cfg::int64 lhs, const Time& rhs);
+constexpr Time operator*(int64 lhs, const Time& rhs);
 /**
  * @brief Divide a Time Point by a floating point scalar
  * 
@@ -240,7 +240,7 @@ constexpr Time operator/(const Time& lhs, float rhs);
  * @param rhs 
  * @return Time 
  */
-constexpr Time operator/(const Time& lhs, cfg::int64 rhs);
+constexpr Time operator/(const Time& lhs, int64 rhs);
 /**
  * @brief Divide a floating point scalar by a Time Point
  * 
@@ -256,7 +256,7 @@ constexpr Time operator/(float lhs, const Time& rhs);
  * @param rhs 
  * @return Time 
  */
-constexpr Time operator/(cfg::int64 lhs, const Time& rhs);
+constexpr Time operator/(int64 lhs, const Time& rhs);
 
 /**
  * @brief Add a Time Point to a Time Point
@@ -289,7 +289,7 @@ Time& operator*=(Time& lhs, float rhs);
  * @param rhs 
  * @return Time& 
  */
-Time& operator*=(Time& lhs, cfg::int64 rhs);
+Time& operator*=(Time& lhs, int64 rhs);
 /**
  * @brief Divide a floating point scalar to a Time Point
  * 
@@ -305,7 +305,7 @@ Time& operator/=(Time& lhs, float rhs);
  * @param rhs 
  * @return Time& 
  */
-Time& operator/=(Time& lhs, cfg::int64 rhs);
+Time& operator/=(Time& lhs, int64 rhs);
 
 } // namespace sys
 

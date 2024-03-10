@@ -26,47 +26,47 @@ inline constexpr Time::Time()
 {
 }
 
-inline constexpr Time::Time(cfg::microT t_timeCount)
+inline constexpr Time::Time(microT t_timeCount)
     : m_timeCount {t_timeCount}
 {
 }
 
-inline constexpr cfg::secT Time::asSeconds() const
+inline constexpr secT Time::asSeconds() const
 {
-    return static_cast<cfg::secT>(m_timeCount) / 1000000.0f;
+    return static_cast<secT>(m_timeCount) / 1000000.0f;
 }
 
-inline constexpr cfg::milliT Time::asMilliseconds() const
+inline constexpr milliT Time::asMilliseconds() const
 {
-    return static_cast<cfg::milliT>(m_timeCount / 1000);
+    return static_cast<milliT>(m_timeCount / 1000);
 }
 
-inline constexpr cfg::microT Time::asMicroseconds() const
-{
-    return m_timeCount;
-}
-
-inline constexpr cfg::microT Time::getRawTimeCount() const
+inline constexpr microT Time::asMicroseconds() const
 {
     return m_timeCount;
 }
 
-inline constexpr Time seconds(cfg::secT seconds)
+inline constexpr microT Time::getRawTimeCount() const
 {
-    return Time {static_cast<cfg::microT>(seconds * 1000000.0f)};
+    return m_timeCount;
 }
 
-inline constexpr Time milliseconds(cfg::milliT milliseconds)
+inline constexpr Time seconds(secT seconds)
 {
-    return Time {static_cast<cfg::microT>(milliseconds * 1000)};
+    return Time {static_cast<microT>(seconds * 1000000.0f)};
 }
 
-inline constexpr Time microseconds(cfg::microT microseconds)
+inline constexpr Time milliseconds(milliT milliseconds)
+{
+    return Time {static_cast<microT>(milliseconds * 1000)};
+}
+
+inline constexpr Time microseconds(microT microseconds)
 {
     return Time {microseconds};
 }
 
-inline constexpr Time rawTimeBuilder(cfg::microT microseconds)
+inline constexpr Time rawTimeBuilder(microT microseconds)
 {
     return Time {microseconds};
 }
@@ -118,42 +118,42 @@ inline constexpr Time operator-(const Time& lhs, const Time& rhs)
 
 inline constexpr Time operator*(const Time& lhs, float rhs)
 {
-    return rawTimeBuilder(lhs.getRawTimeCount() * static_cast<cfg::microT>(rhs));
+    return rawTimeBuilder(lhs.getRawTimeCount() * static_cast<microT>(rhs));
 }
 
-inline constexpr Time operator*(const Time& lhs, cfg::int64 rhs)
+inline constexpr Time operator*(const Time& lhs, int64 rhs)
 {
-    return rawTimeBuilder(lhs.getRawTimeCount() * static_cast<cfg::microT>(rhs));
+    return rawTimeBuilder(lhs.getRawTimeCount() * static_cast<microT>(rhs));
 }
 
 inline constexpr Time operator*(float lhs, const Time& rhs)
 {
-    return rawTimeBuilder(static_cast<cfg::microT>(lhs) * rhs.getRawTimeCount());
+    return rawTimeBuilder(static_cast<microT>(lhs) * rhs.getRawTimeCount());
 }
 
-inline constexpr Time operator*(cfg::int64 lhs, const Time& rhs)
+inline constexpr Time operator*(int64 lhs, const Time& rhs)
 {
-    return rawTimeBuilder(static_cast<cfg::microT>(lhs) * rhs.getRawTimeCount());
+    return rawTimeBuilder(static_cast<microT>(lhs) * rhs.getRawTimeCount());
 }
 
 inline constexpr Time operator/(const Time& lhs, float rhs)
 {
-    return rawTimeBuilder(lhs.getRawTimeCount() / static_cast<cfg::microT>(rhs));
+    return rawTimeBuilder(lhs.getRawTimeCount() / static_cast<microT>(rhs));
 }
 
-inline constexpr Time operator/(const Time& lhs, cfg::int64 rhs)
+inline constexpr Time operator/(const Time& lhs, int64 rhs)
 {
-    return rawTimeBuilder(lhs.getRawTimeCount() / static_cast<cfg::microT>(rhs));
+    return rawTimeBuilder(lhs.getRawTimeCount() / static_cast<microT>(rhs));
 }
 
 inline constexpr Time operator/(float lhs, const Time& rhs)
 {
-    return rawTimeBuilder(static_cast<cfg::microT>(lhs) / rhs.getRawTimeCount());
+    return rawTimeBuilder(static_cast<microT>(lhs) / rhs.getRawTimeCount());
 }
 
-inline constexpr Time operator/(cfg::int64 lhs, const Time& rhs)
+inline constexpr Time operator/(int64 lhs, const Time& rhs)
 {
-    return rawTimeBuilder(static_cast<cfg::microT>(lhs) / rhs.getRawTimeCount());
+    return rawTimeBuilder(static_cast<microT>(lhs) / rhs.getRawTimeCount());
 }
 
 inline Time& operator+=(Time& lhs, const Time& rhs)
@@ -171,7 +171,7 @@ inline Time& operator*=(Time& lhs, float rhs)
     return lhs = lhs * rhs;
 }
 
-inline Time& operator*=(Time& lhs, cfg::int64 rhs)
+inline Time& operator*=(Time& lhs, int64 rhs)
 {
     return lhs = lhs * rhs;
 }
@@ -181,7 +181,7 @@ inline Time& operator/=(Time& lhs, float rhs)
     return lhs = lhs / rhs;
 }
 
-inline Time& operator/=(Time& lhs, cfg::int64 rhs)
+inline Time& operator/=(Time& lhs, int64 rhs)
 {
     return lhs = lhs / rhs;
 }

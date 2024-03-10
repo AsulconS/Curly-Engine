@@ -21,11 +21,8 @@
 
 #pragma once
 
-#include <editor/core/config.hpp>
-
+#include <editor/core/minimal.hpp>
 #include <editor/core/appMainProc.hpp>
-
-#include <engine/core/common.hpp>
 
 #include <engine/window/iWindow.hpp>
 #include <engine/window/inputEvents.hpp>
@@ -38,7 +35,7 @@ namespace wnd
  * @brief Window Tick Type Class that identifies the type of tick being called
  * 
  */
-enum class CURLY_EDITOR_API WindowTickType : cfg::uint8
+enum class CURLY_EDITOR_API WindowTickType : uint8
 {
 	NONE,
 	PROC_TICK,
@@ -63,7 +60,7 @@ public:
 	 * @param t_width 
 	 * @param t_height 
 	 */
-	explicit EditorWindow(const cfg::uint32 t_width = 800u, const cfg::uint32 t_height = 600u, const char* t_title = "Untitled", WindowStyle t_style = WindowStyle::WINDOWED_STYLE, InputHandler* t_inputHandler = nullptr);
+	explicit EditorWindow(const uint32 t_width = 800u, const uint32 t_height = 600u, const char* t_title = "Untitled", WindowStyle t_style = WindowStyle::WINDOWED_STYLE, InputHandler* t_inputHandler = nullptr);
 	/**
 	 * @brief Destroy the EditorWindow object
 	 * 

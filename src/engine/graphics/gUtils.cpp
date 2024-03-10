@@ -30,11 +30,11 @@
 
 namespace gfx
 {
-bool loadObj(const char* path, sys::Vector<float>& vertexData, sys::Vector<cfg::uint32>& indices, bool hasNormals, bool hasUVs)
+bool loadObj(const char* path, sys::Vector<float>& vertexData, sys::Vector<uint32>& indices, bool hasNormals, bool hasUVs)
 {
-	sys::Vector<cfg::uint32> vertexIndices;
-	sys::Vector<cfg::uint32> normalIndices;
-	sys::Vector<cfg::uint32> UVIndices;
+	sys::Vector<uint32> vertexIndices;
+	sys::Vector<uint32> normalIndices;
+	sys::Vector<uint32> UVIndices;
 
 	sys::Vector<glm::vec3> vertices;
 	sys::Vector<glm::vec3> normals;
@@ -99,9 +99,9 @@ bool loadObj(const char* path, sys::Vector<float>& vertexData, sys::Vector<cfg::
 			}
 			else if(buffer[0] == 'f')
 			{
-				cfg::uint32 faceVertexIndices[3];
-				cfg::uint32 faceNormalIndices[3];
-				cfg::uint32 faceUVIndices[3];
+				uint32 faceVertexIndices[3];
+				uint32 faceNormalIndices[3];
+				uint32 faceUVIndices[3];
 				if(hasNormals)
 				{
 					if(hasUVs)
@@ -162,7 +162,7 @@ bool loadObj(const char* path, sys::Vector<float>& vertexData, sys::Vector<cfg::
 					#endif
 				}
 
-				for(cfg::uint8 i = 0; i < 3; ++i)
+				for(uint8 i = 0; i < 3; ++i)
 				{
 					vertexIndices.push_back(faceVertexIndices[i] - 1);
 					if(hasNormals)
@@ -197,7 +197,7 @@ bool loadObj(const char* path, sys::Vector<float>& vertexData, sys::Vector<cfg::
 		std::cerr << "Error while loading obj file:\n" << e.what() << std::endl;
 	}
 
-	for(cfg::uint32 i = 0; i < vertexIndices.size(); ++i)
+	for(uint32 i = 0; i < vertexIndices.size(); ++i)
 	{
 		indices.push_back(i);
 
@@ -216,16 +216,16 @@ bool loadObj(const char* path, sys::Vector<float>& vertexData, sys::Vector<cfg::
 	return true;
 }
 
-cfg::uint32 loadTexture(const char* path)
+uint32 loadTexture(const char* path)
 {
-	cfg::uint32 textureID;
+	uint32 textureID;
 	glGenTextures(1, &textureID);
 
 	int width;
 	int height;
 	int nrComponents;
 
-	cfg::uint8* data;
+	uint8* data;
 	if (path)
 	{
 		stbi_set_flip_vertically_on_load(true);
@@ -234,7 +234,7 @@ cfg::uint32 loadTexture(const char* path)
 	else
 	{
 		width = height = nrComponents = 1;
-		data = new cfg::uint8[width * height * nrComponents];
+		data = new uint8[width * height * nrComponents];
 	}
 
 	if (data)

@@ -21,31 +21,5 @@
 
 #pragma once
 
-#include <cstdint>
-
-#define CURLY_MAX_PATH_LENGTH 260
-
-namespace core
-{
-namespace types
-{
-using int8   = int8_t;
-using int16  = int16_t;
-using int32  = int32_t;
-using int64  = int64_t;
-using uint8  = uint8_t;
-using uint16 = uint16_t;
-using uint32 = uint32_t;
-using uint64 = uint64_t;
-
-using secT   = float;
-using milliT = int32_t;
-using microT = int64_t;
-
-using byte = uint8_t;
-} // namespace types
-
-} // namespace cfg
-
-// Enable core::types namespace usage for generic types
-using namespace core::types;
+#include <editor/core/config.hpp>
+#include <editor/core/common.hpp>

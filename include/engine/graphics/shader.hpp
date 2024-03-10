@@ -167,9 +167,9 @@ private:
 	 * 
 	 * @param type 
 	 * @param src 
-	 * @return cfg::uint32 
+	 * @return uint32 
 	 */
-	cfg::uint32 createShader(const ShaderType type, const std::string& src);
+	uint32 createShader(const ShaderType type, const std::string& src);
 	/**
 	 * @brief Loads some type of shader from a file
 	 * 
@@ -184,10 +184,10 @@ private:
 	 * @param target 
 	 * @param isProgram 
 	 */
-	void checkErrors(const cfg::uint32 target, const bool isProgram);
+	void checkErrors(const uint32 target, const bool isProgram);
 
 private:
-	cfg::uint32 m_program;
+	uint32 m_program;
 };
 
 } // namespace gfx

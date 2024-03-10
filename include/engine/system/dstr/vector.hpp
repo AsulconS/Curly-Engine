@@ -44,14 +44,14 @@ public:
 	 * 
 	 * @param n 
 	 */
-	Vector(cfg::uint64 n);
+	Vector(uint64 n);
 	/**
 	 * @brief Construct a new Vector object
 	 * 
 	 * @param n 
 	 * @param val 
 	 */
-	Vector(cfg::uint64 n, const T& val);
+	Vector(uint64 n, const T& val);
 
 	/**
 	 * @brief Construct a new Vector object
@@ -92,26 +92,26 @@ public:
 	 * 
 	 * @return uint64 
 	 */
-	cfg::uint64 size() const noexcept;
+	uint64 size() const noexcept;
 	/**
 	 * @brief Resizes the vector given a size
 	 * 
 	 * @param n 
 	 */
-	void resize(cfg::uint64 n);
+	void resize(uint64 n);
 	/**
 	 * @brief Resizes the vector filling the values given a size and a value
 	 * 
 	 * @param n 
 	 * @param val 
 	 */
-	void resize(cfg::uint64 n, const T& val);
+	void resize(uint64 n, const T& val);
 	/**
 	 * @brief Gets the capacity of the vector
 	 * 
 	 * @return uint64 
 	 */
-	cfg::uint64 capacity() const noexcept;
+	uint64 capacity() const noexcept;
 	/**
 	 * @brief Returns a boolean indicating if vector is empty or not
 	 * 
@@ -126,14 +126,14 @@ public:
 	 * @param n 
 	 * @return T& 
 	 */
-	T& operator[](cfg::uint64 n);
+	T& operator[](uint64 n);
 	/**
 	 * @brief Returns a constant reference to access elements
 	 * 
 	 * @param n 
 	 * @return const T& 
 	 */
-	const T& operator[](cfg::uint64 n) const;
+	const T& operator[](uint64 n) const;
 	/**
 	 * @brief Returns a reference to access first element
 	 * 
@@ -177,7 +177,7 @@ public:
 	 * @param n 
 	 * @param val 
 	 */
-	void assign(cfg::uint64 n, const T& val);
+	void assign(uint64 n, const T& val);
 	/**
 	 * @brief C-Pushes a new element at the end of the vector
 	 * 
@@ -203,16 +203,16 @@ public:
 
 private:
 	T* m_data;
-	cfg::uint64 m_size;
-	cfg::uint64 m_capacity;
+	uint64 m_size;
+	uint64 m_capacity;
 
 	void reallocate();
-	void guaranteeSpace(cfg::uint64 n);
+	void guaranteeSpace(uint64 n);
 };
 
 namespace hid
 {
-cfg::uint64 p2RoundUp(cfg::uint64 val);
+uint64 p2RoundUp(uint64 val);
 
 } // namespace hid
 

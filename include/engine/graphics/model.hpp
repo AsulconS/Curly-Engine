@@ -65,7 +65,7 @@ public:
 
 protected:
 	Mesh m_mesh;
-	cfg::uint32 m_diffuseMap;
+	uint32 m_diffuseMap;
 };
 
 } // namespace gfx

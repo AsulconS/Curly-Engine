@@ -31,7 +31,7 @@
 namespace wnd
 {
 //--------------------------------------------------------------------------------
-EditorWindow::EditorWindow(const cfg::uint32 t_width, const cfg::uint32 t_height, const char* t_title, WindowStyle t_style, InputHandler* t_inputHandler)
+EditorWindow::EditorWindow(const uint32 t_width, const uint32 t_height, const char* t_title, WindowStyle t_style, InputHandler* t_inputHandler)
 	: wnd::IWindow {t_width, t_height, t_title, t_style, t_inputHandler},
 	  m_appMainProc { nullptr },
 	  m_tickCallback { nullptr },

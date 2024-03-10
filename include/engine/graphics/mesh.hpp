@@ -70,11 +70,11 @@ protected:
 	 */
 	virtual void generate();
 
-	cfg::uint32 m_VAO;
-	cfg::uint32 m_VBO;
-	cfg::uint32 m_EBO;
+	uint32 m_VAO;
+	uint32 m_VBO;
+	uint32 m_EBO;
 
-	sys::Vector<cfg::uint32>* m_indices;
+	sys::Vector<uint32>* m_indices;
 	sys::Vector<float>* m_vertexData;
 };
 

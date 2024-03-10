@@ -86,7 +86,7 @@ inline bool Map<Key, T, Comp>::empty() const noexcept
 }
 
 template <typename Key, typename T, typename Comp>
-inline cfg::uint64 Map<Key, T, Comp>::size() const noexcept
+inline uint64 Map<Key, T, Comp>::size() const noexcept
 {
     return m_size;
 }

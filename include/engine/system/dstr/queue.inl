@@ -22,7 +22,7 @@
 namespace sys
 {
 template <typename T>
-inline Queue<T>::Queue(cfg::uint64 t_capacity)
+inline Queue<T>::Queue(uint64 t_capacity)
     : m_front    {0},
       m_back     {t_capacity - 1},
       m_size     {0},

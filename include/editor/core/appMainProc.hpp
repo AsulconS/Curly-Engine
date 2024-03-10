@@ -21,16 +21,15 @@
 
 #pragma once
 
-#include <editor/core/config.hpp>
+#include <editor/core/minimal.hpp>
 
-#include <engine/core/common.hpp>
 #include <engine/system/timer.hpp>
 
 // Forward Declarations
 namespace wnd
 {
 	class EditorWindow;
-	enum class WindowTickType : cfg::uint8;
+	enum class WindowTickType : uint8;
 }
 
 /**
@@ -40,7 +39,8 @@ namespace wnd
 class CURLY_EDITOR_API AppMainProc
 {
 public:
-	AppMainProc();
+	explicit AppMainProc();
+	virtual ~AppMainProc();
 
 	bool mainProc(wnd::EditorWindow* window, const wnd::WindowTickType tickType);
 

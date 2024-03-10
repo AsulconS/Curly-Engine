@@ -32,7 +32,7 @@
 namespace wnd
 {
 //--------------------------------------------------------------------------------
-RenderingWindow::RenderingWindow(const cfg::uint32 t_width, const cfg::uint32 t_height, const char* t_title, WindowStyle t_style, InputHandler* t_inputHandler)
+RenderingWindow::RenderingWindow(const uint32 t_width, const uint32 t_height, const char* t_title, WindowStyle t_style, InputHandler* t_inputHandler)
 	: IWindow     {t_width, t_height, t_title, t_style, t_inputHandler}
 {
 	m_windowManager = WindowManager::createInstance();
