@@ -43,6 +43,7 @@ using milliT = int32_t;
 using microT = int64_t;
 
 using byte = uint8_t;
+
 } // namespace types
 
 } // namespace cfg
