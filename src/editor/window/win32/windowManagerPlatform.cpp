@@ -85,6 +85,7 @@ PFNWGLCREATECONTEXTATTRIBSARBPROC WindowManager::wglCreateContextAttribsARB {nul
 PFNWGLSWAPINTERVALEXTPROC WindowManager::wglSwapIntervalEXT {nullptr};
 PFNWGLGETSWAPINTERVALEXTPROC WindowManager::wglGetSwapIntervalEXT {nullptr};
 
+//--------------------------------------------------------------------------------
 WindowManager* WindowManager::createInstance()
 {
 	if(!s_wmInstanceCount)
@@ -111,6 +112,7 @@ WindowManager* WindowManager::createInstance()
 	return s_wmInstances[s_wmInstanceCount++];
 }
 
+//--------------------------------------------------------------------------------
 WindowManager* WindowManager::getInstance(const uint32 index)
 {
 	if(index > 0 && index < (MAX_WINDOW_INSTANCES - 1))
@@ -127,11 +129,13 @@ WindowManager* WindowManager::getInstance(const uint32 index)
 	return nullptr;
 }
 
+//--------------------------------------------------------------------------------
 bool WindowManager::isActive()
 {
 	return m_isInstanceActive;
 }
 
+//--------------------------------------------------------------------------------
 WindowRectParams WindowManager::createEditorWindow(const char* title, int x, int y, int width, int height, WindowStyle style)
 {
 	if(!m_isInstanceActive)
@@ -203,6 +207,7 @@ WindowRectParams WindowManager::createEditorWindow(const char* title, int x, int
 	return rectParams;
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::destroyWindow()
 {
 	if(m_isInstanceActive)
@@ -212,21 +217,25 @@ void WindowManager::destroyWindow()
 	}
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::registerWindowInstance(IWindow* windowInstance)
 {
 	m_windowCallbackInstance = windowInstance;
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::setEventCallbackFunction(EventCallbackFunction tf_eventCallbackFunction)
 {
 	mf_eventCallbackFunction = tf_eventCallbackFunction;
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::setExternalTickCallbackFunction(ExternalTickCallbackFunction tf_externalTickCallbackFunction)
 {
 	mf_externalTickCallbackFunction = tf_externalTickCallbackFunction;
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::pollEvents()
 {
 	if(PeekMessageW(&s_msg, nullptr, 0, 0, PM_REMOVE))
@@ -236,6 +245,7 @@ void WindowManager::pollEvents()
 	}
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::swapBuffers()
 {
 	if(m_isInstanceActive)
@@ -248,6 +258,7 @@ void WindowManager::swapBuffers()
 	}
 }
 
+//--------------------------------------------------------------------------------
 WindowManager::WindowManager(const uint32 t_index)
 	: m_isInstanceActive         {false},
 	  m_index                    {t_index},
@@ -257,10 +268,12 @@ WindowManager::WindowManager(const uint32 t_index)
 {
 }
 
+//--------------------------------------------------------------------------------
 WindowManager::~WindowManager()
 {
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::registerAppWndClass()
 {
 	HICON hIcon = static_cast<HICON>(LoadImageA(s_procInstanceHandle, MAKEINTRESOURCEA(IDI_CURLYICON), IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR));
@@ -285,6 +298,7 @@ void WindowManager::registerAppWndClass()
 	}
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::loadGLExtensions()
 {
 	WNDCLASSEXA dWindowClass;
@@ -418,17 +432,20 @@ void WindowManager::loadGLExtensions()
 	DestroyWindow(dWindow);
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::warning(const char* msg)
 {
 	MessageBoxA(nullptr, msg, "Warning", MB_OK | MB_ICONWARNING);
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::fatalError(const char* msg)
 {
 	MessageBoxA(nullptr, msg, "Fatal Error", MB_OK | MB_ICONERROR);
 	exit(EXIT_FAILURE);
 }
 
+//--------------------------------------------------------------------------------
 bool WindowManager::isInvalidFuncAddress(void* funcAddress)
 {
 	return  (funcAddress == 0) ||
@@ -438,6 +455,7 @@ bool WindowManager::isInvalidFuncAddress(void* funcAddress)
 			(funcAddress == (void*)-1);
 }
 
+//--------------------------------------------------------------------------------
 bool WindowManager::isExtensionSupported(const char* extList, const char* extension)
 {
 	const char* start;
@@ -476,6 +494,7 @@ bool WindowManager::isExtensionSupported(const char* extList, const char* extens
 	return false;
 }
 
+//--------------------------------------------------------------------------------
 void* WindowManager::CurlyGetProcAddress(const char* name)
 {
 	void* gpa = (void*)wglGetProcAddress(name);
@@ -490,6 +509,7 @@ void* WindowManager::CurlyGetProcAddress(const char* name)
 	return gpa;
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::handleWindowCreateMsg(HWND hWnd)
 {
 	WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
@@ -540,6 +560,7 @@ void WindowManager::handleWindowCreateMsg(HWND hWnd)
 	std::cout << "GLSL Version: " << (char*)glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::handleWindowDestroyMsg(HWND hWnd)
 {
 	WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
@@ -553,6 +574,7 @@ void WindowManager::handleWindowDestroyMsg(HWND hWnd)
 	}
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::handleKeyDownMsg(HWND hWnd, WPARAM wParam)
 {
 	WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
@@ -562,6 +584,7 @@ void WindowManager::handleKeyDownMsg(HWND hWnd, WPARAM wParam)
 	s_keyPhysicStates[wParam] = 1;
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::handleKeyUpMsg(HWND hWnd, WPARAM wParam)
 {
 	s_keyPhysicStates[wParam] = 0;
@@ -571,6 +594,7 @@ void WindowManager::handleKeyUpMsg(HWND hWnd, WPARAM wParam)
 	windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, KEY_RELEASED, &params);
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::handleKillFocusMsg(HWND hWnd)
 {
 	WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
@@ -592,6 +616,7 @@ void WindowManager::handleKillFocusMsg(HWND hWnd)
 	windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_RELEASED, &rparam);
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::handleMouseButtonDownMsg(HWND hWnd, InputCode inputCode)
 {
 	if(!(s_mouseTrackCount++))
@@ -604,6 +629,7 @@ void WindowManager::handleMouseButtonDownMsg(HWND hWnd, InputCode inputCode)
 	windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, BUTTON_PRESSED, &params);
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::handleMouseButtonUpMsg(HWND hWnd, InputCode inputCode)
 {
 	WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
@@ -616,6 +642,7 @@ void WindowManager::handleMouseButtonUpMsg(HWND hWnd, InputCode inputCode)
 	}
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::handleMouseMoveMsg(HWND hWnd, LPARAM lParam)
 {
 	WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
@@ -625,12 +652,14 @@ void WindowManager::handleMouseMoveMsg(HWND hWnd, LPARAM lParam)
 	windowInstance->mf_eventCallbackFunction(windowInstance->m_windowCallbackInstance, MOUSE_MOVE, &params);
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::handleTimerMsg(HWND hWnd)
 {
 	WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
 	windowInstance->mf_externalTickCallbackFunction(windowInstance->m_windowCallbackInstance);
 }
 
+//--------------------------------------------------------------------------------
 InputCode WindowManager::getInputCodeFromMsg(UINT uMsg)
 {
 	switch(uMsg)
@@ -651,6 +680,7 @@ InputCode WindowManager::getInputCodeFromMsg(UINT uMsg)
 	return InputCode::UNKNOWN_INPUT_CODE;
 }
 
+//--------------------------------------------------------------------------------
 void WindowManager::CurlyMainProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	InputCode inputCode = InputCode::NONE;
@@ -718,6 +748,7 @@ void WindowManager::CurlyMainProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 	}
 }
 
+//--------------------------------------------------------------------------------
 LRESULT CALLBACK WindowManager::CurlyWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch(uMsg)
