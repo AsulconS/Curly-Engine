@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include <engine/external/glm/glm.hpp>
-#include <engine/external/glm/gtc/type_ptr.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <engine/core/config.hpp>
 #include <engine/core/common.hpp>

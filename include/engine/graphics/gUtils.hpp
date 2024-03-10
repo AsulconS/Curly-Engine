@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <engine/external/glm/glm.hpp>
+#include <glm/glm.hpp>
 
 #include <engine/core/config.hpp>
 #include <engine/core/common.hpp>

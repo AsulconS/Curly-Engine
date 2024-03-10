@@ -61,6 +61,9 @@ set(CURLY_RUNTIME_SOURCES
 )
 set(CURLY_EDITOR_SOURCES
     src/editor/core/appMainProc.cpp
+    src/editor/core/renderingContext.cpp
+    src/editor/gui/layout.cpp
+    src/editor/gui/viewport.cpp
     src/editor/window/editorWindow.cpp
     src/editor/window/${CURLY_PLATFORM}/windowManagerPlatform.cpp
     src/editor/app.cpp
@@ -119,6 +122,7 @@ PRIVATE
 
 # Add Include Directories and Link
 target_include_directories(${CURLY_RUNTIME_LIB_NAME} PRIVATE include)
+target_include_directories(${CURLY_RUNTIME_LIB_NAME} PRIVATE thirdparty/include)
 if(WIN32)
     if(CURLY_DEV_OPT_1)
         target_include_directories(${CURLY_RUNTIME_LIB_NAME} PRIVATE "C:/Program Files (x86)/Visual Leak Detector/include")
@@ -144,6 +148,7 @@ PRIVATE
     ${CURLY_EDITOR_BUILD_DEFINITIONS}
 )
 target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE include)
+target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE thirdparty/include)
 if(WIN32)
     if(CURLY_DEV_OPT_1)
         target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE "C:/Program Files (x86)/Visual Leak Detector/include")
