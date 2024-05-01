@@ -27,11 +27,11 @@
  * Details: Deals with dynamic linking semantics
  */
 #if defined(_WIN32) || defined(WIN32) || defined(_MSC_VER)
-	#define CF__CURLY_OS_WINDOWS
+	#define CF__CURLY_EDITOR_OS_WINDOWS
 	#define CF__CURLY_DLL_EXPORT __declspec(dllexport)
 	#define CF__CURLY_DLL_IMPORT __declspec(dllimport)
 #elif defined(__unix__) || defined(linux) || defined(__GNUC__)
-	#define CF__CURLY_OS_LINUX
+	#define CF__CURLY_EDITOR_OS_LINUX
 	#define CF__CURLY_DLL_EXPORT __attribute__((visibility("default")))
 	#define CF__CURLY_DLL_IMPORT
 #else

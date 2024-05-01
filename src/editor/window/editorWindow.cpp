@@ -1,15 +1,15 @@
 /**
  * Curly Engine
  * Copyright (c) 2019-2024 Adrian Bedregal
- * 
+ *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
  * arising from the use of this software.
- * 
+ *
  * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -33,10 +33,10 @@ namespace wnd
 {
 //--------------------------------------------------------------------------------
 EditorWindow::EditorWindow(const uint32 t_width, const uint32 t_height, const char* t_title, WindowStyle t_style, InputHandler* t_inputHandler)
-	: wnd::IWindow {t_width, t_height, t_title, t_style, t_inputHandler},
-	  m_appMainProc { nullptr },
-	  m_tickCallback { nullptr },
-	  m_tickStaticCallback { nullptr }
+	: wnd::IWindow{ t_width, t_height, t_title, t_style, t_inputHandler },
+	m_appMainProc{ nullptr },
+	m_tickCallback{ nullptr },
+	m_tickStaticCallback{ nullptr }
 {
 	m_windowManager = WindowManager::createInstance();
 	m_windowManager->registerWindowInstance(this);
@@ -104,6 +104,12 @@ void EditorWindow::close()
 }
 
 //--------------------------------------------------------------------------------
+InputHandler* wnd::EditorWindow::getInputHandler()
+{
+	return m_inputHandler;
+}
+
+//--------------------------------------------------------------------------------
 void EditorWindow::setInputHandler(InputHandler& t_inputHandler)
 {
 	m_inputHandler = &t_inputHandler;
@@ -112,7 +118,7 @@ void EditorWindow::setInputHandler(InputHandler& t_inputHandler)
 //--------------------------------------------------------------------------------
 void EditorWindow::pollEvents()
 {
-	if(m_inputHandler != nullptr)
+	if (m_inputHandler != nullptr)
 	{
 		m_inputHandler->_tick();
 	}
@@ -167,7 +173,7 @@ void EditorWindow::initializeWindow()
 	m_windowHeight = rectParams.windowHeight;
 	m_viewportWidth = rectParams.clientWidth;
 	m_viewportHeight = rectParams.clientHeight;
-	if(!m_windowManager->isActive())
+	if (!m_windowManager->isActive())
 	{
 		throw exc::WindowInitException();
 	}
@@ -197,28 +203,28 @@ void EditorWindow::eventCallback(IWindow* window, InputEvent event, WindowParams
 	}
 	switch (event)
 	{
-		case KEY_PRESSED:
-		case KEY_RELEASED:
-		{
-			eWindow->m_inputHandler->_updateKeyEvent(static_cast<KeyboardParams*>(params)->code, event);
-			break;
-		}
+	case KEY_PRESSED:
+	case KEY_RELEASED:
+	{
+		eWindow->m_inputHandler->_updateKeyEvent(static_cast<KeyboardParams*>(params)->code, event);
+		break;
+	}
 
-		case BUTTON_PRESSED:
-		case BUTTON_RELEASED:
-		{
-			eWindow->m_inputHandler->_updateMouseEvent(static_cast<MouseParams*>(params)->code, event);
-			break;
-		}
+	case BUTTON_PRESSED:
+	case BUTTON_RELEASED:
+	{
+		eWindow->m_inputHandler->_updateMouseEvent(static_cast<MouseParams*>(params)->code, event);
+		break;
+	}
 
-		case MOUSE_MOVE:
-		{
-			eWindow->m_inputHandler->_updateMousePosition(static_cast<MouseParams*>(params)->pos);
-			break;
-		}
+	case MOUSE_MOVE:
+	{
+		eWindow->m_inputHandler->_updateMousePosition(static_cast<MouseParams*>(params)->pos);
+		break;
+	}
 
-		default:
-			break;
+	default:
+		break;
 	}
 }
 

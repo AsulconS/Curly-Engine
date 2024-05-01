@@ -23,27 +23,53 @@
 
 #include <editor/core/minimal.hpp>
 
-#include <engine/system/timer.hpp>
+#include <vulkan/vulkan.hpp>
 
- // Forward Declarations
-namespace wnd
+namespace vkUtils
 {
-class EditorWindow;
-enum class WindowTickType : uint8;
-}
-
 /**
- * @brief Application Main Procedure class to handle main tick
+ * @brief Queue Family Info Struct for queues references
  *
  */
-class CURLY_EDITOR_API AppMainProc
+struct QueueFamilyInfo
 {
-public:
-	explicit AppMainProc();
-	virtual ~AppMainProc();
+	optional<uint32> graphicsFamilyIndex;
+	optional<uint32> presentFamilyIndex;
 
-	bool mainProc(wnd::EditorWindow* window, const wnd::WindowTickType tickType);
-
-private:
-	sys::Timer m_timer;
+	bool isFilled() const;
 };
+
+/**
+* @brief Chooses Physical Device given an Instance object
+*
+* @param instance
+* @return vk::PhysicalDevice
+*/
+vk::PhysicalDevice choosePhysicalDevice(vk::Instance& instance);
+
+/**
+ * @brief Finds suitable families for certain device
+ *
+ * @param device
+ * @return QueueFamilyInfo
+ */
+QueueFamilyInfo findQueueFamilies(vk::PhysicalDevice device);
+
+/**
+ * @brief Create a Logical Device object from physical device
+ *
+ * @param physicalDevice
+ * @return vk::Device
+ */
+vk::Device createLogicalDevice(vk::PhysicalDevice physicalDevice);
+
+/**
+ * @brief Get Queue for device
+ *
+ * @param physicalDevice
+ * @param device
+ * @return vk::Queue
+ */
+vk::Queue getQueue(vk::PhysicalDevice physicalDevice, vk::Device device);
+
+} // namespace vkUtils

@@ -70,6 +70,8 @@ set(CURLY_EDITOR_SOURCES
     src/editor/gui/viewport.cpp
     src/editor/window/editorWindow.cpp
     src/editor/window/${CURLY_PLATFORM}/windowManagerPlatform.cpp
+    src/editor/window/vkUtils/device.cpp
+    src/editor/window/vkUtils/instance.cpp
     src/editor/app.cpp
 )
 
@@ -96,6 +98,8 @@ if (WIN32)
         C__WIN_SDK_VERSION_MAJOR=${SDK_MAJOR}
         C__WIN_SDK_VERSION_MINOR=${SDK_MINOR}
         C__WIN_SDK_VERSION_PATCH=${SDK_PATCH}
+        VK_USE_PLATFORM_WIN32_KHR
+        NOMINMAX
     )
     if(CURLY_DEV_OPT_1)
         set(CURLY_RUNTIME_COMPILE_DEFINITIONS ${CURLY_RUNTIME_COMPILE_DEFINITIONS}
@@ -162,9 +166,10 @@ PRIVATE
 # Add Include Directories and Link
 target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE include)
 target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE thirdparty/include)
+target_link_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE thirdparty/lib)
 target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME})
 if(WIN32)
-    target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC opengl32 dwmapi)
+    target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC opengl32 dwmapi vulkan-1)
     if(CURLY_DEV_OPT_1)
         target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE ${CURLY_VLD_DIR}/include)
         target_link_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE ${CURLY_VLD_DIR}/lib/Win64)

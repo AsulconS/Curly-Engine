@@ -28,7 +28,7 @@ namespace wnd
 {
 namespace compat
 {
-#if defined(CF__CURLY_OS_LINUX)
+#if defined(CF__CURLY_EDITOR_OS_LINUX)
 CURLY_API void forceGlxContextToVersion(const int major, const int minor);
 #endif
 

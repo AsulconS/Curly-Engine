@@ -23,9 +23,6 @@
 
 #include "resource.hpp"
 
-#include "../vkUtils/device.hpp"
-#include "../vkUtils/instance.hpp"
-
 #include <engine/window/inputBindings.hpp>
 
 #include <dwmapi.h>
@@ -51,39 +48,42 @@ uint32 WindowManager::s_activeSessions{ 0u };
 uint32 WindowManager::s_wmInstanceCount{ 0u };
 sys::LazyPtr<WindowManager> WindowManager::s_wmInstances[MAX_WINDOW_INSTANCES]{};
 
-vk::Instance WindowManager::s_vkInstance{ nullptr };
-vk::DispatchLoaderDynamic WindowManager::s_dldi;
-vk::DebugUtilsMessengerEXT WindowManager::s_debugMessenger{ nullptr };
-
-vk::PhysicalDevice WindowManager::s_physicalDevice{ nullptr };
-vk::Device WindowManager::s_device{ nullptr };
-vk::Queue WindowManager::s_graphicsQueue{ nullptr };
-vk::Queue WindowManager::s_presentQueue{ nullptr };
-
 sys::SafePtr<Map<HWND, uint32>> WindowManager::s_hwndMap{};
 
 WNDCLASSEXA WindowManager::s_appWndClass{};
 const char* WindowManager::s_appWndClassName{ "CurlyApp" };
 
+PIXELFORMATDESCRIPTOR WindowManager::s_pfd{};
+const int WindowManager::s_attribs[ATTRIB_LIST_SIZE]
+{
+	WGL_DRAW_TO_WINDOW_ARB  , GL_TRUE,
+	WGL_SUPPORT_OPENGL_ARB  , GL_TRUE,
+	WGL_DOUBLE_BUFFER_ARB   , GL_TRUE,
+	WGL_ACCELERATION_ARB    , WGL_FULL_ACCELERATION_ARB,
+	WGL_PIXEL_TYPE_ARB      , WGL_TYPE_RGBA_ARB,
+	WGL_COLOR_BITS_ARB      , 32,
+	WGL_DEPTH_BITS_ARB      , 24,
+	WGL_STENCIL_BITS_ARB    , 8,
+	0
+};
+
 int WindowManager::s_mouseTrackCount{ 0 };
 int WindowManager::s_keyPhysicStates[NUM_KEYS_SIZE]{};
 
 MSG WindowManager::s_msg{};
+HMODULE WindowManager::s_ogl32Module{ nullptr };
 HINSTANCE WindowManager::s_procInstanceHandle{ nullptr };
 
-//--------------------------------------------------------------------------------
-WindowManager::WindowManager(const uint32 t_index)
-	: m_isInstanceActive{ false },
-	m_index{ t_index },
-	m_windowHandle{ nullptr },
-	m_deviceContextHandle{ nullptr }
-{
-}
+bool WindowManager::s_vSyncCompat{ true };
+bool WindowManager::s_attribCtxCompat{ true };
+bool WindowManager::s_pixelFormatCompat{ true };
 
-//--------------------------------------------------------------------------------
-WindowManager::~WindowManager()
-{
-}
+PFNWGLCHOOSEPIXELFORMATARBPROC WindowManager::wglChoosePixelFormatARB{ nullptr };
+PFNWGLGETEXTENSIONSSTRINGARBPROC WindowManager::wglGetExtensionsStringARB{ nullptr };
+PFNWGLCREATECONTEXTATTRIBSARBPROC WindowManager::wglCreateContextAttribsARB{ nullptr };
+
+PFNWGLSWAPINTERVALEXTPROC WindowManager::wglSwapIntervalEXT{ nullptr };
+PFNWGLGETSWAPINTERVALEXTPROC WindowManager::wglGetSwapIntervalEXT{ nullptr };
 
 //--------------------------------------------------------------------------------
 WindowManager* WindowManager::createInstance()
@@ -95,8 +95,7 @@ WindowManager* WindowManager::createInstance()
 #endif
 		s_procInstanceHandle = GetModuleHandleW(nullptr);
 		registerAppWndClass();
-		setupVkInstance();
-		setupVkDevice();
+		loadGLExtensions();
 
 		s_wmInstances[0u].init(0u);
 		++s_wmInstanceCount;
@@ -128,34 +127,6 @@ WindowManager* WindowManager::getInstance(const uint32 index)
 		}
 	}
 	return nullptr;
-}
-
-//--------------------------------------------------------------------------------
-void WindowManager::setupVkInstance()
-{
-	s_vkInstance = vkUtils::createInstance("Curly Engine");
-	s_dldi = vk::DispatchLoaderDynamic(s_vkInstance, vkGetInstanceProcAddr);
-#if CURLY_DEBUG
-	s_debugMessenger = vkUtils::createDebugMessenger(s_vkInstance, s_dldi);
-#endif
-}
-
-//--------------------------------------------------------------------------------
-void WindowManager::setupVkDevice()
-{
-	s_physicalDevice = vkUtils::choosePhysicalDevice(s_vkInstance);
-	s_device = vkUtils::createLogicalDevice(s_physicalDevice);
-	s_graphicsQueue = vkUtils::getQueue(s_physicalDevice, s_device);
-}
-
-//--------------------------------------------------------------------------------
-void WindowManager::destroySession()
-{
-	s_device.destroy();
-#if CURLY_DEBUG
-	s_vkInstance.destroyDebugUtilsMessengerEXT(s_debugMessenger, nullptr, s_dldi);
-#endif
-	s_vkInstance.destroy();
 }
 
 //--------------------------------------------------------------------------------
@@ -219,7 +190,6 @@ WindowRectParams WindowManager::createEditorWindow(const char* title, int x, int
 		DwmSetWindowAttribute(m_windowHandle, DWMWINDOWATTRIBUTE::DWMWA_USE_IMMERSIVE_DARK_MODE, &USE_DARK_MODE, sizeof(USE_DARK_MODE));
 #endif
 
-		m_surface = vkUtils::createSurfaceKHR(s_vkInstance, this);
 		m_isInstanceActive = true;
 		++s_activeSessions;
 		(*s_hwndMap)[m_windowHandle] = m_index;
@@ -242,7 +212,6 @@ void WindowManager::destroyWindow()
 {
 	if (m_isInstanceActive)
 	{
-		s_vkInstance.destroySurfaceKHR(m_surface);
 		DestroyWindow(m_windowHandle);
 		m_isInstanceActive = false;
 	}
@@ -281,25 +250,27 @@ void WindowManager::swapBuffers()
 {
 	if (m_isInstanceActive)
 	{
-		// TODO: Vulkan Support (?)
-		// if (s_vSyncCompat)
-		// {
-		// 	wglSwapIntervalEXT(1);
-		// }
-		// wglSwapLayerBuffers(m_deviceContextHandle, WGL_SWAP_MAIN_PLANE);
+		if (s_vSyncCompat)
+		{
+			wglSwapIntervalEXT(1);
+		}
+		wglSwapLayerBuffers(m_deviceContextHandle, WGL_SWAP_MAIN_PLANE);
 	}
 }
 
 //--------------------------------------------------------------------------------
-HWND WindowManager::getRawHandle()
+WindowManager::WindowManager(const uint32 t_index)
+	: m_isInstanceActive{ false },
+	m_index{ t_index },
+	m_windowHandle{ nullptr },
+	m_deviceContextHandle{ nullptr },
+	m_glRenderingContextHandle{ nullptr }
 {
-	return m_windowHandle;
 }
 
 //--------------------------------------------------------------------------------
-HINSTANCE WindowManager::getProcInstanceRawHandle()
+WindowManager::~WindowManager()
 {
-	return s_procInstanceHandle;
 }
 
 //--------------------------------------------------------------------------------
@@ -328,6 +299,140 @@ void WindowManager::registerAppWndClass()
 }
 
 //--------------------------------------------------------------------------------
+void WindowManager::loadGLExtensions()
+{
+	WNDCLASSEXA dWindowClass;
+	dWindowClass.cbSize = sizeof(WNDCLASSEXA);
+	dWindowClass.style = 0u;
+	dWindowClass.lpfnWndProc = DefWindowProcA;
+	dWindowClass.cbClsExtra = 0;
+	dWindowClass.cbWndExtra = 0;
+	dWindowClass.hInstance = 0;
+	dWindowClass.hIcon = nullptr;
+	dWindowClass.hCursor = nullptr;
+	dWindowClass.hbrBackground = nullptr;
+	dWindowClass.lpszMenuName = nullptr;
+	dWindowClass.lpszClassName = "DWC";
+	dWindowClass.hIconSm = nullptr;
+
+	if (!RegisterClassExA(&dWindowClass))
+	{
+		fatalError("Failed to register dummy OpenGL window.");
+	}
+
+	HWND dWindow = CreateWindowExA
+	(
+		0L,                         // Extended Window Style
+		dWindowClass.lpszClassName, // Window Class Name
+		"",                         // Window Title
+		0,                          // Window Style
+
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+
+		nullptr,     // Parent Window Handle
+		nullptr,     // Menu Handle
+		nullptr,     // Handle to current instance
+		nullptr      // Additional Application Data
+	);
+
+	if (!dWindow)
+	{
+		fatalError("Failed to create dummy OpenGL window.");
+	}
+
+	HDC ddc = GetDC(dWindow);
+
+	PIXELFORMATDESCRIPTOR dpfd;
+	dpfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+	dpfd.nVersion = 1;
+	dpfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	dpfd.iPixelType = PFD_TYPE_RGBA;
+	dpfd.cColorBits = 32;
+	dpfd.cRedBits = 0;
+	dpfd.cRedShift = 0;
+	dpfd.cBlueBits = 0;
+	dpfd.cBlueShift = 0;
+	dpfd.cGreenBits = 0;
+	dpfd.cGreenShift = 0;
+	dpfd.cAlphaBits = 0;
+	dpfd.cAlphaShift = 0;
+	dpfd.cAccumBits = 0;
+	dpfd.cAccumRedBits = 0;
+	dpfd.cAccumBlueBits = 0;
+	dpfd.cAccumGreenBits = 0;
+	dpfd.cAccumAlphaBits = 0;
+	dpfd.cDepthBits = 24;
+	dpfd.cStencilBits = 8;
+	dpfd.cAuxBuffers = 0;
+	dpfd.iLayerType = PFD_MAIN_PLANE;
+	dpfd.bReserved = 0;
+	dpfd.dwLayerMask = 0;
+	dpfd.dwVisibleMask = 0;
+	dpfd.dwDamageMask = 0;
+
+	int dPixelformat = ChoosePixelFormat(ddc, &dpfd);
+	if (!dPixelformat)
+	{
+		fatalError("Failed to find a suitable pixel format.");
+	}
+	if (!SetPixelFormat(ddc, dPixelformat, &dpfd))
+	{
+		fatalError("Failed to set the pixel format.");
+	}
+
+	HGLRC dContext = wglCreateContext(ddc);
+	if (!dContext)
+	{
+		fatalError("Failed to create a dummy OpenGL rendering context.");
+	}
+
+	if (!wglMakeCurrent(ddc, dContext))
+	{
+		fatalError("Failed to activate dummy OpenGL rendering context.");
+	}
+
+	wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
+	const char* wglExtensions = wglGetExtensionsStringARB(ddc);
+
+	if (!isExtensionSupported(wglExtensions, "WGL_ARB_create_context"))
+	{
+		s_attribCtxCompat = false;
+		warning("WGL_ARB_create_context not supported.");
+	}
+	else
+	{
+		wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+	}
+
+	if (!isExtensionSupported(wglExtensions, "WGL_ARB_pixel_format"))
+	{
+		s_pfd = dpfd;
+		s_pixelFormatCompat = false;
+		warning("WGL_ARB_pixel_format not supported.");
+	}
+	else
+	{
+		wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+	}
+
+	if (!isExtensionSupported(wglExtensions, "WGL_EXT_swap_control"))
+	{
+		s_vSyncCompat = false;
+		warning("WGL_EXT_swap_control not supported (V-Sync not supported).");
+	}
+	else
+	{
+		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+		wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
+	}
+
+	wglMakeCurrent(ddc, nullptr);
+	wglDeleteContext(dContext);
+	ReleaseDC(dWindow, ddc);
+	DestroyWindow(dWindow);
+}
+
+//--------------------------------------------------------------------------------
 void WindowManager::warning(const char* msg)
 {
 	MessageBoxA(nullptr, msg, "Warning", MB_OK | MB_ICONWARNING);
@@ -343,7 +448,7 @@ void WindowManager::fatalError(const char* msg)
 //--------------------------------------------------------------------------------
 bool WindowManager::isInvalidFuncAddress(void* funcAddress)
 {
-	return (funcAddress == 0) ||
+	return  (funcAddress == 0) ||
 		(funcAddress == (void*)0x1) ||
 		(funcAddress == (void*)0x2) ||
 		(funcAddress == (void*)0x3) ||
@@ -390,20 +495,18 @@ bool WindowManager::isExtensionSupported(const char* extList, const char* extens
 }
 
 //--------------------------------------------------------------------------------
-// TODO: Vulkan support (?)
 void* WindowManager::CurlyGetProcAddress(const char* name)
 {
-	// void* gpa = (void*)wglGetProcAddress(name);
-	// if (isInvalidFuncAddress(gpa))
-	// {
-		// if (!s_ogl32Module)
-		// {
-		// 	s_ogl32Module = LoadLibraryA("opengl32.dll");
-		// }
-		// gpa = (void*)GetProcAddress(s_ogl32Module, name);
-	// }
-	// return gpa;
-	return nullptr;
+	void* gpa = (void*)wglGetProcAddress(name);
+	if (isInvalidFuncAddress(gpa))
+	{
+		if (!s_ogl32Module)
+		{
+			s_ogl32Module = LoadLibraryA("opengl32.dll");
+		}
+		gpa = (void*)GetProcAddress(s_ogl32Module, name);
+	}
+	return gpa;
 }
 
 //--------------------------------------------------------------------------------
@@ -413,48 +516,48 @@ void WindowManager::handleWindowCreateMsg(HWND hWnd)
 	HDC& hdc = windowInstance->m_deviceContextHandle;
 	hdc = GetDC(hWnd);
 
-	// int pixelFormat;
+	int pixelFormat;
 
-	// if (s_pixelFormatCompat)
-	// {
-	// 	uint32 numFormats;
-	// 	wglChoosePixelFormatARB(hdc, s_attribs, nullptr, 1, &pixelFormat, &numFormats);
-	// 	DescribePixelFormat(hdc, pixelFormat, sizeof(s_pfd), &s_pfd);
-	// }
-	// else
-	// {
-	// 	pixelFormat = ChoosePixelFormat(hdc, &s_pfd);
-	// }
+	if (s_pixelFormatCompat)
+	{
+		uint32 numFormats;
+		wglChoosePixelFormatARB(hdc, s_attribs, nullptr, 1, &pixelFormat, &numFormats);
+		DescribePixelFormat(hdc, pixelFormat, sizeof(s_pfd), &s_pfd);
+	}
+	else
+	{
+		pixelFormat = ChoosePixelFormat(hdc, &s_pfd);
+	}
 
-	// SetPixelFormat(hdc, pixelFormat, &s_pfd);
+	SetPixelFormat(hdc, pixelFormat, &s_pfd);
 
-	// HGLRC& glContext = windowInstance->m_glRenderingContextHandle;
+	HGLRC& glContext = windowInstance->m_glRenderingContextHandle;
 
-	// if (s_attribCtxCompat)
-	// {
-	// 	int glContextAttribs[] =
-	// 	{
-	// 		WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-	// 		WGL_CONTEXT_MINOR_VERSION_ARB, 6,
-	// 		WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-	// 		0
-	// 	};
+	if (s_attribCtxCompat)
+	{
+		int glContextAttribs[] =
+		{
+			WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
+			WGL_CONTEXT_MINOR_VERSION_ARB, 6,
+			WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+			0
+		};
 
-	// 	glContext = wglCreateContextAttribsARB(hdc, 0, glContextAttribs);
-	// }
-	// else
-	// {
-	// 	glContext = wglCreateContext(hdc);
-	// }
-	// wglMakeCurrent(hdc, glContext);
+		glContext = wglCreateContextAttribsARB(hdc, 0, glContextAttribs);
+	}
+	else
+	{
+		glContext = wglCreateContext(hdc);
+	}
+	wglMakeCurrent(hdc, glContext);
 
-	// gladLoadGL((GLADloadfunc)CurlyGetProcAddress);
-
-	// std::cout << "OpenGL " << (char*)glGetString(GL_VERSION);
-	// std::cout << "Renderer: " << (char*)glGetString(GL_RENDERER) << std::endl;
-	// std::cout << "GLSL Version: " << (char*)glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+	gladLoadGL((GLADloadfunc)CurlyGetProcAddress);
 
 	memset(s_keyPhysicStates, 0, sizeof(s_keyPhysicStates));
+
+	std::cout << "OpenGL " << (char*)glGetString(GL_VERSION);
+	std::cout << "Renderer: " << (char*)glGetString(GL_RENDERER) << std::endl;
+	std::cout << "GLSL Version: " << (char*)glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 }
 
 //--------------------------------------------------------------------------------
@@ -463,11 +566,10 @@ void WindowManager::handleWindowDestroyMsg(HWND hWnd)
 	WindowManager* windowInstance = s_wmInstances[(*s_hwndMap)[hWnd]];
 	--s_activeSessions;
 	windowInstance->m_isInstanceActive = false;
-	//wglMakeCurrent(windowInstance->m_deviceContextHandle, nullptr);
-	//wglDeleteContext(windowInstance->m_glRenderingContextHandle);
+	wglMakeCurrent(windowInstance->m_deviceContextHandle, nullptr);
+	wglDeleteContext(windowInstance->m_glRenderingContextHandle);
 	if (!s_activeSessions)
 	{
-		destroySession();
 		PostQuitMessage(0);
 	}
 }

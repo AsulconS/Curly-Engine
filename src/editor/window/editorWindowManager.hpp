@@ -23,9 +23,9 @@
 
 #include <editor/core/minimal.hpp>
 
-#if defined(CF__CURLY_OS_WINDOWS)
+#if defined(CF__CURLY_EDITOR_OS_WINDOWS)
 	#include "win32/windowManagerPlatform.hpp"
-#elif defined(CF__CURLY_OS_LINUX)
+#elif defined(CF__CURLY_EDITOR_OS_LINUX)
 	#include "linux/windowManagerPlatform.hpp"
 #else
 	#error Curly Engine has no support for this OS
