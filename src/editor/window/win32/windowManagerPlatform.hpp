@@ -75,8 +75,9 @@ private:
 	WindowManager(const uint32 t_index);
 	~WindowManager();
 
+	void setupVkDevice();
+
 	static void setupVkInstance();
-	static void setupVkDevice();
 	static void destroySession();
 
 	static void registerAppWndClass();
@@ -115,7 +116,14 @@ private:
 	HWND m_windowHandle;
 	HDC m_deviceContextHandle;
 
+	// Vulkan Surface
 	vk::SurfaceKHR m_surface;
+
+	// Vulkan Device
+	vk::PhysicalDevice m_physicalDevice;
+	vk::Device m_device;
+	vk::Queue m_graphicsQueue;
+	vk::Queue m_presentQueue;
 
 	IWindow* m_windowCallbackInstance;
 	EventCallbackFunction mf_eventCallbackFunction;
@@ -126,16 +134,10 @@ private:
 	static uint32 s_wmInstanceCount;
 	static sys::LazyPtr<WindowManager> s_wmInstances[MAX_WINDOW_INSTANCES];
 
-	// Vulkan Instance
+	// Vulkan Global Instance
 	static vk::Instance s_vkInstance;
 	static vk::DispatchLoaderDynamic s_dldi;
 	static vk::DebugUtilsMessengerEXT s_debugMessenger;
-
-	// Vulkan Device
-	static vk::PhysicalDevice s_physicalDevice;
-	static vk::Device s_device;
-	static vk::Queue s_graphicsQueue;
-	static vk::Queue s_presentQueue;
 
 	// Window Hash Table <Window Handler, Instance ID>
 	static sys::SafePtr<Map<HWND, uint32>> s_hwndMap;

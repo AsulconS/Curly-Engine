@@ -55,11 +55,6 @@ vk::Instance WindowManager::s_vkInstance{ nullptr };
 vk::DispatchLoaderDynamic WindowManager::s_dldi;
 vk::DebugUtilsMessengerEXT WindowManager::s_debugMessenger{ nullptr };
 
-vk::PhysicalDevice WindowManager::s_physicalDevice{ nullptr };
-vk::Device WindowManager::s_device{ nullptr };
-vk::Queue WindowManager::s_graphicsQueue{ nullptr };
-vk::Queue WindowManager::s_presentQueue{ nullptr };
-
 sys::SafePtr<Map<HWND, uint32>> WindowManager::s_hwndMap{};
 
 WNDCLASSEXA WindowManager::s_appWndClass{};
@@ -76,7 +71,11 @@ WindowManager::WindowManager(const uint32 t_index)
 	: m_isInstanceActive{ false },
 	m_index{ t_index },
 	m_windowHandle{ nullptr },
-	m_deviceContextHandle{ nullptr }
+	m_deviceContextHandle{ nullptr },
+	m_physicalDevice{ nullptr },
+	m_device{ nullptr },
+	m_graphicsQueue{ nullptr },
+	m_presentQueue{ nullptr }
 {
 }
 
@@ -96,7 +95,6 @@ WindowManager* WindowManager::createInstance()
 		s_procInstanceHandle = GetModuleHandleW(nullptr);
 		registerAppWndClass();
 		setupVkInstance();
-		setupVkDevice();
 
 		s_wmInstances[0u].init(0u);
 		++s_wmInstanceCount;
@@ -143,15 +141,15 @@ void WindowManager::setupVkInstance()
 //--------------------------------------------------------------------------------
 void WindowManager::setupVkDevice()
 {
-	s_physicalDevice = vkUtils::choosePhysicalDevice(s_vkInstance);
-	s_device = vkUtils::createLogicalDevice(s_physicalDevice);
-	s_graphicsQueue = vkUtils::getQueue(s_physicalDevice, s_device);
+	m_surface = vkUtils::createSurfaceKHR(s_vkInstance, this);
+	m_physicalDevice = vkUtils::choosePhysicalDevice(s_vkInstance);
+	m_device = vkUtils::createLogicalDevice(m_physicalDevice, m_surface);
+	m_graphicsQueue = vkUtils::getQueue(m_physicalDevice, m_device, m_surface);
 }
 
 //--------------------------------------------------------------------------------
 void WindowManager::destroySession()
 {
-	s_device.destroy();
 #if CURLY_DEBUG
 	s_vkInstance.destroyDebugUtilsMessengerEXT(s_debugMessenger, nullptr, s_dldi);
 #endif
@@ -219,7 +217,9 @@ WindowRectParams WindowManager::createEditorWindow(const char* title, int x, int
 		DwmSetWindowAttribute(m_windowHandle, DWMWINDOWATTRIBUTE::DWMWA_USE_IMMERSIVE_DARK_MODE, &USE_DARK_MODE, sizeof(USE_DARK_MODE));
 #endif
 
-		m_surface = vkUtils::createSurfaceKHR(s_vkInstance, this);
+		// Vulkan Steup
+		setupVkDevice();
+
 		m_isInstanceActive = true;
 		++s_activeSessions;
 		(*s_hwndMap)[m_windowHandle] = m_index;
@@ -242,6 +242,7 @@ void WindowManager::destroyWindow()
 {
 	if (m_isInstanceActive)
 	{
+		m_device.destroy();
 		s_vkInstance.destroySurfaceKHR(m_surface);
 		DestroyWindow(m_windowHandle);
 		m_isInstanceActive = false;

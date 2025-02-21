@@ -53,7 +53,7 @@ vk::PhysicalDevice choosePhysicalDevice(vk::Instance& instance);
  * @param device
  * @return QueueFamilyInfo
  */
-QueueFamilyInfo findQueueFamilies(vk::PhysicalDevice device);
+QueueFamilyInfo findQueueFamilies(vk::PhysicalDevice device, vk::SurfaceKHR surface);
 
 /**
  * @brief Create a Logical Device object from physical device
@@ -61,7 +61,7 @@ QueueFamilyInfo findQueueFamilies(vk::PhysicalDevice device);
  * @param physicalDevice
  * @return vk::Device
  */
-vk::Device createLogicalDevice(vk::PhysicalDevice physicalDevice);
+vk::Device createLogicalDevice(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface);
 
 /**
  * @brief Get Queue for device
@@ -70,6 +70,6 @@ vk::Device createLogicalDevice(vk::PhysicalDevice physicalDevice);
  * @param device
  * @return vk::Queue
  */
-vk::Queue getQueue(vk::PhysicalDevice physicalDevice, vk::Device device);
+vk::Queue getQueue(vk::PhysicalDevice physicalDevice, vk::Device device, vk::SurfaceKHR surface);
 
 } // namespace vkUtils

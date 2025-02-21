@@ -158,7 +158,7 @@ vk::PhysicalDevice choosePhysicalDevice(vk::Instance& instance)
 }
 
 //--------------------------------------------------------------------------------
-QueueFamilyInfo findQueueFamilies(vk::PhysicalDevice device)
+QueueFamilyInfo findQueueFamilies(vk::PhysicalDevice device, vk::SurfaceKHR surface)
 {
 	QueueFamilyInfo info;
 
@@ -198,9 +198,15 @@ QueueFamilyInfo findQueueFamilies(vk::PhysicalDevice device)
 		if (queueFamily.queueFlags & vk::QueueFlagBits::eGraphics)
 		{
 			info.graphicsFamilyIndex = i;
-			info.presentFamilyIndex = i; // TODO: Check for valid present family (WA)
 #if CURLY_DEBUG
-			std::cout << std::format("Queue Family Nr. {} is suitable for graphics and presenting.", i) << std::endl;
+			std::cout << std::format("Queue Family Nr. {} is suitable for graphics.", i) << std::endl;
+#endif
+		}
+		if (device.getSurfaceSupportKHR(i, surface))
+		{
+			info.presentFamilyIndex = i;
+#if CURLY_DEBUG
+			std::cout << std::format("Queue Family Nr. {} is suitable for presenting.", i) << std::endl;
 #endif
 		}
 
@@ -213,9 +219,9 @@ QueueFamilyInfo findQueueFamilies(vk::PhysicalDevice device)
 }
 
 //--------------------------------------------------------------------------------
-vk::Device createLogicalDevice(vk::PhysicalDevice physicalDevice)
+vk::Device createLogicalDevice(vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface)
 {
-	QueueFamilyInfo info = findQueueFamilies(physicalDevice);
+	QueueFamilyInfo info = findQueueFamilies(physicalDevice, surface);
 	const float queuePriority = 1.0f;
 
 	/**
@@ -272,9 +278,9 @@ vk::Device createLogicalDevice(vk::PhysicalDevice physicalDevice)
 }
 
 //--------------------------------------------------------------------------------
-vk::Queue getQueue(vk::PhysicalDevice physicalDevice, vk::Device device)
+vk::Queue getQueue(vk::PhysicalDevice physicalDevice, vk::Device device, vk::SurfaceKHR surface)
 {
-	QueueFamilyInfo info = findQueueFamilies(physicalDevice);
+	QueueFamilyInfo info = findQueueFamilies(physicalDevice, surface);
 	return device.getQueue(info.graphicsFamilyIndex.value(), 0);
 }
 
