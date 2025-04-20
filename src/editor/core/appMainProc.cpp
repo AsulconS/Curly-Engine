@@ -24,7 +24,7 @@
 
 #include <engine/graphics/model.hpp>
 
- //#include "../../engine/core/GL/gl.h"
+//#include "../../engine/core/GL/gl.h"
 
  //--------------------------------------------------------------------------------
 AppMainProc::AppMainProc()

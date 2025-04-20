@@ -48,7 +48,7 @@ vk::Instance createInstance(const char* applicationName);
  * @param dldi
  * @return vk::DebugUtilsMessengerEXT
  */
-vk::DebugUtilsMessengerEXT createDebugMessenger(vk::Instance& instance, vk::DispatchLoaderDynamic& dldi);
+vk::DebugUtilsMessengerEXT createDebugMessenger(vk::Instance& instance, vk::detail::DispatchLoaderDynamic& dldi);
 
 /**
  * @brief Create a KHR Surface using an instance and a Window Manager

@@ -52,7 +52,7 @@ uint32 WindowManager::s_wmInstanceCount{ 0u };
 sys::LazyPtr<WindowManager> WindowManager::s_wmInstances[MAX_WINDOW_INSTANCES]{};
 
 vk::Instance WindowManager::s_vkInstance{ nullptr };
-vk::DispatchLoaderDynamic WindowManager::s_dldi;
+vk::detail::DispatchLoaderDynamic WindowManager::s_dldi;
 vk::DebugUtilsMessengerEXT WindowManager::s_debugMessenger{ nullptr };
 
 sys::SafePtr<Map<HWND, uint32>> WindowManager::s_hwndMap{};
@@ -132,7 +132,7 @@ WindowManager* WindowManager::getInstance(const uint32 index)
 void WindowManager::setupVkInstance()
 {
 	s_vkInstance = vkUtils::createInstance("Curly Engine");
-	s_dldi = vk::DispatchLoaderDynamic(s_vkInstance, vkGetInstanceProcAddr);
+	s_dldi = vk::detail::DispatchLoaderDynamic(s_vkInstance, vkGetInstanceProcAddr);
 #if CURLY_DEBUG
 	s_debugMessenger = vkUtils::createDebugMessenger(s_vkInstance, s_dldi);
 #endif

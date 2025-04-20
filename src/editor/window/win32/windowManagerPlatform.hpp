@@ -136,7 +136,7 @@ private:
 
 	// Vulkan Global Instance
 	static vk::Instance s_vkInstance;
-	static vk::DispatchLoaderDynamic s_dldi;
+	static vk::detail::DispatchLoaderDynamic s_dldi;
 	static vk::DebugUtilsMessengerEXT s_debugMessenger;
 
 	// Window Hash Table <Window Handler, Instance ID>

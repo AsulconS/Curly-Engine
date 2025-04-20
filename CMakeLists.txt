@@ -17,9 +17,10 @@ set(FULL_VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 project(CurlyEngine VERSION ${FULL_VERSION})
 
 # Project options
-option(CURLY_LOCAL_RC "Enable RC File Support for local builds (export icon)" OFF)
+option(CURLY_USE_LOCAL_RC "Enable RC File Support for local builds (export icon)" OFF)
 option(CURLY_FORCE_GLX_CTX_VERSION OFF)
 option(CURLY_DEV_OPT_1 OFF) # VLD on Windows
+set(CURLY_LOCAL_RC_RES_FILE "other/res/curly.res" CACHE STRING "Overrides the default .res file path")
 set(CURLY_VLD_DIR "" CACHE STRING "Specifies the VLD Directory Path")
 set(CURLY_GLX_CTX_VERSION_MAJOR 4 CACHE STRING "Specifies Forced GLX Version Major")
 set(CURLY_GLX_CTX_VERSION_MINOR 6 CACHE STRING "Specifies Forced GLX Version Minor")
@@ -37,12 +38,11 @@ else()
     set(CURLY_PLATFORM linux)
 endif()
 
-# Icon
-if(CURLY_LOCAL_RC)
-    set(OPT_RES_FILE "other/res/curly.res")
-else()
-    set(OPT_RES_FILE "")
-endif()
+
+# ------------------------------------------------------------------------------
+# Package Dependencies
+# ------------------------------------------------------------------------------
+find_package(Vulkan REQUIRED)
 
 
 # ------------------------------------------------------------------------------
@@ -166,10 +166,9 @@ PRIVATE
 # Add Include Directories and Link
 target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE include)
 target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE thirdparty/include)
-target_link_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE thirdparty/lib)
 target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC ${CURLY_RUNTIME_LIB_NAME})
 if(WIN32)
-    target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC opengl32 dwmapi vulkan-1)
+    target_link_libraries(${CURLY_EDITOR_EXEC_NAME} LINK_PUBLIC opengl32 dwmapi Vulkan::Vulkan)
     if(CURLY_DEV_OPT_1)
         target_include_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE ${CURLY_VLD_DIR}/include)
         target_link_directories(${CURLY_EDITOR_EXEC_NAME} PRIVATE ${CURLY_VLD_DIR}/lib/Win64)
@@ -179,12 +178,13 @@ else()
     # TODO: Add Linux Support
 endif()
 
-
 # ------------------------------------------------------------------------------
-# Resource link
+# Resource linkage
 # ------------------------------------------------------------------------------
-set(CURLY_LINK_FLAGS ${CMAKE_CURRENT_SOURCE_DIR}/${OPT_RES_FILE})
-set_target_properties(${CURLY_EDITOR_EXEC_NAME}
-PROPERTIES
-    LINK_FLAGS ${CURLY_LINK_FLAGS}
-)
+if(CURLY_USE_LOCAL_RC)
+    set(CURLY_LINK_FLAGS ${CMAKE_CURRENT_SOURCE_DIR}/${CURLY_LOCAL_RC_RES_FILE})
+    set_target_properties(${CURLY_EDITOR_EXEC_NAME}
+    PROPERTIES
+        LINK_FLAGS ${CURLY_LINK_FLAGS}
+    )
+endif()

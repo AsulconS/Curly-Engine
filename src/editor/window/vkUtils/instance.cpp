@@ -29,7 +29,7 @@
 #include <type_traits>
 
 #ifndef VK_KHR_WIN32_SURFACE_EXTENSION_NAME
-	#define VK_KHR_WIN32_SURFACE_EXTENSION_NAME
+	#define VK_KHR_WIN32_SURFACE_EXTENSION_NAME "VK_KHR_win32_surface"
 #endif
 
 namespace vkUtils
@@ -268,7 +268,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 }
 
 //--------------------------------------------------------------------------------
-vk::DebugUtilsMessengerEXT createDebugMessenger(vk::Instance& instance, vk::DispatchLoaderDynamic& dldi)
+vk::DebugUtilsMessengerEXT createDebugMessenger(vk::Instance& instance, vk::detail::DispatchLoaderDynamic& dldi)
 {
 	/**
 	 * from vulkan_structs.hpp:
